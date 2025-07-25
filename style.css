@@ -1,3 +1,8 @@
+html {
+    scroll-behavior: smooth;
+}
+
+/* Rest Ihres bestehenden CSS-Codes folgt hier */
 body {
     font-family: 'Inter', sans-serif;
     background-color: #F8FAFC; 
