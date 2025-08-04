@@ -1,1 +1,173 @@
+<!DOCTYPE html>
+<html lang="de" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Google Tag Manager (Ihre ID) -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-N6D9HK4H');</script>
+    <!-- End Google Tag Manager -->
 
+    <title>Der Burnout-Kompass | Maya Berger</title>
+
+    <meta name="description" content="Der wissenschaftlich fundierte Burnout-Kompass für Frauen. Finden Sie in 3 Minuten kostenlos & anonym heraus, wo Sie auf dem Weg in die Erschöpfung wirklich stehen.">
+    <meta name="keywords" content="burnout, erschöpfung, burnout test, psychologin, maya berger, burnout hilfe frauen, stress, balance, kompass, klinische psychologin">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display.swap" rel="stylesheet">
+    
+    <!-- AOS (Animate on Scroll) Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <!-- Verweis auf Ihre externe CSS-Datei im 'assets'-Ordner -->
+    <link rel="stylesheet" href="/assets/style.css"> 
+</head>
+<body class="antialiased">
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-N6D9HK4H"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <header class="bg-white/80 backdrop-blur-lg border-b border-slate-200">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-center h-16">
+                <div class="flex-shrink-0 text-center">
+                    <a href="/" class="text-base sm:text-lg md:text-xl font-bold text-slate-800">Maya Berger | Klinische Psychologin (M.Sc.)</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- HERO SECTION -->
+        <section id="top" class="hero-gradient py-20 md:py-24">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight" data-aos="fade-up">Der Burnout-Kompass</h1>
+                <p class="mt-4 text-2xl md:text-3xl font-bold text-slate-700" data-aos="fade-up" data-aos-delay="100">Für Frauen, die alles geben – und kurz davor sind, sich selbst zu verlieren.</p>
+                <p class="mt-6 max-w-3xl mx-auto text-lg md:text-xl text-slate-600" data-aos="fade-up" data-aos-delay="200">
+                    Wenn "Ich bin nur müde" in Wahrheit bedeutet "Ich bin am Ende meiner Kräfte", ist es Zeit, ehrlich hinzusehen. Finden Sie in 3 Minuten kostenlos & anonym heraus, wo Sie wirklich stehen.
+                </p>
+            </div>
+        </section>
+
+        <!-- JOTFORM EMBED SECTION -->
+        <section class="py-16 md:py-20 bg-white">
+            <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8" data-aos="fade-up">
+                <!-- Container für das Jotform-Skript für ein sauberes, visuelles Framing -->
+                <div class="bg-white p-2 sm:p-4 rounded-xl shadow-xl border border-slate-200">
+                    <script type="text/javascript" src="https://form.jotform.com/jsform/252115864839061"></script>
+                </div>
+            </div>
+        </section>
+        
+        <!-- NUTZENVERSPRECHEN SECTION -->
+        <section class="py-20 md:py-24 bg-slate-50">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight" data-aos="fade-up">Was Ihr persönlicher Kompass Ihnen verrät:</h2>
+                </div>
+                <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                    <div data-aos="fade-up" data-aos-delay="100">
+                        <div class="flex items-center justify-center h-12 w-12 rounded-full bg-cyan-100 text-cyan-600 mx-auto">
+                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+                        </div>
+                        <h3 class="mt-5 text-xl font-bold text-slate-800">Ihr Erschöpfungs-Score</h3>
+                        <p class="mt-2 text-base text-slate-600">Erhalten Sie eine klare Skala-Einschätzung Ihres aktuellen Zustands.</p>
+                    </div>
+                    <div data-aos="fade-up" data-aos-delay="200">
+                        <div class="flex items-center justify-center h-12 w-12 rounded-full bg-cyan-100 text-cyan-600 mx-auto">
+                           <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        </div>
+                        <h3 class="mt-5 text-xl font-bold text-slate-800">Ihr Energie-Leck</h3>
+                        <p class="mt-2 text-base text-slate-600">Decken Sie die Muster auf, die Sie in der Erschöpfung gefangen halten.</p>
+                    </div>
+                    <div data-aos="fade-up" data-aos-delay="300">
+                        <div class="flex items-center justify-center h-12 w-12 rounded-full bg-cyan-100 text-cyan-600 mx-auto">
+                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+                        </div>
+                        <h3 class="mt-5 text-xl font-bold text-slate-800">Ihr erster Schritt</h3>
+                        <p class="mt-2 text-base text-slate-600">Erfahren Sie, was Ihnen *jetzt* am besten hilft, um wieder aufzutanken.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- "ÜBER MAYA" SECTION (WIEDER EINGEFÜGT UND KORRIGIERT) -->
+        <section class="py-20 md:py-24 bg-white">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col md:flex-row items-center gap-10" data-aos="fade-up">
+                    <div class="md:w-1/3 text-center">
+                        <img class="h-40 w-40 rounded-full object-cover mx-auto shadow-lg" src="/assets/Berger.jpeg" alt="Portraitfoto von Maya Berger, Psychologin">
+                    </div>
+                    <div class="md:w-2/3">
+                        <h2 class="text-3xl font-bold text-slate-900">Entwickelt von einer Frau, die Sie versteht</h2>
+                        <p class="mt-4 text-lg text-slate-600">"Ich habe diesen Kompass entwickelt, weil ich die Lücke zwischen dem Gefühl, nicht mehr zu können, und der monatelangen Wartezeit auf Hilfe schließen möchte. Ich kenne die Muster, die brillante, starke Frauen in die Erschöpfung treiben, aus meiner täglichen Arbeit. Dies ist Ihr sicherer, erster Schritt zu mehr Klarheit – entwickelt mit psychologischer Tiefe und echtem Verständnis für Ihre Situation."</p>
+                        <p class="mt-4 font-semibold text-slate-800">- Maya Berger, M.Sc. Klinische Psychologin</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TESTIMONIALS SECTION -->
+        <section class="py-20 md:py-24 bg-slate-50">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold text-slate-900" data-aos="fade-up">Stimmen zum Kompass</h2>
+                </div>
+                <div class="mt-12 grid gap-8 md:grid-cols-2">
+                    <div class="p-6 bg-white rounded-lg border-l-4 border-cyan-500 shadow-sm" data-aos="fade-up">
+                        <p class="text-slate-700 italic">"Die gezielten Fragen haben mir gezeigt, wo meine größten Energieräuber sitzen. Hat mir sehr geholfen."</p>
+                        <div class="mt-4 flex items-center">
+                            <img class="h-12 w-12 rounded-full object-cover" src="https://placehold.co/100x100/E0F2FE/334155?text=AK" alt="Alex K.">
+                            <div class="ml-4">
+                                <p class="font-semibold text-slate-900">Alex K.</p>
+                                <p class="text-sm text-slate-600">Erzieherin</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6 bg-white rounded-lg border-l-4 border-cyan-500 shadow-sm" data-aos="fade-up" data-aos-delay="100">
+                        <p class="text-slate-700 italic">"Guter Fragebogen, der einem sehr schnell aufzeigt, wie schnell und tief man in dieser Falle stecken kann. Mir war das vorher nicht bewusst."</p>
+                        <div class="mt-4 flex items-center">
+                            <img class="h-12 w-12 rounded-full object-cover" src="https://placehold.co/100x100/E0F2FE/334155?text=KR" alt="Karola R.">
+                            <div class="ml-4">
+                                <p class="font-semibold text-slate-900">Karola R.</p>
+                                <p class="text-sm text-slate-600">Teamleiterin Forschung</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center">
+            <a href="/" class="text-xl font-bold text-white">Maya Berger</a>
+            <!-- KORRIGIERTE, AUTHENTISCHERE BESCHREIBUNG -->
+            <p class="mt-2">Psychologin & Gründerin, Coffee & Recovery</p>
+            <div class="mt-6 flex justify-center space-x-6">
+                <a href="/impressum.html" class="hover:text-white transition">Impressum</a>
+                <a href="/datenschutz.html" class="hover:text-white transition">Datenschutz</a>
+            </div>
+            <p class="mt-6 text-sm">&copy; 2025 Maya Berger. Alle Rechte vorbehalten.</p>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 700,
+            once: true,
+        });
+    </script>
+</body>
+</html>
