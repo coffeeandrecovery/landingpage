@@ -99,8 +99,13 @@
                     </div>
                     
                     <div class="mt-8">
-                        <!-- Hier wird Ihr Jotform-Buchungsformular eingebettet -->
-                        <script type="text/javascript" src="https://form.jotform.com/jsform/252133480860352?jsForm=true"></script>
+                        <!-- NEUE, ROBUSTERE IFRAME-EINBETTUNG -->
+                        <iframe
+                          id="JotFormIFrame-252133480860352"
+                          title="Buchungsformular"
+                          style="width:100%; height:539px; border:none;"
+                          scrolling="no">
+                        </iframe>
                     </div>
                     <p class="mt-4 text-center text-sm text-slate-500">Dieses Gespräch ist zu 100% kostenlos und dient Ihrer Orientierung.</p>
                 </div>
@@ -125,6 +130,22 @@
         AOS.init({
             duration: 700,
             once: true,
+        });
+
+        // NEUES SKRIPT ZUR DYNAMISCHEN DATENÜBERGABE
+        window.addEventListener('load', function() {
+            const iframe = document.getElementById('JotFormIFrame-252133480860352');
+            const urlParams = new URLSearchParams(window.location.search);
+            const email = urlParams.get('email');
+            
+            let src = 'https://form.jotform.com/252133480860352';
+
+            if (email) {
+                // Hängt die E-Mail als URL-Parameter an die iFrame-Quelle an
+                src += '?email=' + encodeURIComponent(email);
+            }
+            
+            iframe.src = src;
         });
     </script>
 </body>
