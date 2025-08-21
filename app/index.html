@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deine bestätigten Termine</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        /* Simple animation for the cards */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 p-4 sm:p-6 md:p-8">
+
+    <div class="max-w-2xl mx-auto">
+
+        <!-- Header Section -->
+        <div class="text-center mb-8 fade-in">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-teal-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mt-3">Deine Termine sind bestätigt!</h1>
+            <p class="text-gray-600 mt-2">Hallo Anna, wir freuen uns auf dich. Hier ist eine Übersicht deiner kommenden Sitzungen für den Oktober.</p>
+        </div>
+
+        <!-- Termine Container -->
+        <div class="space-y-4">
+
+            <!-- Dynamisch generierter Termin-Block 1 -->
+            <div class="bg-white rounded-xl shadow-sm p-5 flex items-center space-x-4 border border-gray-200 fade-in" style="animation-delay: 0.1s;">
+                <div class="flex-shrink-0 bg-teal-100 text-teal-700 rounded-lg p-3 text-center">
+                    <p class="font-bold text-xl">02</p>
+                    <p class="text-xs font-medium">OKT</p>
+                </div>
+                <div>
+                    <h2 class="font-semibold text-gray-800">Gruppe Anker (Donnerstag)</h2>
+                    <p class="text-sm text-gray-500">18:00 - 19:30 Uhr</p>
+                </div>
+            </div>
+
+            <!-- Dynamisch generierter Termin-Block 2 -->
+            <div class="bg-white rounded-xl shadow-sm p-5 flex items-center space-x-4 border border-gray-200 fade-in" style="animation-delay: 0.2s;">
+                <div class="flex-shrink-0 bg-teal-100 text-teal-700 rounded-lg p-3 text-center">
+                    <p class="font-bold text-xl">16</p>
+                    <p class="text-xs font-medium">OKT</p>
+                </div>
+                <div>
+                    <h2 class="font-semibold text-gray-800">Gruppe Anker (Donnerstag)</h2>
+                    <p class="text-sm text-gray-500">18:00 - 19:30 Uhr</p>
+                </div>
+            </div>
+            
+            <!-- Dynamisch generierter Termin-Block 3 (Beispiel für einen anderen Monat/Gruppe) -->
+            <div class="bg-white rounded-xl shadow-sm p-5 flex items-center space-x-4 border border-gray-200 fade-in" style="animation-delay: 0.3s;">
+                <div class="flex-shrink-0 bg-purple-100 text-purple-700 rounded-lg p-3 text-center">
+                    <p class="font-bold text-xl">03</p>
+                    <p class="text-xs font-medium">NOV</p>
+                </div>
+                <div>
+                    <h2 class="font-semibold text-gray-800">Gruppe Kompass (Freitag)</h2>
+                    <p class="text-sm text-gray-500">17:00 - 18:30 Uhr</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer / Hinweis Section -->
+        <div class="text-center mt-8 text-sm text-gray-500 fade-in" style="animation-delay: 0.4s;">
+            <p>Falls du einen Termin nicht wahrnehmen kannst, gib mir bitte so früh wie möglich Bescheid.</p>
+            <p class="mt-1">Stand: 21.08.2025, 19:30 Uhr</p>
+        </div>
+
+    </div>
+
+</body>
+</html>
