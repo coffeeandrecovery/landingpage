@@ -72,6 +72,7 @@
 </head>
 <body class="antialiased">
 
+    <!-- Der HTML-Body bleibt unverändert -->
     <!-- =============================================================== -->
     <!-- ==================== FIXED HEADER ============================= -->
     <!-- =============================================================== -->
@@ -279,8 +280,7 @@
                 
                 renderData(data);
 
-            } catch (error)
-                 {
+            } catch (error) {
                 console.error('Fehler beim Abrufen oder Verarbeiten der Daten:', error);
             }
         }
@@ -349,31 +349,36 @@
             }
 
 
-            // 6. Rechnungen (JETZT MIT DEUTSCHEN FELDNAMEN)
+            // 6. Rechnungen (JETZT MIT DEUTSCHEN FELDNAMEN UND DEBUGGING)
             const invoiceContainer = document.getElementById('invoice-list-container');
             invoiceContainer.innerHTML = '';
             
+            // *** NEU: Wir loggen, was ankommt, BEVOR wir etwas tun ***
+            console.log("DEBUG: Rohdaten für Rechnungen von Make.com:", data.invoices);
+            console.log("DEBUG: Datentyp der Rechnungen:", typeof data.invoices);
+
             let invoices = data.invoices;
 
-            if (typeof invoices === 'string') {
+            // Prüfen, ob "invoices" ein String ist. Wenn ja, umwandeln!
+            if (typeof invoices === 'string' && invoices.length > 2) { // Nur parsen, wenn es kein leerer String ist
+                console.log("DEBUG: Versuche, den Rechnungs-String in ein Array umzuwandeln...");
                 try {
                     invoices = JSON.parse(invoices);
+                    console.log("DEBUG: Umwandlung erfolgreich!", invoices);
                 } catch (e) {
-                    console.error("Konnte den Rechnungs-String nicht in ein Array umwandeln:", e);
-                    invoices = [];
+                    console.error("FEHLER: Der Rechnungs-Text von Make.com ist kein gültiges JSON. Kann nicht verarbeitet werden.", e);
+                    invoices = []; // Bei Fehler leeres Array setzen
                 }
             }
 
-            if (invoices && invoices.length > 0) {
+            if (Array.isArray(invoices) && invoices.length > 0) {
                 invoices.forEach(invoice => {
                     try {
-                        // *** HIER IST DIE ÄNDERUNG ***
-                        // Wir verwenden jetzt die Feldnamen aus deinem Airtable/Make.com Setup
                         const rechnungsName = `Rechnung vom ${invoice.Datum || 'unbekannt'}`;
                         const rechnungsNummer = invoice.Rechnungsnummer || 'Keine Nr.';
                         const betrag = invoice.Betrag || '0,00 €';
                         const status = invoice.Status || 'Unbekannt';
-                        const url = invoice['PDF-URL'] || '#'; // Zugriff mit Klammern wegen "-"
+                        const url = invoice['PDF-URL'] || '#';
                         
                         const statusColor = status === 'Bezahlt' ? 'green' : 'orange';
                         
