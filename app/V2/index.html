@@ -72,6 +72,7 @@
 </head>
 <body class="antialiased">
 
+    <!-- Der HTML-Body bleibt unverändert -->
     <!-- =============================================================== -->
     <!-- ==================== FIXED HEADER ============================= -->
     <!-- =============================================================== -->
@@ -254,7 +255,6 @@
                 fetchData(portalId);
             } else {
                 console.error("Keine Portal-ID in der URL gefunden.");
-                // Hier könnte eine Fehlermeldung für den User angezeigt werden
             }
         });
 
@@ -264,7 +264,6 @@
         }
 
         async function fetchData(portalId) {
-            // WICHTIG: Ersetze dies mit deiner echten Make.com Webhook URL
             const MAKE_WEBHOOK_URL = 'https://hook.eu2.make.com/7864cs26o8swss0cygfokjfurl571sqb';
 
             try {
@@ -276,33 +275,19 @@
 
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 
-                const data = await response.json();
+                const rawText = await response.text();
+                const data = JSON.parse(rawText);
+                
                 renderData(data);
 
             } catch (error) {
-                console.error('Fehler beim Abrufen der Daten:', error);
+                console.error('Fehler beim Abrufen oder Verarbeiten der Daten:', error);
             }
         }
         
         function renderData(data) {
-            /* Beispiel-Datenstruktur, die Make.com senden sollte:
-            {
-                "firstName": "Anna",
-                "gamificationPoints": 125,
-                "news": "Die Planung für Oktober ist jetzt freigeschaltet.",
-                "nextAppointment": { "day": "02", "month": "OKT", "group": "Gruppe Anker", "time": "18:00 - 19:30 Uhr" },
-                "guthaben": { "type": "5er-Karte", "used": 3, "total": 5 },
-                "invoices": [
-                    { "name": "Rechnung für August 2025", "number": "2025-08-012", "amount": "180,00 €", "status": "Offen", "url": "#" },
-                    { "name": "Rechnung für Juli 2025", "number": "2025-07-012", "amount": "120,00 €", "status": "Bezahlt", "url": "#" }
-                ],
-                "resources": [
-                    { "name": "Körperanker (PDF)", "url": "#" },
-                    { "name": "Bedürfniskompass (PDF)", "url": "#" }
-                ]
-            }
-            */
-
+            // ... (der Code für Begrüßung, News, etc. bleibt unverändert) ...
+            
             // 1. Header und Begrüßung
             document.getElementById('user-greeting').textContent = `Willkommen, ${data.firstName || ''}!`;
             document.querySelector('#gamification-points span').textContent = data.gamificationPoints || 0;
@@ -312,7 +297,6 @@
             newsContainer.innerHTML = `
                 <div class="flex items-center space-x-3 mb-3">
                     <div class="flex-shrink-0 flex items-center justify-center h-8 w-8 rounded-full bg-indigo-100">
-                        <!-- GEÄNDERT: Glocken-Icon statt Megafon -->
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                         </svg>
@@ -357,24 +341,58 @@
                 const percentage = (data.guthaben.used / data.guthaben.total) * 100;
                 guthabenContainer.innerHTML = `
                     <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200">
-                        <div class="flex justify-between items-center mb-2"><span class="font-semibold text-gray-800">${data.guthaben.type}</span><span class="font-medium text-gray-600">${data.guthaben.used} von ${data.guthaben.total} genutzt</span></div>
+                        <div class="flex justify-between items-center mb-2"><span class="font-semibold text-gray-800">${data.guthaben.type}</span><span class="font-medium text-gray-600">${data.guthaben.used} von ${data.guhaben.total} genutzt</span></div>
                         <div class="w-full bg-gray-200 rounded-full h-2.5"><div class="bg-indigo-500 h-2.5 rounded-full" style="width: ${percentage}%"></div></div>
                     </div>`;
             } else {
                 guthabenContainer.innerHTML = `<p class="p-5 text-center text-gray-500 bg-white rounded-xl shadow-sm border">Du hast aktuell keine aktive Gruppenkarte.</p>`;
             }
 
-            // 6. Rechnungen
+
+            // 6. Rechnungen (JETZT MIT FORMATIERUNG)
             const invoiceContainer = document.getElementById('invoice-list-container');
             invoiceContainer.innerHTML = '';
-            if (data.invoices && data.invoices.length > 0) {
-                data.invoices.forEach(invoice => {
-                    const statusColor = invoice.status === 'Bezahlt' ? 'green' : 'orange';
-                    invoiceContainer.innerHTML += `
-                        <a href="${invoice.url}" target="_blank" class="p-5 flex justify-between items-center transition hover:bg-gray-50">
-                            <div><p class="font-semibold text-gray-800">${invoice.name}</p><p class="text-sm text-gray-500">${invoice.number}</p></div>
-                            <div class="text-right"><p class="font-semibold text-gray-900">${invoice.amount}</p><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-${statusColor}-100 text-${statusColor}-800">${invoice.status}</span></div>
-                        </a>`;
+            
+            let invoices = data.invoices;
+
+            if (typeof invoices === 'string') {
+                try {
+                    invoices = JSON.parse(invoices);
+                } catch (e) {
+                    invoices = [];
+                }
+            }
+
+            if (Array.isArray(invoices) && invoices.length > 0) {
+                invoices.forEach(invoice => {
+                    try {
+                        // *** HIER FINDET DIE FORMATIERUNG STATT ***
+
+                        // 1. Datum formatieren
+                        const date = new Date(invoice.Datum);
+                        const formattedDate = date.toLocaleDateString('de-DE', { year: 'numeric', month: 'long' });
+                        const rechnungsName = `Rechnung für ${formattedDate}`;
+
+                        // 2. Rechnungsnummer formatieren
+                        const rechnungsNummer = `Nr. ${invoice.Rechnungsnummer || 'unbekannt'}`;
+
+                        // 3. Betrag als Währung formatieren
+                        const amount = parseFloat(invoice.Betrag) || 0;
+                        const formattedAmount = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(amount);
+
+                        // 4. Status und URL bleiben gleich
+                        const status = invoice.Status || 'Unbekannt';
+                        const url = invoice['PDF-URL'] || '#';
+                        const statusColor = status === 'Bezahlt' ? 'green' : 'orange';
+                        
+                        invoiceContainer.innerHTML += `
+                            <a href="${url}" target="_blank" class="p-5 flex justify-between items-center transition hover:bg-gray-50">
+                                <div><p class="font-semibold text-gray-800">${rechnungsName}</p><p class="text-sm text-gray-500">${rechnungsNummer}</p></div>
+                                <div class="text-right"><p class="font-semibold text-gray-900">${formattedAmount}</p><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-${statusColor}-100 text-${statusColor}-800">${status}</span></div>
+                            </a>`;
+                    } catch (e) {
+                        console.error("Fehler beim Rendern einer einzelnen Rechnung:", invoice, e);
+                    }
                 });
             } else {
                 invoiceContainer.innerHTML = `<p class="p-5 text-gray-500">Du hast noch keine Rechnungen.</p>`;
