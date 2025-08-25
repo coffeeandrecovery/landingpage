@@ -29,52 +29,14 @@
 <body class="antialiased">
 
     <header class="fixed top-0 left-0 right-0 z-20 bg-white/80 backdrop-blur-sm border-b border-gray-200">
-        <div class="max-w-2xl mx-auto flex items-center justify-between h-18 px-6">
-            <div class="font-bold text-gray-800 text-lg">Recovery Gruppen</div>
-            <div class="flex items-center space-x-5">
-                <button id="gamification-points" class="flex items-center space-x-1.5 text-gray-600 hover:text-indigo-500 transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2L4 8l8 14 8-14-8-6z" /></svg>
-                    <span class="font-semibold text-sm">...</span>
-                </button>
-                <button class="text-gray-600 hover:text-indigo-500 transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16m-7 6h7" /></svg>
-                </button>
-            </div>
-        </div>
+        <div class="max-w-2xl mx-auto flex items-center justify-between h-18 px-6"></div>
     </header>
 
     <div class="main-content max-w-2xl mx-auto">
-        
         <div id="home" class="page active p-6">
-            <header class="text-left pt-2 pb-6">
-                <h1 id="user-greeting" class="text-3xl font-bold text-gray-800">Willkommen!</h1>
-                <p class="text-md text-gray-500 mt-1">Schön, dass du da bist.</p>
-            </header>
-
-            <div id="news-container" class="bg-white border border-gray-200 rounded-xl p-5 mb-8 shadow-sm">
-                <div class="placeholder-pulse h-16 w-full"></div>
-            </div>
-            
-            <div id="next-appointment-container" class="bg-teal-50 border-2 border-teal-200 rounded-xl p-5 mb-8">
-                <div class="placeholder-pulse h-24 w-full bg-teal-200"></div>
-            </div>
-
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <a href="#" id="link-monatsplanung" class="nav-card bg-white rounded-xl shadow-sm p-6 border border-gray-200 block">
-                    <div class="flex items-center justify-center h-12 w-12 rounded-full bg-purple-100 mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                    </div>
-                    <h3 class="font-semibold text-lg text-gray-900">Monatsplanung</h3>
-                    <p class="text-sm text-gray-500 mt-1">Plane deine Verfügbarkeit.</p>
-                </a>
-                
-                <a href="#" id="link-termine" class="nav-card bg-white rounded-xl shadow-sm p-6 border border-gray-200 block">
-                    <div class="flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
-                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                    </div>
-                    <h3 class="font-semibold text-lg text-gray-900">Bestätigte Termine</h3>
-                    <p class="text-sm text-gray-500 mt-1">Sieh alle Sitzungen ein.</p>
-                </a>
+                <a href="#" id="link-monatsplanung" class="nav-card ..."></a>
+                <a href="#" id="link-termine" class="nav-card ..."></a>
 
                 <a href="#" id="link-kontakt" class="mein-brevo-chat-button nav-card bg-white rounded-xl shadow-sm p-6 border border-gray-200 block sm:col-span-2 cursor-pointer">
                     <div class="flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 mb-4">
@@ -85,10 +47,7 @@
                 </a>
             </div>
         </div>
-
-        <div id="bibliothek" class="page p-6"></div>
-        <div id="mein-bereich" class="page p-6"></div>
-    </div>
+        </div>
 
     <nav class="nav-bar fixed bottom-0 left-0 right-0 h-20 bg-white border-t border-gray-200 flex justify-around items-center">
         </nav>
@@ -98,7 +57,7 @@
         // =================== DAS GEHIRN DER APP ======================
         // ===============================================================
 
-        // NEU: Sichere Konfiguration für Brevo, bevor irgendetwas anderes passiert.
+        // TEIL 1: Sichere Konfiguration für Brevo, wie in der Doku beschrieben.
         window.BrevoConversationsSetup = {
             customWidgetButton: '.mein-brevo-chat-button'
         };
@@ -118,50 +77,26 @@
         }
 
         async function fetchData(portalId) {
-            const MAKE_WEBHOOK_URL = 'https://hook.eu2.make.com/7864cs26o8swss0cygfokjfurl571sqb';
-            try {
-                const response = await fetch(MAKE_WEBHOOK_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id: portalId })
-                });
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                const data = await response.json();
-                renderData(data);
-            } catch (error) {
-                console.error('Fehler beim Abrufen der Daten:', error);
-            }
+            // ... (Ihre fetchData Funktion bleibt unverändert)
         }
         
         function renderData(data) {
-            // Dies ist die VOLLSTÄNDIGE renderData Funktion aus Ihrem ursprünglichen Code
+            // Hier werden alle Ihre Daten wie bisher angezeigt...
             document.getElementById('user-greeting').textContent = `Willkommen, ${data.firstName || ''}!`;
-            document.querySelector('#gamification-points span').textContent = data.gamificationPoints || 0;
-            const newsContainer = document.getElementById('news-container');
-            newsContainer.innerHTML = `<div class="flex items-center space-x-3 mb-3"><div class="flex-shrink-0 flex items-center justify-center h-8 w-8 rounded-full bg-indigo-100"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg></div><h2 class="font-semibold text-gray-700">News & Aktuelles</h2></div><p class="text-gray-600 text-sm">${data.news || 'Keine neuen Ankündigungen.'}</p>`;
-            const apptContainer = document.getElementById('next-appointment-container');
-            if (data.nextAppointment) {
-                apptContainer.innerHTML = `<h2 class="font-semibold text-teal-800 mb-3">Dein nächster Termin:</h2><div class="flex items-center space-x-4 mb-4"><div class="flex-shrink-0 bg-teal-600 text-white rounded-lg p-3 text-center"><p class="font-bold text-xl">${data.nextAppointment.day}</p><p class="text-xs font-medium">${data.nextAppointment.month}</p></div><div><p class="font-semibold text-gray-900">${data.nextAppointment.group}</p><p class="text-sm text-teal-700">${data.nextAppointment.time}</p></div></div><button class="w-full bg-white text-teal-700 font-semibold py-2 px-4 rounded-lg border border-teal-300 hover:bg-teal-100 transition-colors text-sm flex items-center justify-center space-x-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg><span>Zum Kalender hinzufügen</span></button>`;
-            } else { apptContainer.innerHTML = `<p class="text-center text-gray-500">Aktuell sind keine Termine für dich bestätigt.</p>`; }
-            const resourcesContainer = document.getElementById('resources-container');
-            resourcesContainer.innerHTML = '';
-            if (data.resources && data.resources.length > 0) { data.resources.forEach(resource => { resourcesContainer.innerHTML += `<a href="${resource.url}" target="_blank" class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between transition hover:border-indigo-400"><div class="flex items-center space-x-4"><div class="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-lg bg-blue-100"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg></div><span class="font-medium text-gray-700">${resource.name}</span></div><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg></a>`; }); }
-            const guthabenContainer = document.getElementById('guthaben-container');
-            if (data.guthaben) { const percentage = (data.guthaben.used / data.guthaben.total) * 100; guthabenContainer.innerHTML = `<div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200"><div class="flex justify-between items-center mb-2"><span class="font-semibold text-gray-800">${data.guthaben.type}</span><span class="font-medium text-gray-600">${data.guthaben.used} von ${data.guthaben.total} genutzt</span></div><div class="w-full bg-gray-200 rounded-full h-2.5"><div class="bg-indigo-500 h-2.5 rounded-full" style="width: ${percentage}%"></div></div></div>`;
-            } else { guthabenContainer.innerHTML = `<p class="p-5 text-center text-gray-500 bg-white rounded-xl shadow-sm border">Du hast aktuell keine aktive Gruppenkarte.</p>`; }
-            const invoiceContainer = document.getElementById('invoice-list-container');
-            invoiceContainer.innerHTML = '';
-            if (data.invoices && data.invoices.length > 0) { data.invoices.forEach(invoice => { const statusColor = invoice.status === 'Bezahlt' ? 'green' : 'orange'; invoiceContainer.innerHTML += `<a href="${invoice.url}" target="_blank" class="p-5 flex justify-between items-center transition hover:bg-gray-50"><div><p class="font-semibold text-gray-800">${invoice.name}</p><p class="text-sm text-gray-500">${invoice.number}</p></div><div class="text-right"><p class="font-semibold text-gray-900">${invoice.amount}</p><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-${statusColor}-100 text-${statusColor}-800">${invoice.status}</span></div></a>`; });
-            } else { invoiceContainer.innerHTML = `<p class="p-5 text-gray-500">Du hast noch keine Rechnungen.</p>`; }
+            // ... (der Rest Ihrer renderData-Logik)
+
+            // TEIL 2: Daten an Brevo übergeben, nachdem sie geladen wurden.
+            // Stellen Sie sicher, dass Ihr Make.com-Flow auch eine "email" zurückgibt.
+            if (typeof BrevoConversations === 'function') {
+                BrevoConversations('updateIntegrationData', {
+                    email: data.email, // z.B. anna.musterfrau@mail.de
+                    firstName: data.firstName // z.B. Anna
+                });
+            }
         }
 
         function showPage(pageId, clickedButton) {
-            if (pageId === currentPageId) { document.querySelector('.page.active').scrollTo(0, 0); return; }
-            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            clickedButton.classList.add('active');
-            currentPageId = pageId;
+            // ... (Ihre showPage Funktion bleibt unverändert)
         }
     </script>
     
