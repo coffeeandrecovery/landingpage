@@ -9,140 +9,26 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Basic styles for a native app feel */
-        html, body {
-            height: 100%;
-            margin: 0;
-            font-family: 'Inter', sans-serif;
-            background-color: #f8f7fa;
-        }
-        body {
-            padding-top: 72px; /* Height of the header */
-        }
-        .main-content {
-            padding-bottom: 80px; /* Space for the fixed nav bar */
-        }
-        /* Hide scrollbars */
-        ::-webkit-scrollbar {
-            display: none;
-        }
-        /* The main container for each "page" */
-        .page {
-            display: none; /* All pages are hidden by default */
-        }
-        /* The currently active page */
-        .page.active {
-            display: block;
-            animation: fadeIn 0.4s ease-in-out;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        /* Style for the navigation bar */
-        .nav-bar {
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
-        }
-        .nav-item.active svg, .nav-item.active .nav-text {
-            color: #6366f1; /* Indigo-500 */
-        }
-        .nav-item.active .nav-text {
-            font-weight: 600;
-        }
-        /* Style for the clickable cards on the home page */
-        .nav-card {
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-        }
-        .nav-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.07), 0 4px 6px -4px rgb(0 0 0 / 0.07);
-        }
-        /* Loading animation for placeholders */
-        .placeholder-pulse {
-            background-color: #e5e7eb;
-            border-radius: 0.75rem;
-            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-        @keyframes pulse {
-            50% {
-                opacity: .5;
-            }
-        }
+        /* ... Dein CSS bleibt unverändert ... */
     </style>
 </head>
 <body class="antialiased">
 
-    <header class="fixed top-0 left-0 right-0 z-20 bg-white/80 backdrop-blur-sm border-b border-gray-200">
-        <div class="max-w-2xl mx-auto flex items-center justify-between h-18 px-6">
-            <div class="font-bold text-gray-800 text-lg">Recovery Gruppen</div>
-            <div class="flex items-center space-x-5">
-                <button id="gamification-points" class="flex items-center space-x-1.5 text-gray-600 hover:text-indigo-500 transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2L4 8l8 14 8-14-8-6z" /></svg>
-                    <span class="font-semibold text-sm">...</span>
-                </button>
-                <button class="text-gray-600 hover:text-indigo-500 transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16m-7 6h7" /></svg>
-                </button>
-            </div>
-        </div>
-    </header>
-
+    <header>...</header>
     <div class="main-content max-w-2xl mx-auto">
-        
         <div id="home" class="page active p-6">
-            <header class="text-left pt-2 pb-6">
-                <h1 id="user-greeting" class="text-3xl font-bold text-gray-800">Willkommen!</h1>
-                <p class="text-md text-gray-500 mt-1">Schön, dass du da bist.</p>
-            </header>
-
-            <div id="news-container" class="bg-white border border-gray-200 rounded-xl p-5 mb-8 shadow-sm">
-                <div class="placeholder-pulse h-16 w-full"></div>
-            </div>
-            
-            <div id="next-appointment-container" class="bg-teal-50 border-2 border-teal-200 rounded-xl p-5 mb-8">
-                <div class="placeholder-pulse h-24 w-full bg-teal-200"></div>
-            </div>
-
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                
-                <a href="#" id="link-monatsplanung" class="nav-card bg-white rounded-xl shadow-sm p-6 border border-gray-200 block">
-                    <div class="flex items-center justify-center h-12 w-12 rounded-full bg-purple-100 mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                    </div>
-                    <h3 class="font-semibold text-lg text-gray-900">Monatsplanung</h3>
-                    <p class="text-sm text-gray-500 mt-1">Plane deine Verfügbarkeit.</p>
-                </a>
-                
-                <a href="#" id="link-termine" class="nav-card bg-white rounded-xl shadow-sm p-6 border border-gray-200 block">
-                    <div class="flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
-                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                    </div>
-                    <h3 class="font-semibold text-lg text-gray-900">Bestätigte Termine</h3>
-                    <p class="text-sm text-gray-500 mt-1">Sieh alle Sitzungen ein.</p>
-                </a>
-
-                <a href="#" id="link-kontakt" class="mein-brevo-chat-button nav-card bg-white rounded-xl shadow-sm p-6 border border-gray-200 block sm:col-span-2 cursor-pointer">
-                    <div class="flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
-                    </div>
-                    <h3 class="font-semibold text-lg text-gray-900">Nachricht senden</h3>
-                    <p class="text-sm text-gray-500 mt-1">Sende mir eine direkte Nachricht.</p>
-                </a>
-
+                <a href="#" id="link-monatsplanung" ...>...</a>
+                <a href="#" id="link-termine" ...>...</a>
+                <a href="#" id="link-kontakt" class="mein-brevo-chat-button nav-card ...">
+                    </a>
             </div>
         </div>
+        </div>
+    <nav>...</nav>
 
-        <div id="bibliothek" class="page p-6">
-            </div>
-        <div id="mein-bereich" class="page p-6">
-           </div>
-    </div>
-
-    <nav class="nav-bar fixed bottom-0 left-0 right-0 h-20 bg-white border-t border-gray-200 flex justify-around items-center">
-        </nav>
 
     <script>
-        // Dein komplettes App-Gehirn...
         // ===============================================================
         // =================== DAS GEHIRN DER APP ======================
         // ===============================================================
@@ -156,75 +42,57 @@
             }
         });
 
-        function getPortalIdFromUrl() {
-            const params = new URLSearchParams(window.location.search);
-            return params.get('id');
-        }
+        function getPortalIdFromUrl() { /*...*/ }
 
-        async function fetchData(portalId) {
-            const MAKE_WEBHOOK_URL = 'https://hook.eu2.make.com/7864cs26o8swss0cygfokjfurl571sqb';
-
-            try {
-                const response = await fetch(MAKE_WEBHOOK_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id: portalId })
-                });
-
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                
-                const data = await response.json();
-                renderData(data);
-
-            } catch (error) {
-                console.error('Fehler beim Abrufen der Daten:', error);
-            }
-        }
+        async function fetchData(portalId) { /*...*/ }
         
         function renderData(data) {
-             // 1. Header und Begrüßung
-            document.getElementById('user-greeting').textContent = `Willkommen, ${data.firstName || ''}!`;
-            document.querySelector('#gamification-points span').textContent = data.gamificationPoints || 0;
+            // Dein kompletter Code zum Anzeigen der Daten...
+            // ...
+            // ... (z.B. Rechnungen am Ende)
+            
+            if (data.invoices && data.invoices.length > 0) {
+                // ...
+            } else {
+                invoiceContainer.innerHTML = `<p class="p-5 text-gray-500">Du hast noch keine Rechnungen.</p>`;
+            }
 
-            // 2. News
-            const newsContainer = document.getElementById('news-container');
-            newsContainer.innerHTML = `
-                <div class="flex items-center space-x-3 mb-3">
-                    <div class="flex-shrink-0 flex items-center justify-center h-8 w-8 rounded-full bg-indigo-100">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-    <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-</svg>
-                    </div>
-                    <h2 class="font-semibold text-gray-700">News & Aktuelles</h2>
-                </div>
-                <p class="text-gray-600 text-sm">${data.news || 'Keine neuen Ankündigungen.'}</p>`;
-
-            // ... (restliche renderData Funktion)
+            // =========================================================================
+            // NEU: Rufe die Lade-Funktion für Brevo auf, NACHDEM alles andere fertig ist
+            // =========================================================================
+            loadBrevoChat();
         }
 
-        // --- Navigation Logic ---
-        let currentPageId = 'home';
-        function showPage(pageId, clickedButton) {
-            // ...
+        function showPage(pageId, clickedButton) { /*...*/ }
+
+        // ===============================================================
+        // NEUE FUNKTION: Lädt den Brevo-Chat kontrolliert per Javascript
+        // ===============================================================
+        let brevoChatLoaded = false;
+        function loadBrevoChat() {
+            if (brevoChatLoaded) {
+                return; // Verhindert, dass das Skript mehrfach geladen wird
+            }
+            brevoChatLoaded = true;
+            
+            // Erstelle das Konfigurations-Skript
+            const setupScript = document.createElement('script');
+            setupScript.innerHTML = `
+                window.BrevoConversationsSetup = {
+                    customWidgetButton: '.mein-brevo-chat-button'
+                };
+            `;
+            document.body.appendChild(setupScript);
+
+            // Erstelle das Haupt-Brevo-Skript
+            const brevoScript = document.createElement('script');
+            brevoScript.async = true;
+            brevoScript.src = 'https://conversations-widget.brevo.com/brevo-conversations.js';
+            
+            // Hänge das Hauptskript an den Body an, das startet den Ladevorgang
+            document.body.appendChild(brevoScript);
         }
     </script>
     
-    <script defer>
-        window.BrevoConversationsSetup = {
-            customWidgetButton: '.mein-brevo-chat-button'
-        };
-    </script>
-    <script defer>
-        (function(d, w, c) {
-            w.BrevoConversationsID = '68966b452e29685a19096555';
-            w[c] = w[c] || function() {
-                (w[c].q = w[c].q || []).push(arguments);
-            };
-            var s = d.createElement('script');
-            s.async = true;
-            s.src = 'https://conversations-widget.brevo.com/brevo-conversations.js';
-            if (d.head) d.head.appendChild(s);
-        })(document, window, 'BrevoConversations');
-    </script>
     </body>
 </html>
