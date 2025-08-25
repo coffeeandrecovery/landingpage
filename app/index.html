@@ -274,21 +274,20 @@
 
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 
-                // NEU: Wir holen uns den rohen Text, um ihn zu prüfen
                 const rawText = await response.text();
-                // console.log("Rohe Antwort von Make.com:", rawText); // Zum Debuggen einkommentieren
-
-                // Wir versuchen, den Text als JSON zu parsen
                 const data = JSON.parse(rawText);
                 
                 renderData(data);
 
-            } catch (error) {
+            } catch (error)
+                 {
                 console.error('Fehler beim Abrufen oder Verarbeiten der Daten:', error);
             }
         }
         
         function renderData(data) {
+            // ... (der Code für Begrüßung, News, etc. bleibt unverändert) ...
+            
             // 1. Header und Begrüßung
             document.getElementById('user-greeting').textContent = `Willkommen, ${data.firstName || ''}!`;
             document.querySelector('#gamification-points span').textContent = data.gamificationPoints || 0;
@@ -349,32 +348,39 @@
                 guthabenContainer.innerHTML = `<p class="p-5 text-center text-gray-500 bg-white rounded-xl shadow-sm border">Du hast aktuell keine aktive Gruppenkarte.</p>`;
             }
 
-            // 6. Rechnungen (JETZT ROBUSTER)
+
+            // 6. Rechnungen (JETZT MIT DEUTSCHEN FELDNAMEN)
             const invoiceContainer = document.getElementById('invoice-list-container');
             invoiceContainer.innerHTML = '';
             
-            // NEU: Wir definieren die Variable "invoices" außerhalb
             let invoices = data.invoices;
 
-            // NEU: Prüfen, ob "invoices" ein String ist. Wenn ja, umwandeln!
             if (typeof invoices === 'string') {
                 try {
                     invoices = JSON.parse(invoices);
                 } catch (e) {
                     console.error("Konnte den Rechnungs-String nicht in ein Array umwandeln:", e);
-                    invoices = []; // Bei Fehler leeres Array setzen
+                    invoices = [];
                 }
             }
 
             if (invoices && invoices.length > 0) {
                 invoices.forEach(invoice => {
-                    // NEU: Eine try/catch-Block, falls eine einzelne Rechnung fehlerhaft ist
                     try {
-                        const statusColor = invoice.status === 'Bezahlt' ? 'green' : 'orange';
+                        // *** HIER IST DIE ÄNDERUNG ***
+                        // Wir verwenden jetzt die Feldnamen aus deinem Airtable/Make.com Setup
+                        const rechnungsName = `Rechnung vom ${invoice.Datum || 'unbekannt'}`;
+                        const rechnungsNummer = invoice.Rechnungsnummer || 'Keine Nr.';
+                        const betrag = invoice.Betrag || '0,00 €';
+                        const status = invoice.Status || 'Unbekannt';
+                        const url = invoice['PDF-URL'] || '#'; // Zugriff mit Klammern wegen "-"
+                        
+                        const statusColor = status === 'Bezahlt' ? 'green' : 'orange';
+                        
                         invoiceContainer.innerHTML += `
-                            <a href="${invoice.url || '#'}" target="_blank" class="p-5 flex justify-between items-center transition hover:bg-gray-50">
-                                <div><p class="font-semibold text-gray-800">${invoice.name}</p><p class="text-sm text-gray-500">${invoice.number}</p></div>
-                                <div class="text-right"><p class="font-semibold text-gray-900">${invoice.amount}</p><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-${statusColor}-100 text-${statusColor}-800">${invoice.status}</span></div>
+                            <a href="${url}" target="_blank" class="p-5 flex justify-between items-center transition hover:bg-gray-50">
+                                <div><p class="font-semibold text-gray-800">${rechnungsName}</p><p class="text-sm text-gray-500">${rechnungsNummer}</p></div>
+                                <div class="text-right"><p class="font-semibold text-gray-900">${betrag}</p><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-${statusColor}-100 text-${statusColor}-800">${status}</span></div>
                             </a>`;
                     } catch (e) {
                         console.error("Fehler beim Rendern einer einzelnen Rechnung:", invoice, e);
