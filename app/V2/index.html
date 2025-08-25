@@ -132,24 +132,89 @@
             </div>
         </div>
 
-        <div id="bibliothek" class="page p-6">...</div>
-        <div id="mein-bereich" class="page p-6">...</div>
+        <div id="bibliothek" class="page p-6">
+            </div>
+        <div id="mein-bereich" class="page p-6">
+           </div>
     </div>
 
     <nav class="nav-bar fixed bottom-0 left-0 right-0 h-20 bg-white border-t border-gray-200 flex justify-around items-center">
         </nav>
 
     <script>
-        // ... Dein App-Gehirn (Javascript) bleibt unverändert ...
+        // Dein komplettes App-Gehirn...
+        // ===============================================================
+        // =================== DAS GEHIRN DER APP ======================
+        // ===============================================================
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const portalId = getPortalIdFromUrl();
+            if (portalId) {
+                fetchData(portalId);
+            } else {
+                console.error("Keine Portal-ID in der URL gefunden.");
+            }
+        });
+
+        function getPortalIdFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('id');
+        }
+
+        async function fetchData(portalId) {
+            const MAKE_WEBHOOK_URL = 'https://hook.eu2.make.com/7864cs26o8swss0cygfokjfurl571sqb';
+
+            try {
+                const response = await fetch(MAKE_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: portalId })
+                });
+
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                
+                const data = await response.json();
+                renderData(data);
+
+            } catch (error) {
+                console.error('Fehler beim Abrufen der Daten:', error);
+            }
+        }
+        
+        function renderData(data) {
+             // 1. Header und Begrüßung
+            document.getElementById('user-greeting').textContent = `Willkommen, ${data.firstName || ''}!`;
+            document.querySelector('#gamification-points span').textContent = data.gamificationPoints || 0;
+
+            // 2. News
+            const newsContainer = document.getElementById('news-container');
+            newsContainer.innerHTML = `
+                <div class="flex items-center space-x-3 mb-3">
+                    <div class="flex-shrink-0 flex items-center justify-center h-8 w-8 rounded-full bg-indigo-100">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+</svg>
+                    </div>
+                    <h2 class="font-semibold text-gray-700">News & Aktuelles</h2>
+                </div>
+                <p class="text-gray-600 text-sm">${data.news || 'Keine neuen Ankündigungen.'}</p>`;
+
+            // ... (restliche renderData Funktion)
+        }
+
+        // --- Navigation Logic ---
+        let currentPageId = 'home';
+        function showPage(pageId, clickedButton) {
+            // ...
+        }
     </script>
     
-    <script>
+    <script defer>
         window.BrevoConversationsSetup = {
             customWidgetButton: '.mein-brevo-chat-button'
         };
     </script>
-
-    <script>
+    <script defer>
         (function(d, w, c) {
             w.BrevoConversationsID = '68966b452e29685a19096555';
             w[c] = w[c] || function() {
