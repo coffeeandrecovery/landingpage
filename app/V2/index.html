@@ -255,6 +255,9 @@
                 fetchData(portalId);
             } else {
                 console.error("Keine Portal-ID in der URL gefunden.");
+                // Optional: Eine Fehlermeldung in der App anzeigen, wenn keine ID vorhanden ist
+                document.getElementById('user-greeting').textContent = 'Fehler!';
+                document.querySelector('.main-content').innerHTML = '<p class="text-center text-red-500 mt-8">Keine Portal-ID in der URL gefunden. Bitte stellen Sie sicher, dass Sie den korrekten Link verwenden.</p>';
             }
         });
 
@@ -264,24 +267,33 @@
         }
 
         async function fetchData(portalId) {
-            const MAKE_WEBHOOK_URL = 'https://hook.eu2.make.com/7864cs26o8swss0cygfokjfurl571sqb';
+            // ###############################################################
+            // ### WICHTIGE ÄNDERUNG HIER: Ihre Cloudflare Worker URL eingefügt ###
+            // ###############################################################
+            const CLOUDFLARE_WORKER_URL = 'https://recovery-worker-api.coffee-recoveryhh.workers.dev/'; // Ihre Worker URL ist jetzt hier!
+
 
             try {
-                const response = await fetch(MAKE_WEBHOOK_URL, {
+                const response = await fetch(CLOUDFLARE_WORKER_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ id: portalId })
                 });
 
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP error! status: ${response.status}, Details: ${errorText}`);
+                }
                 
-                const rawText = await response.text();
-                const data = JSON.parse(rawText);
+                const data = await response.json(); // Der Worker liefert bereits JSON
                 
                 renderData(data);
 
             } catch (error) {
                 console.error('Fehler beim Abrufen oder Verarbeiten der Daten:', error);
+                // Optional: Eine Fehlermeldung in der App anzeigen
+                document.getElementById('user-greeting').textContent = 'Fehler beim Laden!';
+                document.querySelector('.main-content').innerHTML = '<p class="text-center text-red-500 mt-8">Daten konnten nicht geladen werden. Bitte versuchen Sie es später erneut oder kontaktieren Sie den Support.</p>';
             }
         }
         
@@ -294,6 +306,8 @@
 
             // 2. News
             const newsContainer = document.getElementById('news-container');
+            // Platzhalter entfernen, bevor neue Inhalte hinzugefügt werden
+            newsContainer.innerHTML = ''; 
             newsContainer.innerHTML = `
                 <div class="flex items-center space-x-3 mb-3">
                     <div class="flex-shrink-0 flex items-center justify-center h-8 w-8 rounded-full bg-indigo-100">
@@ -307,7 +321,9 @@
 
             // 3. Nächster Termin
             const apptContainer = document.getElementById('next-appointment-container');
-            if (data.nextAppointment) {
+            // Platzhalter entfernen, bevor neue Inhalte hinzugefügt werden
+            apptContainer.innerHTML = '';
+            if (data.nextAppointment && data.nextAppointment.day) { // Prüfen, ob Termin-Daten vorhanden sind
                 apptContainer.innerHTML = `
                     <h2 class="font-semibold text-teal-800 mb-3">Dein nächster Termin:</h2>
                     <div class="flex items-center space-x-4 mb-4">
@@ -319,12 +335,12 @@
                         <span>Zum Kalender hinzufügen</span>
                     </button>`;
             } else {
-                 apptContainer.innerHTML = `<p class="text-center text-gray-500">Aktuell sind keine Termine für dich bestätigt.</p>`;
+                 apptContainer.innerHTML = `<p class="p-5 text-center text-gray-500 bg-white rounded-xl shadow-sm border">Aktuell sind keine Termine für dich bestätigt.</p>`;
             }
 
             // 4. Ressourcen
             const resourcesContainer = document.getElementById('resources-container');
-            resourcesContainer.innerHTML = '';
+            resourcesContainer.innerHTML = ''; // Vorherige Platzhalter entfernen
             if (data.resources && data.resources.length > 0) {
                 data.resources.forEach(resource => {
                     resourcesContainer.innerHTML += `
@@ -333,15 +349,20 @@
                          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
                      </a>`;
                 });
+            } else {
+                resourcesContainer.innerHTML = `<p class="p-5 text-center text-gray-500 bg-white rounded-xl shadow-sm border">Momentan sind keine Ressourcen verfügbar.</p>`;
             }
+
 
             // 5. Guthaben
             const guthabenContainer = document.getElementById('guthaben-container');
-            if (data.guthaben) {
+            // Platzhalter entfernen, bevor neue Inhalte hinzugefügt werden
+            guthabenContainer.innerHTML = '';
+            if (data.guthaben && data.guthaben.total !== undefined) { // Prüfen, ob Guthaben-Daten vorhanden sind
                 const percentage = (data.guthaben.used / data.guthaben.total) * 100;
                 guthabenContainer.innerHTML = `
                     <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200">
-                        <div class="flex justify-between items-center mb-2"><span class="font-semibold text-gray-800">${data.guthaben.type}</span><span class="font-medium text-gray-600">${data.guthaben.used} von ${data.guhaben.total} genutzt</span></div>
+                        <div class="flex justify-between items-center mb-2"><span class="font-semibold text-gray-800">${data.guthaben.type}</span><span class="font-medium text-gray-600">${data.guthaben.used} von ${data.guthaben.total} genutzt</span></div>
                         <div class="w-full bg-gray-200 rounded-full h-2.5"><div class="bg-indigo-500 h-2.5 rounded-full" style="width: ${percentage}%"></div></div>
                     </div>`;
             } else {
@@ -351,18 +372,11 @@
 
             // 6. Rechnungen (JETZT MIT FORMATIERUNG)
             const invoiceContainer = document.getElementById('invoice-list-container');
-            invoiceContainer.innerHTML = '';
+            invoiceContainer.innerHTML = ''; // Vorherige Platzhalter entfernen
             
             let invoices = data.invoices;
 
-            if (typeof invoices === 'string') {
-                try {
-                    invoices = JSON.parse(invoices);
-                } catch (e) {
-                    invoices = [];
-                }
-            }
-
+            // Der Worker sollte bereits ein Array liefern, aber eine zusätzliche Prüfung schadet nicht
             if (Array.isArray(invoices) && invoices.length > 0) {
                 invoices.forEach(invoice => {
                     try {
@@ -382,8 +396,8 @@
 
                         // 4. Status und URL bleiben gleich
                         const status = invoice.Status || 'Unbekannt';
+                        const statusColor = status === 'Bezahlt' ? 'green' : (status === 'Offen' ? 'orange' : 'gray'); // Angepasst für "Offen"
                         const url = invoice['PDF-URL'] || '#';
-                        const statusColor = status === 'Bezahlt' ? 'green' : 'orange';
                         
                         invoiceContainer.innerHTML += `
                             <a href="${url}" target="_blank" class="p-5 flex justify-between items-center transition hover:bg-gray-50">
