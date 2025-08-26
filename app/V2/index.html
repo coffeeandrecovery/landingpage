@@ -117,7 +117,7 @@
 
             <!-- Navigation Grid (Links werden später dynamisch) -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                 <a href="#" id="link-monatsplanung" class="nav-card bg-white rounded-xl shadow-sm p-6 border border-gray-200 block">
+                 <a href="#" onclick="showPage('monatsplanung-page', this); return false;" id="link-monatsplanung" class="nav-card bg-white rounded-xl shadow-sm p-6 border border-gray-200 block">
                     <div class="flex items-center justify-center h-12 w-12 rounded-full bg-purple-100 mb-4">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                     </div>
@@ -139,6 +139,20 @@
                     <h3 class="font-semibold text-lg text-gray-900">Kontakt</h3>
                     <p class="text-sm text-gray-500 mt-1">Direkte Nachricht an uns senden.</p>
                 </a>
+            </div>
+        </div>
+
+        <!-- =============================================================== -->
+        <!-- =================== NEW PAGE: MONATSPLANUNG =================== -->
+        <!-- =============================================================== -->
+        <div id="monatsplanung-page" class="page p-6">
+            <header class="pt-2 pb-6">
+                <h1 class="text-3xl font-bold text-gray-800">Monatsplanung</h1>
+                <p class="text-gray-600 mt-2">Teile uns deine Verfügbarkeit mit.</p>
+            </header>
+            <div id="jotform-container">
+                <!-- Jotform wird hier dynamisch geladen -->
+                <p class="text-center text-gray-500 mt-8">Ladeformular...</p>
             </div>
         </div>
 
@@ -249,13 +263,16 @@
         // =================== DAS GEHIRN DER APP ======================
         // ===============================================================
 
+        // Variable, um zu verfolgen, ob Jotform bereits geladen wurde
+        let jotFormLoaded = false;
+        let currentPageId = 'home'; // Standard-Startseite
+
         document.addEventListener('DOMContentLoaded', () => {
             const portalId = getPortalIdFromUrl();
             if (portalId) {
                 fetchData(portalId);
             } else {
                 console.error("Keine Portal-ID in der URL gefunden.");
-                // Optional: Eine Fehlermeldung in der App anzeigen, wenn keine ID vorhanden ist
                 document.getElementById('user-greeting').textContent = 'Fehler!';
                 document.querySelector('.main-content').innerHTML = '<p class="text-center text-red-500 mt-8">Keine Portal-ID in der URL gefunden. Bitte stellen Sie sicher, dass Sie den korrekten Link verwenden.</p>';
             }
@@ -267,11 +284,7 @@
         }
 
         async function fetchData(portalId) {
-            // ###############################################################
-            // ### WICHTIGE ÄNDERUNG HIER: Ihre Cloudflare Worker URL eingefügt ###
-            // ###############################################################
-            const CLOUDFLARE_WORKER_URL = 'https://recovery-worker-api.coffee-recoveryhh.workers.dev/'; // Ihre Worker URL ist jetzt hier!
-
+            const CLOUDFLARE_WORKER_URL = 'https://recovery-worker-api.coffee-recoveryhh.workers.dev/';
 
             try {
                 const response = await fetch(CLOUDFLARE_WORKER_URL, {
@@ -285,28 +298,21 @@
                     throw new Error(`HTTP error! status: ${response.status}, Details: ${errorText}`);
                 }
                 
-                const data = await response.json(); // Der Worker liefert bereits JSON
-                
+                const data = await response.json();
                 renderData(data);
 
             } catch (error) {
                 console.error('Fehler beim Abrufen oder Verarbeiten der Daten:', error);
-                // Optional: Eine Fehlermeldung in der App anzeigen
                 document.getElementById('user-greeting').textContent = 'Fehler beim Laden!';
                 document.querySelector('.main-content').innerHTML = '<p class="text-center text-red-500 mt-8">Daten konnten nicht geladen werden. Bitte versuchen Sie es später erneut oder kontaktieren Sie den Support.</p>';
             }
         }
         
         function renderData(data) {
-            // ... (der Code für Begrüßung, News, etc. bleibt unverändert) ...
-            
-            // 1. Header und Begrüßung
             document.getElementById('user-greeting').textContent = `Willkommen, ${data.firstName || ''}!`;
             document.querySelector('#gamification-points span').textContent = data.gamificationPoints || 0;
 
-            // 2. News
             const newsContainer = document.getElementById('news-container');
-            // Platzhalter entfernen, bevor neue Inhalte hinzugefügt werden
             newsContainer.innerHTML = ''; 
             newsContainer.innerHTML = `
                 <div class="flex items-center space-x-3 mb-3">
@@ -319,11 +325,9 @@
                 </div>
                 <p class="text-gray-600 text-sm">${data.news || 'Keine neuen Ankündigungen.'}</p>`;
 
-            // 3. Nächster Termin
             const apptContainer = document.getElementById('next-appointment-container');
-            // Platzhalter entfernen, bevor neue Inhalte hinzugefügt werden
             apptContainer.innerHTML = '';
-            if (data.nextAppointment && data.nextAppointment.day) { // Prüfen, ob Termin-Daten vorhanden sind
+            if (data.nextAppointment && data.nextAppointment.day) {
                 apptContainer.innerHTML = `
                     <h2 class="font-semibold text-teal-800 mb-3">Dein nächster Termin:</h2>
                     <div class="flex items-center space-x-4 mb-4">
@@ -338,9 +342,8 @@
                  apptContainer.innerHTML = `<p class="p-5 text-center text-gray-500 bg-white rounded-xl shadow-sm border">Aktuell sind keine Termine für dich bestätigt.</p>`;
             }
 
-            // 4. Ressourcen
             const resourcesContainer = document.getElementById('resources-container');
-            resourcesContainer.innerHTML = ''; // Vorherige Platzhalter entfernen
+            resourcesContainer.innerHTML = '';
             if (data.resources && data.resources.length > 0) {
                 data.resources.forEach(resource => {
                     resourcesContainer.innerHTML += `
@@ -353,12 +356,9 @@
                 resourcesContainer.innerHTML = `<p class="p-5 text-center text-gray-500 bg-white rounded-xl shadow-sm border">Momentan sind keine Ressourcen verfügbar.</p>`;
             }
 
-
-            // 5. Guthaben
             const guthabenContainer = document.getElementById('guthaben-container');
-            // Platzhalter entfernen, bevor neue Inhalte hinzugefügt werden
             guthabenContainer.innerHTML = '';
-            if (data.guthaben && data.guthaben.total !== undefined) { // Prüfen, ob Guthaben-Daten vorhanden sind
+            if (data.guthaben && data.guthaben.total !== undefined) {
                 const percentage = (data.guthaben.used / data.guthaben.total) * 100;
                 guthabenContainer.innerHTML = `
                     <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200">
@@ -369,34 +369,25 @@
                 guthabenContainer.innerHTML = `<p class="p-5 text-center text-gray-500 bg-white rounded-xl shadow-sm border">Du hast aktuell keine aktive Gruppenkarte.</p>`;
             }
 
-
-            // 6. Rechnungen (JETZT MIT FORMATIERUNG)
             const invoiceContainer = document.getElementById('invoice-list-container');
-            invoiceContainer.innerHTML = ''; // Vorherige Platzhalter entfernen
+            invoiceContainer.innerHTML = '';
             
             let invoices = data.invoices;
 
-            // Der Worker sollte bereits ein Array liefern, aber eine zusätzliche Prüfung schadet nicht
             if (Array.isArray(invoices) && invoices.length > 0) {
                 invoices.forEach(invoice => {
                     try {
-                        // *** HIER FINDET DIE FORMATIERUNG STATT ***
-
-                        // 1. Datum formatieren
                         const date = new Date(invoice.Datum);
                         const formattedDate = date.toLocaleDateString('de-DE', { year: 'numeric', month: 'long' });
                         const rechnungsName = `Rechnung für ${formattedDate}`;
 
-                        // 2. Rechnungsnummer formatieren
                         const rechnungsNummer = `Nr. ${invoice.Rechnungsnummer || 'unbekannt'}`;
 
-                        // 3. Betrag als Währung formatieren
                         const amount = parseFloat(invoice.Betrag) || 0;
                         const formattedAmount = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(amount);
 
-                        // 4. Status und URL bleiben gleich
                         const status = invoice.Status || 'Unbekannt';
-                        const statusColor = status === 'Bezahlt' ? 'green' : (status === 'Offen' ? 'orange' : 'gray'); // Angepasst für "Offen"
+                        const statusColor = status === 'Bezahlt' ? 'green' : (status === 'Offen' ? 'orange' : 'gray');
                         const url = invoice['PDF-URL'] || '#';
                         
                         invoiceContainer.innerHTML += `
@@ -414,7 +405,6 @@
         }
 
         // --- Navigation Logic ---
-        let currentPageId = 'home';
         function showPage(pageId, clickedButton) {
             if (pageId === currentPageId) {
                 const activePage = document.querySelector('.page.active');
@@ -428,8 +418,41 @@
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
             clickedButton.classList.add('active');
             currentPageId = pageId;
+
+            // Spezielle Logik für das Laden des Jotform-Formulars
+            if (pageId === 'monatsplanung-page' && !jotFormLoaded) {
+                loadJotForm();
+            }
         }
         
+        // --- Jotform Lade-Logik ---
+        function loadJotForm() {
+            const jotformContainer = document.getElementById('jotform-container');
+            // Zuerst den Container leeren, falls bereits etwas geladen wurde
+            jotformContainer.innerHTML = '<p class="text-center text-gray-500 mt-8">Ladeformular...</p>';
+
+            const script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = 'https://form.jotform.com/jsform/252311488402047';
+            script.onload = () => {
+                console.log('Jotform-Skript erfolgreich geladen.');
+                jotFormLoaded = true; // Markieren, dass das Formular geladen wurde
+                // Nach dem Laden des Skripts kann es ein kleines Delay geben, bis das Formular gerendert ist
+                // Hier könnte man einen Lade-Indikator ausblenden, falls nötig.
+                // Jotform fügt das Formular in der Regel direkt in den body ein oder ein spezifisches div.
+                // Wenn Jotform das Formular in ein Element mit einer bestimmten ID einfügt, sollte das div darüber diese ID haben.
+                // In diesem Fall fügt das Skript das Formular direkt in den 'jotform-container' ein.
+                jotformContainer.innerHTML = ''; // Platzhalter nach erfolgreichem Laden entfernen
+            };
+            script.onerror = (e) => {
+                console.error('Fehler beim Laden des Jotform-Skripts:', e);
+                jotformContainer.innerHTML = '<p class="text-center text-red-500 mt-8">Fehler beim Laden des Formulars. Bitte versuchen Sie es später erneut.</p>';
+            };
+
+            // Das Skript dem Container hinzufügen
+            jotformContainer.appendChild(script);
+        }
+
         // --- Chat Logic ---
         function openChat() {
             if (window.BrevoConversations) {
