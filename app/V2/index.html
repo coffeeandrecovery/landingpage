@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
+    <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self' https://cdn.tailwindcss.com https://conversations-widget.brevo.com https://form.jotform.com 'unsafe-inline';
+    frame-src 'self' https://form.jotform.com;
+    img-src 'self' data: https://www.gravatar.com;
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://form.jotform.com;
+    font-src 'self' https://fonts.gstatic.com;
+    connect-src 'self' https://recovery-worker-api.coffee-recoveryhh.workers.dev https://conversations-widget.brevo.com;
+">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Dein persönliches Portal</title>
