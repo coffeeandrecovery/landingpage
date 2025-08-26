@@ -6,17 +6,17 @@
     <title>Dein persönliches Portal</title>
     
     <!-- WICHTIG: Die Content Security Policy (CSP) MUSS hier nach charset und viewport stehen, aber vor externen Skripten/Styles. -->
-    <!-- Diese CSP ist für Tailwind, Brevo und Jotform (Iframe-Einbettung) optimiert. -->
+    <!-- Diese CSP ist für Tailwind, Brevo und Ihr eigenes Formular optimiert. -->
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self';
-        script-src 'self' https://cdn.tailwindcss.com https://conversations-widget.brevo.com https://form.jotform.com https://js.jotform.com https://cdn.jotfor.ms https://d13sozod7hpim.cloudfront.net 'unsafe-inline' 'unsafe-eval';
-        frame-src 'self' https://form.jotform.com https://conversations-widget.brevo.com https://www.youtube.com;
-        img-src 'self' data: https://www.gravatar.com https://cdn.jotform.com https://conversations-widget.brevo.com https://d13sozod7hpim.cloudfront.net;
-        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://form.jotform.com https://cdn.jotform.com https://conversations-widget.brevo.com;
-        font-src 'self' https://fonts.gstatic.com https://cdn.jotform.com;
-        connect-src 'self' https://recovery-worker-api.coffee-recoveryhh.workers.dev https://conversations-widget.brevo.com https://form.jotform.com https://submit.jotform.com https://d13sozod7hpim.cloudfront.net;
+        script-src 'self' https://cdn.tailwindcss.com https://conversations-widget.brevo.com 'unsafe-inline' 'unsafe-eval';
+        frame-src 'self' https://conversations-widget.brevo.com https://www.youtube.com;
+        img-src 'self' data: https://www.gravatar.com https://conversations-widget.brevo.com;
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://conversations-widget.brevo.com;
+        font-src 'self' https://fonts.gstatic.com;
+        connect-src 'self' https://recovery-worker-api.coffee-recoveryhh.workers.dev https://conversations-widget.brevo.com;
         worker-src 'self' blob:;
-        child-src 'self' https://form.jotform.com;
+        child-src 'self';
     ">
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -139,7 +139,7 @@
                     <h3 class="font-semibold text-lg text-gray-900">Monatsplanung</h3>
                     <p class="text-sm text-gray-500 mt-1">Plane deine Verfügbarkeit.</p>
                 </a>
-                <a href="#" id="link-termine" class="nav-card bg-white rounded-xl shadow-sm p-6 border border-gray-200 block">
+                <a href="#" onclick="showPage('bestaetigte-termine-page', this); return false;" id="link-termine" class="nav-card bg-white rounded-xl shadow-sm p-6 border border-gray-200 block">
                     <div class="flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
                          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     </div>
@@ -163,13 +163,72 @@
         <div id="monatsplanung-page" class="page p-6">
             <header class="pt-2 pb-6">
                 <h1 class="text-3xl font-bold text-gray-800">Monatsplanung</h1>
-                <p class="text-gray-600 mt-2">Teile uns deine Verfügbarkeit mit.</p>
+                <p class="text-gray-600 mt-2">Wähle die Donnerstage im Oktober 2025, an denen du verfügbar bist.</p>
             </header>
-            <div id="jotform-container">
-                <!-- Jotform wird hier dynamisch als Iframe geladen -->
-                <p class="text-center text-gray-500 mt-8">Ladeformular...</p>
+            <div id="monthly-planning-form-container" class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                <form id="availability-form">
+                    <div class="space-y-4 mb-6">
+                        <!-- Donnerstage im Oktober 2025 -->
+                        <label class="flex items-center space-x-3">
+                            <input type="checkbox" name="availableDays" value="2025-10-02" class="form-checkbox h-5 w-5 text-indigo-600 rounded focus:ring-indigo-500">
+                            <span class="text-gray-700 font-medium">Donnerstag, 02. Oktober 2025</span>
+                        </label>
+                        <label class="flex items-center space-x-3">
+                            <input type="checkbox" name="availableDays" value="2025-10-09" class="form-checkbox h-5 w-5 text-indigo-600 rounded focus:ring-indigo-500">
+                            <span class="text-gray-700 font-medium">Donnerstag, 09. Oktober 2025</span>
+                        </label>
+                        <label class="flex items-center space-x-3">
+                            <input type="checkbox" name="availableDays" value="2025-10-16" class="form-checkbox h-5 w-5 text-indigo-600 rounded focus:ring-indigo-500">
+                            <span class="text-gray-700 font-medium">Donnerstag, 16. Oktober 2025</span>
+                        </label>
+                        <label class="flex items-center space-x-3">
+                            <input type="checkbox" name="availableDays" value="2025-10-23" class="form-checkbox h-5 w-5 text-indigo-600 rounded focus:ring-indigo-500">
+                            <span class="text-gray-700 font-medium">Donnerstag, 23. Oktober 2025</span>
+                        </label>
+                        <label class="flex items-center space-x-3">
+                            <input type="checkbox" name="availableDays" value="2025-10-30" class="form-checkbox h-5 w-5 text-indigo-600 rounded focus:ring-indigo-500">
+                            <span class="text-gray-700 font-medium">Donnerstag, 30. Oktober 2025</span>
+                        </label>
+                    </div>
+                    <button type="submit" class="w-full bg-indigo-600 text-white font-semibold py-3 px-5 rounded-lg hover:bg-indigo-700 transition-colors">Verfügbarkeit senden</button>
+                </form>
+                <div id="form-message" class="mt-4 text-center text-sm"></div>
             </div>
         </div>
+
+        <!-- =============================================================== -->
+        <!-- ================ NEW PAGE: BESTÄTIGTE TERMINE ================= -->
+        <!-- =============================================================== -->
+        <div id="bestaetigte-termine-page" class="page p-6">
+            <header class="pt-2 pb-6">
+                <h1 class="text-3xl font-bold text-gray-800">Bestätigte Termine</h1>
+                <p class="text-gray-600 mt-2">Deine festen Gruppensitzungen.</p>
+            </header>
+            <div class="space-y-4">
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex items-center space-x-4">
+                    <div class="flex-shrink-0 bg-green-600 text-white rounded-lg p-3 text-center">
+                        <p class="font-bold text-xl">18</p>
+                        <p class="text-xs font-medium">Sep</p>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-gray-900">Gruppensitzung Donnerstag</p>
+                        <p class="text-sm text-green-700">18:00 - 19:30 Uhr</p>
+                    </div>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex items-center space-x-4">
+                    <div class="flex-shrink-0 bg-green-600 text-white rounded-lg p-3 text-center">
+                        <p class="font-bold text-xl">25</p>
+                        <p class="text-xs font-medium">Sep</p>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-gray-900">Gruppensitzung Donnerstag</p>
+                        <p class="text-sm text-green-700">18:00 - 19:30 Uhr</p>
+                    </div>
+                </div>
+                <p class="text-center text-gray-500 mt-8">Weitere Termine folgen in Kürze.</p>
+            </div>
+        </div>
+
 
         <!-- =============================================================== -->
         <!-- ===================== PAGE 2: BIBLIOTHEK ====================== -->
@@ -434,13 +493,13 @@
             clickedButton.classList.add('active');
             currentPageId = pageId;
 
-            // Spezielle Logik für das Laden des Jotform-Formulars
+            // Spezielle Logik für das Laden des Jotform-Formulars (jetzt als Iframe)
             if (pageId === 'monatsplanung-page' && !jotFormLoaded) {
                 loadJotForm();
             }
         }
         
-        // --- Jotform Lade-Logik ---
+        // --- Jotform Lade-Logik (als Iframe) ---
         function loadJotForm() {
             const jotformContainer = document.getElementById('jotform-container');
             // Zuerst den Container leeren, falls bereits etwas geladen wurde
@@ -469,11 +528,16 @@
             jotformContainer.innerHTML = ''; // Platzhalter nach erfolgreichem Laden entfernen
 
             // Jotform Embed Handler Skript, falls für Iframe-Resizing benötigt
+            // Dieses Skript ist für die Iframe-Einbettung oft optional, aber kann für dynamisches Resizing nützlich sein.
+            // Es wird jetzt direkt in den Container geladen, um CSP-Probleme zu minimieren.
             const embedHandlerScript = document.createElement('script');
             embedHandlerScript.src = 'https://cdn.jotfor.ms/s/umd/latest/for-form-embed-handler.js';
             embedHandlerScript.onload = () => {
                 console.log('Jotform Embed Handler Skript geladen.');
-                window.jotformEmbedHandler("iframe[id='JotFormIFrame-252311488402047']", "https://form.jotform.com/");
+                // Sicherstellen, dass der Handler nur einmal aufgerufen wird, wenn das Iframe bereit ist
+                if (window.jotformEmbedHandler) {
+                    window.jotformEmbedHandler("iframe[id='JotFormIFrame-252311488402047']", "https://form.jotform.com/");
+                }
             };
             embedHandlerScript.onerror = (e) => {
                 console.error('Fehler beim Laden des Jotform Embed Handler Skripts:', e);
