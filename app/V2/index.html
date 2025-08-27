@@ -28,7 +28,7 @@
             height: 100%;
             margin: 0;
             font-family: 'Inter', sans-serif;
-            background-color: #f8f7fa; /* Hintergrundfarbe zurückgesetzt */
+            background-color: #f8f7fa;
         }
         body {
             padding-top: 72px; /* Height of the header */
@@ -43,6 +43,7 @@
         /* The main container for each "page" */
         .page {
             display: none; /* All pages are hidden by default */
+            min-height: calc(100vh - 72px - 80px); /* Fill remaining space, considering header/footer */
         }
         /* The currently active page */
         .page.active {
@@ -56,6 +57,7 @@
         /* Style for the navigation bar */
         .nav-bar {
             box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+            z-index: 30; /* Set a higher z-index to be on top */
         }
         .nav-item.active svg, .nav-item.active .nav-text {
             color: #6366f1; /* Indigo-500 */
@@ -94,6 +96,7 @@
             color: #6366f1;
             z-index: 10;
         }
+        
         /* Loading animation for placeholders */
         .placeholder-pulse {
             background-color: #e5e7eb;
@@ -105,16 +108,53 @@
                 opacity: .5;
             }
         }
+
+        /* Off-canvas menu styles */
+        .off-canvas-menu {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 80%; /* Adjust as needed */
+            max-width: 320px;
+            height: 100%;
+            background-color: white;
+            z-index: 40;
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .off-canvas-menu.open {
+            transform: translateX(0);
+        }
+        .off-canvas-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.4);
+            z-index: 35;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        }
+        .off-canvas-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
     </style>
 </head>
 <body class="antialiased">
 
-    <!-- Der HTML-Body bleibt unverändert -->
     <!-- =============================================================== -->
     <!-- ==================== FIXED HEADER ============================= -->
     <!-- =============================================================== -->
     <header class="fixed top-0 left-0 right-0 z-20 bg-white/80 backdrop-blur-sm border-b border-gray-200">
         <div class="max-w-3xl mx-auto flex items-center justify-between h-18 px-6">
+            <!-- Back Button (initially hidden) -->
+            <button id="back-button" onclick="goBack()" class="text-gray-600 hover:text-indigo-500 transition hidden">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+            </button>
             <div class="font-bold text-gray-800 text-lg">Recovery Gruppen</div>
             <div class="flex items-center space-x-5">
                 <!-- PLATZHALTER: Gamification Punkte -->
@@ -122,12 +162,30 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2L4 8l8 14 8-14-8-6z" /></svg>
                     <span class="font-semibold text-sm">...</span>
                 </button>
-                <button class="text-gray-600 hover:text-indigo-500 transition">
+                <!-- Hamburger Menu Button -->
+                <button id="menu-button" onclick="toggleMenu()" class="text-gray-600 hover:text-indigo-500 transition">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16m-7 6h7" /></svg>
                 </button>
             </div>
         </div>
     </header>
+
+    <!-- Off-Canvas Menu -->
+    <div id="off-canvas-menu" class="off-canvas-menu">
+        <div class="p-6">
+            <h2 class="text-xl font-bold text-gray-800 mb-6">Menü</h2>
+            <nav class="space-y-4">
+                <a href="#" onclick="showPage('home', this); toggleMenu(); return false;" class="block text-gray-700 font-semibold hover:text-indigo-500 transition">Home</a>
+                <a href="#" onclick="showPage('monatsplanung-page', this); toggleMenu(); return false;" class="block text-gray-700 font-semibold hover:text-indigo-500 transition">Monatsplanung</a>
+                <a href="#" onclick="showPage('bestaetigte-termine-page', this); toggleMenu(); return false;" class="block text-gray-700 font-semibold hover:text-indigo-500 transition">Bestätigte Termine</a>
+                <a href="#" onclick="showPage('bibliothek', this); toggleMenu(); return false;" class="block text-gray-700 font-semibold hover:text-indigo-500 transition">Bibliothek</a>
+                <a href="#" onclick="showPage('mein-bereich', this); toggleMenu(); return false;" class="block text-gray-700 font-semibold hover:text-indigo-500 transition">Mein Bereich</a>
+                <a href="#" onclick="openChat(); toggleMenu(); return false;" class="block text-gray-700 font-semibold hover:text-indigo-500 transition">Kontakt</a>
+                <a href="#" onclick="showPage('shop-page', this); toggleMenu(); return false;" class="block text-gray-700 font-semibold hover:text-indigo-500 transition">Gruppenkarte kaufen</a>
+            </nav>
+        </div>
+    </div>
+    <div id="off-canvas-overlay" class="off-canvas-overlay" onclick="toggleMenu()"></div>
 
     <!-- Main Content Area with optimized width for larger screens -->
     <div class="main-content max-w-3xl mx-auto md:rounded-b-xl">
@@ -231,6 +289,43 @@
             </div>
         </div>
 
+        <!-- =============================================================== -->
+        <!-- ======================== NEW PAGE: SHOP ======================= -->
+        <!-- =============================================================== -->
+        <div id="shop-page" class="page p-6">
+            <header class="pt-2 pb-6">
+                <h1 class="text-3xl font-bold text-gray-800">Gruppenkarten kaufen</h1>
+                <p class="text-gray-600 mt-2">Wähle die passende Karte für deine Bedürfnisse.</p>
+            </header>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- 5er-Karte Card -->
+                <div class="bg-white p-6 rounded-xl shadow-lg border-2 border-indigo-500">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-2xl font-bold text-indigo-600">5er-Karte</h3>
+                        <div class="bg-indigo-500 text-white text-xs font-semibold px-3 py-1 rounded-full">1 Sitzung gratis</div>
+                    </div>
+                    <p class="text-4xl font-extrabold text-gray-900 mb-2">240 €</p>
+                    <p class="text-sm text-gray-600">Enthält 5 bezahlte Sitzungen + 1 gratis Sitzung.</p>
+                    <a href="https://book.stripe.com/3cIdR96dj2op2tg0Mp3Je02" target="_blank" class="block w-full text-center bg-indigo-600 text-white font-semibold py-3 px-5 rounded-lg mt-6 hover:bg-indigo-700 transition-colors">
+                        Jetzt kaufen
+                    </a>
+                </div>
+
+                <!-- 10er-Karte Card -->
+                <div class="bg-white p-6 rounded-xl shadow-lg border-2 border-green-500">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-2xl font-bold text-green-600">10er-Karte</h3>
+                        <div class="bg-green-500 text-white text-xs font-semibold px-3 py-1 rounded-full">3 Sitzungen gratis</div>
+                    </div>
+                    <p class="text-4xl font-extrabold text-gray-900 mb-2">420 €</p>
+                    <p class="text-sm text-gray-600">Enthält 10 bezahlte Sitzungen + 3 gratis Sitzungen.</p>
+                    <a href="https://book.stripe.com/3cIdR96dj2op2tg0Mp3Je02" target="_blank" class="block w-full text-center bg-green-600 text-white font-semibold py-3 px-5 rounded-lg mt-6 hover:bg-green-700 transition-colors">
+                        Jetzt kaufen
+                    </a>
+                </div>
+            </div>
+        </div>
 
         <!-- =============================================================== -->
         <!-- ===================== PAGE 2: BIBLIOTHEK ====================== -->
@@ -287,7 +382,8 @@
                     <div id="guthaben-container">
                         <div class="placeholder-pulse h-20 w-full"></div>
                     </div>
-                      <a href="https://book.stripe.com/3cIdR96dj2op2tg0Mp3Je02" target="_blank" class="block mt-4 w-full text-center bg-indigo-600 text-white font-semibold py-3 px-5 rounded-lg hover:bg-indigo-700 transition-colors">Neue Gruppenkarte kaufen</a>
+                    <!-- Link zum neuen Shop-Fenster -->
+                    <a href="#" onclick="showPage('shop-page', this); return false;" class="block mt-4 w-full text-center bg-indigo-600 text-white font-semibold py-3 px-5 rounded-lg hover:bg-indigo-700 transition-colors">Neue Gruppenkarte kaufen</a>
                 </div>
 
                 <!-- PLATZHALTER: Rechnungsliste -->
@@ -302,7 +398,7 @@
     </div>
 
     <!-- Fixed Bottom Navigation Bar -->
-    <nav class="nav-bar fixed bottom-0 left-0 right-0 h-20 bg-white border-t border-gray-200">
+    <nav class="nav-bar fixed bottom-0 left-0 right-0 h-20 bg-white border-t border-gray-200 z-30">
         <div class="max-w-3xl mx-auto flex justify-around items-center h-full">
             <button onclick="showPage('home', this)" class="nav-item text-center text-gray-500 transition active p-2">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
@@ -324,15 +420,19 @@
     <!-- =============================================================== -->
     <script>
         (function(d, w, c) {
-            w.BrevoConversationsID = '68966b452e29685a19096555'; // Brevo ID eingefügt
+            w.BrevoConversationsID = '68966b452e29685a19096555';
             w[c] = w[c] || function() {
                 (w[c].q = w[c].q || []).push(arguments);
             };
             var s = d.createElement('script');
             s.async = true;
             s.src = 'https://conversations-widget.brevo.com/brevo-conversations.js';
-            if (d.head) d.head.appendChild(s);
+            var x = d.getElementsByTagName('script')[0];
+            x.parentNode.insertBefore(s, x);
         })(document, window, 'BrevoConversations');
+
+        // Zusätzlicher Aufruf, um das schwebende Widget zu verstecken.
+        window.BrevoConversations('widget', 'hide');
     </script>
 
     <script>
@@ -341,6 +441,7 @@
         // ===============================================================
 
         let currentPageId = 'home'; // Standard-Startseite
+        let pageHistory = ['home']; // Verfolgt die Seitenhistorie für den Zurück-Button
 
         document.addEventListener('DOMContentLoaded', () => {
             const portalId = getPortalIdFromUrl();
@@ -501,7 +602,9 @@
             }
         }
 
+        // --- Navigation Logic ---
         function showPage(pageId, clickedButton) {
+            const previousPage = currentPageId;
             if (pageId === currentPageId) {
                 const activePage = document.querySelector('.page.active');
                 if (activePage) {
@@ -509,13 +612,55 @@
                 }
                 return;
             }
+            
+            // Handle history
+            if (pageHistory[pageHistory.length - 1] !== pageId) {
+                pageHistory.push(pageId);
+            }
+
             document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
+            
+            // Update back button visibility
+            const backButton = document.getElementById('back-button');
+            if (pageId !== 'home') {
+                backButton.classList.remove('hidden');
+            } else {
+                backButton.classList.add('hidden');
+            }
+
+            // Update bottom nav bar active state
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            clickedButton.classList.add('active');
+            if (clickedButton) {
+              clickedButton.classList.add('active');
+            } else {
+              // Handle case where button is not clicked (e.g., from off-canvas menu)
+              const navItem = document.querySelector(`.nav-item[onclick*="${pageId}"]`);
+              if (navItem) {
+                navItem.classList.add('active');
+              }
+            }
             currentPageId = pageId;
         }
-        
+
+        function goBack() {
+            if (pageHistory.length > 1) {
+                pageHistory.pop(); // Remove current page
+                const previousPageId = pageHistory[pageHistory.length - 1];
+                showPage(previousPageId); // Go to previous page
+            } else {
+                showPage('home');
+            }
+        }
+
+        // --- Menu Logic ---
+        function toggleMenu() {
+            const menu = document.getElementById('off-canvas-menu');
+            const overlay = document.getElementById('off-canvas-overlay');
+            menu.classList.toggle('open');
+            overlay.classList.toggle('open');
+        }
+
         function openChat() {
             if (window.BrevoConversations) {
                 window.BrevoConversations('openChat', true);
