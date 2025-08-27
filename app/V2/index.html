@@ -522,7 +522,7 @@
             }
         }
 
-        // --- NEU: Logik für die Monatsplanung (Availibility) ---
+        // --- Logik für die Monatsplanung (Availibility) ---
         document.getElementById('availability-form').addEventListener('submit', async function(event) {
             event.preventDefault();
 
@@ -549,8 +549,7 @@
             formMessage.classList.remove('text-green-500', 'text-red-500');
 
             try {
-                // Hier sendest du die Daten an einen neuen Endpoint oder passt den Worker an, um sie zu verarbeiten.
-                // Beispiel für einen hypothetischen Endpoint zur Verarbeitung der Verfügbarkeit
+                // Senden der Verfügbarkeitsdaten an einen neuen Worker-Endpoint
                 const response = await fetch('https://recovery-worker-api.coffee-recoveryhh.workers.dev/set-availability', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
