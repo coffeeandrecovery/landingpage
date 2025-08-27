@@ -247,8 +247,8 @@
                 <a href="#" onclick="showPage('mein-bereich'); toggleMenu(); return false;" class="block text-gray-700 font-semibold hover:text-indigo-500 transition">Rechnungen</a>
                 <a href="#" onclick="showPage('bibliothek'); toggleMenu(); return false;" class="block text-gray-700 font-semibold hover:text-indigo-500 transition">Ressourcen</a>
                 <a href="mailto:maya.berger@recovery-gruppen.de" onclick="toggleMenu(); return true;" class="block text-gray-700 font-semibold hover:text-indigo-500 transition">Kontakt</a>
-                <a href="#" class="block text-gray-400 font-semibold transition cursor-not-allowed">Gruppenpinnwand / Coming Soon</a>
-                <a href="#" class="block text-gray-400 font-semibold transition cursor-not-allowed">Bonuspunkte einlösen / Coming Soon</a>
+                <span class="block text-gray-400 font-semibold transition cursor-not-allowed">Gruppenpinnwand / Coming Soon</span>
+                <span class="block text-gray-400 font-semibold transition cursor-not-allowed">Bonuspunkte einlösen / Coming Soon</span>
             </nav>
         </div>
     </div>
@@ -294,7 +294,7 @@
                     <p class="text-sm text-gray-500 mt-1">Sieh alle Sitzungen ein.</p>
                 </a>
                 <!-- NEU: Kontakt-Kachel -->
-                <a href="#" onclick="openChat(); return false;" id="link-kontakt" class="nav-card bg-white rounded-xl shadow-sm p-6 border border-gray-200 block sm:col-span-2">
+                <a href="mailto:maya.berger@recovery-gruppen.de" target="_blank" id="link-kontakt" class="nav-card bg-white rounded-xl shadow-sm p-6 border border-gray-200 block sm:col-span-2">
                     <div class="flex items-center justify-center h-12 w-12 rounded-full bg-sky-100 mb-4">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-sky-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
                     </div>
@@ -486,27 +486,12 @@
     <!-- ================= BREVO CHAT SCRIPT (modifiziert) ============= -->
     <!-- =============================================================== -->
     <script>
-        let isBrevoLoaded = false;
-        function openChat() {
-            if (!isBrevoLoaded) {
-                (function(d, w, c) {
-                    w.BrevoConversationsID = '68966b452e29685a19096555';
-                    w[c] = w[c] || function() {
-                        (w[c].q = w[c].q || []).push(arguments);
-                    };
-                    var s = d.createElement('script');
-                    s.async = true;
-                    s.src = 'https://conversations-widget.brevo.com/brevo-conversations.js';
-                    var x = d.getElementsByTagName('script')[0];
-                    x.parentNode.insertBefore(s, x);
-                })(document, window, 'BrevoConversations');
-                isBrevoLoaded = true;
-            }
-            if (window.BrevoConversations) {
-                window.BrevoConversations('openChat', true);
-            }
-        }
+        // Use the Brevo API to set a custom button and hide the default floating one.
+        window.BrevoConversationsSetup = {
+            customWidgetButton: '.brevo-chat-trigger'
+        };
     </script>
+    <script src="https://conversations-widget.brevo.com/brevo-conversations.js"></script>
 
     <script>
         // ===============================================================
@@ -676,7 +661,7 @@
         }
 
         // --- Navigation Logic ---
-        function showPage(pageId, clickedButton) {
+        function showPage(pageId) {
             const previousPage = currentPageId;
             if (pageId === currentPageId) {
                 const activePage = document.querySelector('.page.active');
@@ -704,14 +689,9 @@
 
             // Update bottom nav bar active state
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            if (clickedButton) {
-              clickedButton.classList.add('active');
-            } else {
-              // Handle case where button is not clicked (e.g., from off-canvas menu)
-              const navItem = document.querySelector(`.nav-item[onclick*="${pageId}"]`);
-              if (navItem) {
+            const navItem = document.querySelector(`.nav-item[onclick*="showPage('${pageId}')"]`);
+            if (navItem) {
                 navItem.classList.add('active');
-              }
             }
             currentPageId = pageId;
         }
@@ -732,28 +712,6 @@
             const overlay = document.getElementById('off-canvas-overlay');
             menu.classList.toggle('open');
             overlay.classList.toggle('open');
-        }
-
-        // --- Brevo Chat Logic (modifiziert) ---
-        let isBrevoLoaded = false;
-        function openChat() {
-            if (!isBrevoLoaded) {
-                (function(d, w, c) {
-                    w.BrevoConversationsID = '68966b452e29685a19096555';
-                    w[c] = w[c] || function() {
-                        (w[c].q = w[c].q || []).push(arguments);
-                    };
-                    var s = d.createElement('script');
-                    s.async = true;
-                    s.src = 'https://conversations-widget.brevo.com/brevo-conversations.js';
-                    var x = d.getElementsByTagName('script')[0];
-                    x.parentNode.insertBefore(s, x);
-                })(document, window, 'BrevoConversations');
-                isBrevoLoaded = true;
-            }
-            if (window.BrevoConversations) {
-                window.BrevoConversations('openChat', true);
-            }
         }
 
         // --- Logik für die Monatsplanung (Availibility) ---
