@@ -15,7 +15,7 @@
         font-src 'self' https://fonts.gstatic.com;
         connect-src 'self' https://recovery-worker-api.coffee-recoveryhh.workers.dev https://conversations-widget.brevo.com;
         worker-src 'self' blob:;
-        child-src 'self' https://book.stripe.com;
+        child-src 'self';
     ">
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -478,7 +478,6 @@
                 invoiceContainer.innerHTML = `<p class="p-5 text-gray-500">Du hast noch keine Rechnungen.</p>`;
             }
 
-            // NEU: Bestätigte Termine rendern
             const appointmentsContainer = document.getElementById('confirmed-appointments-container');
             appointmentsContainer.innerHTML = '';
 
