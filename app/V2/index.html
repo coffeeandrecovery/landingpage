@@ -664,9 +664,9 @@
             if (Array.isArray(invoices) && invoices.length > 0) {
                 invoices.forEach(invoice => {
                     try {
-                        // Datum ist jetzt bereits im Worker formatiert
+                        // Datum ist jetzt bereits im Worker als Monatsname formatiert
                         const formattedDate = invoice.Datum; 
-                        const rechnungsName = `Rechnung für ${formattedDate}`;
+                        const rechnungsName = `Rechnung von ${formattedDate}`; // Changed to "Rechnung von [Monat]"
 
                         const rechnungsNummer = `Nr. ${invoice.Rechnungsnummer || 'unbekannt'}`;
 
@@ -678,7 +678,7 @@
                         const url = invoice['PDF-URL'] || '#';
                         
                         invoiceContainer.innerHTML += `
-                             <a href="${url}" target="_blank" class="p-5 flex justify-between items-center transition hover:bg-gray-50">
+                             <a href="${url}" download="Rechnung_${invoice.Rechnungsnummer || 'unbekannt'}.pdf" target="_blank" class="p-5 flex justify-between items-center transition hover:bg-gray-50">
                                  <div><p class="font-semibold text-gray-800">${rechnungsName}</p><p class="text-sm text-gray-500">${rechnungsNummer}</p></div>
                                  <div class="text-right"><p class="font-semibold text-gray-900">${formattedAmount}</p><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-${statusColor}-100 text-${statusColor}-800">${status}</span></div>
                              </a>`;
@@ -695,7 +695,6 @@
 
             if (data.confirmedAppointments && data.confirmedAppointments.length > 0) {
                  data.confirmedAppointments.forEach(appointment => {
-                    // Datum ist jetzt bereits im Worker formatiert
                     if (appointment) { // Ensure appointment is not null after parsing
                         appointmentsContainer.innerHTML += `
                             <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex items-center space-x-4">
