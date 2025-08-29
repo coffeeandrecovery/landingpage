@@ -357,7 +357,6 @@
                             // Entferne alte portalId-Parameter, falls vorhanden
                             currentSrc = currentSrc.split('?')[0];
                             // Hänge den neuen Portal-ID Parameter an.
-                            // WICHTIG: Ersetze 'portalId' mit dem tatsächlichen Parameternamen deines JotForm-Feldes!
                             // Basierend auf deinem Screenshot ist der Unique Name 'portalId', also verwenden wir diesen.
                             iframe.src = `${currentSrc}?portalId=${portalId}`; 
                             console.log("JotForm iframe src updated with portalId:", iframe.src);
