@@ -8,71 +8,62 @@
     body {
       font-family: 'Inter', system-ui, sans-serif;
       background:#f8f7fa;
-      margin:0;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      height:100vh;
-      color:#1e293b;
+      margin:0; display:flex; align-items:center; justify-content:center; height:100vh; color:#1e293b;
     }
     .card {
-      background:#fff;
-      border:1px solid #e2e8f0;
-      border-radius:20px;
-      padding:32px 28px;
-      max-width:500px;
-      width:90%;
-      text-align:center;
-      box-shadow:0 10px 25px rgba(0,0,0,0.08);
-      animation: fadeIn 0.4s ease-in-out;
+      background:#fff; border:1px solid #e2e8f0; border-radius:20px; padding:32px 28px;
+      max-width:520px; width:92%; text-align:center; box-shadow:0 10px 25px rgba(0,0,0,.08);
+      animation: fadeIn .4s ease-in-out;
     }
-  h1 {
-  font-size:1.5rem;
-  font-weight:700;
-  color:#1e293b; 
-  margin:0 0 12px;
-  }    
-    p {margin:0 0 16px; color:#475569;}
-    .btn {
-      display:inline-block;
-      background:#6366f1;
-      color:#fff;
-      padding:12px 20px;
-      border-radius:12px;
-      text-decoration:none;
-      font-weight:600;
-      box-shadow:0 2px 6px rgba(0,0,0,.1);
-      transition:background .2s;
-    }
-    .btn:hover {background:#4f46e5;}
-    .small {font-size:13px; color:#94a3b8; margin-top:12px;}
-    @keyframes fadeIn {from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none}}
+    h1 { font-size:1.5rem; font-weight:700; color:#1e293b; margin:0 0 12px; }
+    p { margin:0 0 16px; color:#475569; }
+    .btn { display:inline-block; background:#6366f1; color:#fff; padding:12px 20px; border-radius:12px; text-decoration:none; font-weight:600; }
+    .btn:hover{ background:#4f46e5; }
+    .small{ font-size:13px; color:#94a3b8; margin-top:12px; }
+    @keyframes fadeIn{from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:none}}
   </style>
 </head>
 <body>
   <div class="card">
     <h1>Danke für deine Angabe!</h1>
-    <p>Deine Verfügbarkeiten wurden gespeichert.<br>Du wirst gleich automatisch weitergeleitet.</p>
+    <p>Deine Verfügbarkeiten wurden gespeichert. Du wirst gleich automatisch weitergeleitet.</p>
     <a id="link" class="btn" href="#">Zurück zur App</a>
-    <div class="small">Falls nichts passiert, klicke auf den Button.</div>
+    <div id="hint" class="small">Falls nichts passiert, klicke auf den Button.</div>
   </div>
 
   <script>
-    const p = new URLSearchParams(location.search);
-    const portalId = (p.get('portalId')||'').trim();
-    const url = `https://www.burnouthilfe.org/app/V2/?id=${encodeURIComponent(portalId)}#bestaetigte-termine-page&submitted=1`;
+    function findPortalId() {
+      const qs = new URLSearchParams(location.search);
 
-    // Button aktualisieren
+      // 1) Bevorzugte Keys
+      let v = qs.get('portalId') || qs.get('id');
+      if (v) return v.trim().replace(/%23$/, '').replace(/#$/, '');
+
+      // 2) Falls jemand "?=recXXXX" schreibt → leerer Key
+      const emptyKeyVal = qs.get('');
+      if (emptyKeyVal) return emptyKeyVal.trim().replace(/%23$/, '').replace(/#$/, '');
+
+      // 3) Fallback: suche nach Airtable-ID-Muster in Query/Hash
+      const all = (location.search + '&' + location.hash);
+      const m = all.match(/rec[A-Za-z0-9]{14}/);
+      return m ? m[0] : '';
+    }
+
+    const portalId = findPortalId();
+    const url = portalId
+      ? `https://www.burnouthilfe.org/app/V2/?id=${encodeURIComponent(portalId)}#bestaetigte-termine-page&submitted=1`
+      : `https://www.burnouthilfe.org/app/V2/`;
+
     document.getElementById('link').href = url;
-    // Nach 2.5s automatisch weiterleiten
-    setTimeout(()=>{
-      if(portalId){
-        if(window.top){ window.top.location.href = url; }
-        else{ location.href = url; }
-      } else {
-        document.querySelector('.small').textContent = "Portal-ID fehlt – bitte über den App-Link neu einsteigen.";
-      }
-    }, 2500);
+
+    if (portalId) {
+      setTimeout(() => {
+        if (window.top) window.top.location.href = url;
+        else location.href = url;
+      }, 1500);
+    } else {
+      document.getElementById('hint').textContent = 'Portal-ID fehlt – bitte über den App-Link neu einsteigen.';
+    }
   </script>
 </body>
 </html>
