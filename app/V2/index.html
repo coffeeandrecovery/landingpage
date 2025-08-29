@@ -209,7 +209,7 @@
             opacity: 0.6;
         }
 
-        /* Styling for JotForm iframe container */
+        /* Styling for JotForm iframe wrapper */
         .jotform-iframe-wrapper {
             background-color: white;
             padding: 0; /* No padding for the iframe itself */
@@ -217,13 +217,16 @@
             box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
             border: 1px solid #e2e8f0;
             overflow: hidden; /* Ensures iframe corners are rounded */
-            height: 600px; /* Adjust height as needed for your form */
+            /* height: 600px;  Removed fixed height */
             width: 100%;
             max-width: 100%;
+            flex-grow: 1; /* Allow it to grow and take available space */
+            display: flex; /* Use flex to make iframe fill its parent */
+            flex-direction: column;
         }
         .jotform-iframe {
             width: 100%;
-            height: 100%;
+            height: 100%; /* Make iframe fill the wrapper height */
             border: none;
         }
     </style>
@@ -325,12 +328,12 @@
         <!-- =============================================================== -->
         <!-- =================== NEW PAGE: MONATSPLANUNG =================== -->
         <!-- =============================================================== -->
-        <div id="monatsplanung-page" class="page p-6">
+        <div id="monatsplanung-page" class="page p-6 flex flex-col h-full">
             <header class="pt-2 pb-6">
                 <h1 class="text-3xl font-bold text-gray-800">Monatsplanung</h1>
                 <p class="text-gray-600 mt-2">Bitte wähle deine Wunschtermine für den kommenden Monat aus.</p>
             </header>
-            <div id="monthly-planning-form-container" class="jotform-iframe-wrapper">
+            <div id="monthly-planning-form-container" class="jotform-iframe-wrapper flex-grow">
                 <!-- JotForm iframe Code Start -->
                 <iframe
                     id="JotFormIFrame-252311488402047"
@@ -855,7 +858,7 @@ END:VCALENDAR`;
 
                 if (!response.ok) {
                     const errorText = await response.text();
-                    throw new Error(`Fehler beim Senden der Verfügbarkeit: ${response.status} - ${errorText}`);
+                    throw new Error(`HTTP error! status: ${response.status}, Details: ${errorText}`);
                 }
                 return { success: true };
             } catch (error) {
