@@ -562,5 +562,19 @@ END:VCALENDAR`;
       document.body.removeChild(link);
     }
   </script>
+<script>
+// mini-toast nach Redirect aus JotForm
+(function showSubmissionToastIfNeeded(){
+  const params = new URLSearchParams(location.search);
+  const submitted = params.get('submitted');
+  if (!submitted) return;
+
+  const toast = document.createElement('div');
+  toast.style.cssText = 'position:fixed;left:50%;transform:translateX(-50%);bottom:88px;z-index:10000;background:#10b981;color:#fff;padding:10px 14px;border-radius:10px;font:600 14px/1.2 system-ui;box-shadow:0 8px 20px rgba(0,0,0,.12)';
+  toast.textContent = 'Danke! Deine Verfügbarkeiten wurden gespeichert.';
+  document.body.appendChild(toast);
+  setTimeout(()=>toast.remove(), 3500);
+})();
+</script>
 </body>
 </html>
