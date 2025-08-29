@@ -365,12 +365,16 @@
         let currentPageId = 'home';
         let pageHistory = ['home'];
 
-        document.addEventListener("DOMContentLoaded", () => {
-  const params = new URLSearchParams(window.location.search);
-  if (params.get("submitted") === "1") {
-    showToast("Deine Verfügbarkeit wurde gespeichert!");
-  }
-});
+        document.addEventListener('DOMContentLoaded', () => {
+            const portalId = getPortalIdFromUrl();
+            if (portalId) {
+                fetchData(portalId);
+            } else {
+                console.error("Keine Portal-ID in der URL gefunden.");
+                document.getElementById('user-greeting').textContent = 'Fehler!';
+                document.querySelector('.main-content').innerHTML = '<p class="text-center text-red-500 mt-8">Keine Portal-ID in der URL gefunden. Bitte stelle sicher, dass du den korrekten Link verwendest.</p>';
+            }
+        });
 
         function getPortalIdFromUrl() {
             const q = window.location.search || '';
