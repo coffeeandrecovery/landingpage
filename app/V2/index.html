@@ -223,11 +223,11 @@
             flex-grow: 1; /* Allow it to grow and take available space */
             display: flex; /* Use flex to make iframe fill its parent */
             flex-direction: column;
-            min-height: 500px; /* Minimum height for the wrapper */
+            min-height: 539px; /* Minimum height for the wrapper, matches iframe content height */
         }
         .jotform-iframe {
             width: 100%;
-            height: 100%; /* Make iframe fill the wrapper height */
+            height: 539px; /* Set fixed height as per JotForm's original embed */
             border: none;
         }
     </style>
@@ -344,12 +344,15 @@
                     allow="geolocation; microphone; camera; fullscreen; payment"
                     src="https://form.jotform.com/252311488402047"
                     frameborder="0"
-                    style="min-width:100%;max-width:100%;height:100%;border:none;"
-                    scrolling="auto"
+                    style="min-width:100%;max-width:100%;height:539px;border:none;"
+                    scrolling="no"
                 >
                 </iframe>
                 <script src='https://cdn.jotfor.ms/s/umd/latest/for-form-embed-handler.js'></script>
                 <script>
+                    // Call JotForm's embed handler directly as they intend
+                    window.jotformEmbedHandler("iframe[id='JotFormIFrame-252311488402047']", "https://form.jotform.com/");
+
                     // Funktion zum Aktualisieren der iframe-Src mit Portal-ID
                     function updateJotFormIframeSrc(portalId) {
                         const iframe = document.getElementById('JotFormIFrame-252311488402047');
@@ -365,14 +368,8 @@
                     }
                     // Rufe die Funktion auf, sobald die App-Daten geladen sind
                     document.addEventListener('DOMContentLoaded', () => {
-                        const portalId = getPortalIdFromUrl(); // Annahme: getPortalIdFromUrl existiert und funktioniert
+                        const portalId = getPortalIdFromUrl();
                         updateJotFormIframeSrc(portalId);
-
-                        // Füge einen kleinen Timeout hinzu, um JotForm Zeit zum Rendern zu geben
-                        // und den Embed Handler erneut auszuführen, falls die Höhe nicht stimmt.
-                        setTimeout(() => {
-                            window.jotformEmbedHandler("iframe[id='JotFormIFrame-252311488402047']", "https://form.jotform.com/");
-                        }, 500); // 500ms Verzögerung
                     });
                 </script>
                 <!-- JotForm iframe Code Ende -->
