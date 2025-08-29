@@ -7,14 +7,13 @@
     
     <!-- WICHTIG: Die Content Security Policy (CSP) MUSS hier nach charset und viewport stehen, aber vor externen Skripten/Styles. -->
     <meta http-equiv="Content-Security-Policy" content="
-        default-src 'self' https://cdn.jotfor.ms https://eu-submit.jotform.com https://form.jotform.com;
-        script-src 'self' https://cdn.tailwindcss.com https://conversations-widget.brevo.com https://cdn.jotfor.ms 'unsafe-inline' 'unsafe-eval';
-        frame-src 'self' https://conversations-widget.brevo.com https://www.youtube.com https://book.stripe.com https://buy.stripe.com https://form.jotform.com;
+        default-src 'self';
+        script-src 'self' https://cdn.tailwindcss.com https://conversations-widget.brevo.com 'unsafe-inline' 'unsafe-eval';
+        frame-src 'self' https://conversations-widget.brevo.com https://www.youtube.com https://book.stripe.com https://buy.stripe.com;
         img-src 'self' data: https://www.gravatar.com https://conversations-widget.brevo.com;
-        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://conversations-widget.brevo.com https://cdn.jotfor.ms;
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://conversations-widget.brevo.com;
         font-src 'self' https://fonts.gstatic.com;
-        connect-src 'self' https://recovery-worker-api.coffee-recoveryhh.workers.dev https://conversations-widget.brevo.com https://eu-submit.jotform.com;
-        form-action 'self' https://eu-submit.jotform.com; /* Explizit hinzugefügt für Formularübermittlung */
+        connect-src 'self' https://recovery-worker-api.coffee-recoveryhh.workers.dev https://conversations-widget.brevo.com;
         worker-src 'self' blob:;
         child-src 'self';
     ">
@@ -210,25 +209,26 @@
             opacity: 0.6;
         }
 
-        /* Styling for JotForm iframe wrapper */
-        .jotform-iframe-wrapper {
+        /* Styling for JotForm iframe wrapper - no longer needed as JotForm is removed */
+        /* .jotform-iframe-wrapper {
             background-color: white;
-            padding: 0; /* No padding for the iframe itself */
+            padding: 0;
             border-radius: 12px;
             box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
             border: 1px solid #e2e8f0;
-            overflow: hidden; /* Ensures iframe corners are rounded */
+            overflow: hidden;
             width: 100%;
             max-width: 100%;
-            /* Removed flex-grow and flex-direction to let iframe control its height naturally */
-            /* Set a fixed height for the wrapper to match JotForm's default iframe height */
-            height: 539px; 
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 539px;
         }
         .jotform-iframe {
             width: 100%;
-            height: 100%; /* Make iframe fill the wrapper height */
+            height: 100%;
             border: none;
-        }
+        } */
     </style>
 </head>
 <body class="antialiased">
@@ -328,50 +328,39 @@
         <!-- =============================================================== -->
         <!-- =================== NEW PAGE: MONATSPLANUNG =================== -->
         <!-- =============================================================== -->
-        <div id="monatsplanung-page" class="page p-6 flex flex-col h-full">
+        <div id="monatsplanung-page" class="page p-6">
             <header class="pt-2 pb-6">
                 <h1 class="text-3xl font-bold text-gray-800">Monatsplanung</h1>
-                <p class="text-gray-600 mt-2">Bitte wähle deine Wunschtermine für den kommenden Monat aus.</p>
+                <p class="text-gray-600 mt-2">Wähle die Donnerstage im Oktober 2025, an denen du verfügbar bist.</p>
             </header>
-            <div id="monthly-planning-form-container" class="jotform-iframe-wrapper">
-                <!-- JotForm iframe Code Start -->
-                <iframe
-                    id="JotFormIFrame-252311488402047"
-                    title="Monatsplanung Donnerstag"
-                    onload="window.parent.scrollTo(0,0)"
-                    allowtransparency="true"
-                    allow="geolocation; microphone; camera; fullscreen; payment"
-                    src="https://form.jotform.com/252311488402047"
-                    frameborder="0"
-                    style="min-width:100%;max-width:100%;height:539px;border:none;"
-                    scrolling="no"
-                >
-                </iframe>
-                <script src='https://cdn.jotfor.ms/s/umd/latest/for-form-embed-handler.js'></script>
-                <script>
-                    // Call JotForm's embed handler directly as they intend
-                    window.jotformEmbedHandler("iframe[id='JotFormIFrame-252311488402047']", "https://form.jotform.com/");
-
-                    // Funktion zum Aktualisieren der iframe-Src mit Portal-ID
-                    function updateJotFormIframeSrc(portalId) {
-                        const iframe = document.getElementById('JotFormIFrame-252311488402047');
-                        if (iframe && portalId) {
-                            let currentSrc = iframe.src;
-                            // Entferne alte portalId-Parameter, falls vorhanden
-                            currentSrc = currentSrc.split('?')[0];
-                            // Hänge den neuen Portal-ID Parameter an.
-                            // Basierend auf deinem Screenshot ist der Unique Name 'portalId', also verwenden wir diesen.
-                            iframe.src = `${currentSrc}?portalId=${portalId}`; 
-                            console.log("JotForm iframe src updated with portalId:", iframe.src);
-                        }
-                    }
-                    // Rufe die Funktion auf, sobald die App-Daten geladen sind
-                    document.addEventListener('DOMContentLoaded', () => {
-                        const portalId = getPortalIdFromUrl();
-                        updateJotFormIframeSrc(portalId);
-                    });
-                </script>
-                <!-- JotForm iframe Code Ende -->
+            <div id="monthly-planning-form-container" class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                <form id="availability-form">
+                    <div class="space-y-4 mb-6">
+                        <!-- Donnerstage im Oktober 2025 -->
+                        <label class="flex items-center space-x-3">
+                            <input type="checkbox" name="availableDays" value="2025-10-02" class="form-checkbox h-5 w-5 text-indigo-600 rounded focus:ring-indigo-500">
+                            <span class="text-gray-700 font-medium">Donnerstag, 02. Oktober 2025</span>
+                        </label>
+                        <label class="flex items-center space-x-3">
+                            <input type="checkbox" name="availableDays" value="2025-10-09" class="form-checkbox h-5 w-5 text-indigo-600 rounded focus:ring-indigo-500">
+                            <span class="text-gray-700 font-medium">Donnerstag, 09. Oktober 2025</span>
+                        </label>
+                        <label class="flex items-center space-x-3">
+                            <input type="checkbox" name="availableDays" value="2025-10-16" class="form-checkbox h-5 w-5 text-indigo-600 rounded focus:ring-indigo-500">
+                            <span class="text-gray-700 font-medium">Donnerstag, 16. Oktober 2025</span>
+                        </label>
+                        <label class="flex items-center space-x-3">
+                            <input type="checkbox" name="availableDays" value="2025-10-23" class="form-checkbox h-5 w-5 text-indigo-600 rounded focus:ring-indigo-500">
+                            <span class="text-gray-700 font-medium">Donnerstag, 23. Oktober 2025</span>
+                        </label>
+                        <label class="flex items-center space-x-3">
+                            <input type="checkbox" name="availableDays" value="2025-10-30" class="form-checkbox h-5 w-5 text-indigo-600 rounded focus:ring-indigo-500">
+                            <span class="text-gray-700 font-medium">Donnerstag, 30. Oktober 2025</span>
+                        </label>
+                    </div>
+                    <button type="submit" id="submit-button" class="w-full bg-indigo-600 text-white font-semibold py-3 px-5 rounded-lg hover:bg-indigo-700 transition-colors">Verfügbarkeit senden</button>
+                </form>
+                <div id="form-message" class="mt-4 text-center text-sm"></div>
             </div>
         </div>
 
