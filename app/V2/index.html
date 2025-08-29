@@ -7,7 +7,7 @@
     
     <!-- WICHTIG: Die Content Security Policy (CSP) MUSS hier nach charset und viewport stehen, aber vor externen Skripten/Styles. -->
     <meta http-equiv="Content-Security-Policy" content="
-        default-src 'self' https://cdn.jotfor.ms https://eu-submit.jotform.com;
+        default-src 'self' https://cdn.jotfor.ms https://eu-submit.jotform.com https://form.jotform.com;
         script-src 'self' https://cdn.tailwindcss.com https://conversations-widget.brevo.com https://cdn.jotfor.ms 'unsafe-inline' 'unsafe-eval';
         frame-src 'self' https://conversations-widget.brevo.com https://www.youtube.com https://book.stripe.com https://buy.stripe.com https://form.jotform.com;
         img-src 'self' data: https://www.gravatar.com https://conversations-widget.brevo.com;
@@ -839,8 +839,8 @@ END:VCALENDAR`;
         }
 
         // --- Logik für die Monatsplanung (Availibility) ---
-        // Diese Logik wird jetzt durch das JotForm-Formular ersetzt.
-        // Die Funktion bleibt hier, falls du sie später für andere Zwecke benötigst.
+        // Diese Funktion ist jetzt nicht mehr direkt aktiv, da das JotForm-Formular verwendet wird.
+        // Sie bleibt hier, falls du sie später für andere Zwecke benötigst.
         async function submitAvailability(portalId, selectedDates) {
             const CLOUDFLARE_WORKER_URL = 'https://recovery-worker-api.coffee-recoveryhh.workers.dev/set-availability';
             try {
