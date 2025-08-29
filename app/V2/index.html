@@ -8,7 +8,7 @@
   />
   <title>Dein persönliches Portal</title>
 
-  <!-- Content Security Policy – erweitert um JotForm Submit-Domains -->
+  <!-- Content Security Policy – inkl. JotForm Submit & Worker -->
   <meta
     http-equiv="Content-Security-Policy"
     content="
@@ -167,18 +167,22 @@
         </iframe>
       </div>
 
-      <!-- JotForm Embed Handler (Auto-Resize, Messaging) -->
+      <!-- JotForm Embed Handler -->
       <script src="https://cdn.jotfor.ms/s/umd/latest/for-form-embed-handler.js"></script>
       <script>
-        // Prefill der Portal-ID in das JotForm-Formular (Hidden Field)
+        // Portal-ID aus URL robust extrahieren (entfernt angehängtes #/%23)
+        function getPortalIdFromUrl() {
+          const q = location.search || '';
+          const m = q.match(/[?&]id=([^&#]+)/i);
+          if (!m) return '';
+          return decodeURIComponent(m[1]).trim().replace(/%23$/, '').replace(/#$/, '');
+        }
+
         (function prefillJotformWithPortalId() {
           const iframe = document.getElementById('JotFormIFrame-252311488402047');
           if (!iframe) return;
-
-          const params = new URLSearchParams(window.location.search);
-          const portalId = params.get('id');                 // <- deine Portal-ID aus der App-URL
-          const prefillParamName = 'portalId';               // <- muss zum Hidden-Feld-Namen in JotForm passen!
-
+          const portalId = getPortalIdFromUrl();
+          const prefillParamName = 'portalId'; // muss zum Hidden-Feld in JotForm passen
           try {
             const url = new URL(iframe.src);
             if (portalId) {
@@ -188,9 +192,8 @@
           } catch (e) {
             console.warn('Konnte JotForm-URL nicht anpassen:', e);
           }
-
           if (window.jotformEmbedHandler) {
-            window.jotformEmbedHandler(\"iframe[id='JotFormIFrame-252311488402047']\", \"https://form.jotform.com/\");
+            window.jotformEmbedHandler("iframe[id='JotFormIFrame-252311488402047']", "https://form.jotform.com/");
           }
         })();
       </script>
@@ -321,9 +324,12 @@
       }
     });
 
+    // dieselbe robuste Version auch hier verfügbar machen
     function getPortalIdFromUrl() {
-      const params = new URLSearchParams(window.location.search);
-      return params.get('id');
+      const q = location.search || '';
+      const m = q.match(/[?&]id=([^&#]+)/i);
+      if (!m) return '';
+      return decodeURIComponent(m[1]).trim().replace(/%23$/, '').replace(/#$/, '');
     }
 
     async function fetchData(portalId) {
@@ -497,7 +503,7 @@
       backButton.classList.toggle('hidden', pageId === 'home');
 
       document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-      const navItem = document.querySelector(\`.nav-item[onclick*="showPage('\${pageId}')"]\`);
+      const navItem = document.querySelector(`.nav-item[onclick*="showPage('${pageId}')"]`);
       if (navItem) navItem.classList.add('active');
       currentPageId = pageId;
     }
