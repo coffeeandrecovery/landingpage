@@ -348,7 +348,25 @@
                 >
                 </iframe>
                 <script src='https://cdn.jotfor.ms/s/umd/latest/for-form-embed-handler.js'></script>
-                <script>window.jotformEmbedHandler("iframe[id='JotFormIFrame-252311488402047']", "https://form.jotform.com/")</script>
+                <script>
+                    window.jotformEmbedHandler("iframe[id='JotFormIFrame-252311488402047']", "https://form.jotform.com/");
+                    // Funktion zum Aktualisieren der iframe-Src mit Portal-ID
+                    function updateJotFormIframeSrc(portalId) {
+                        const iframe = document.getElementById('JotFormIFrame-252311488402047');
+                        if (iframe && portalId) {
+                            let currentSrc = iframe.src;
+                            // Entferne alte portalId-Parameter, falls vorhanden
+                            currentSrc = currentSrc.split('?')[0];
+                            iframe.src = `${currentSrc}?portalId=${portalId}`;
+                            console.log("JotForm iframe src updated with portalId:", iframe.src);
+                        }
+                    }
+                    // Rufe die Funktion auf, sobald die App-Daten geladen sind
+                    document.addEventListener('DOMContentLoaded', () => {
+                        const portalId = getPortalIdFromUrl(); // Annahme: getPortalIdFromUrl existiert und funktioniert
+                        updateJotFormIframeSrc(portalId);
+                    });
+                </script>
                 <!-- JotForm iframe Code Ende -->
             </div>
         </div>
@@ -424,7 +442,7 @@
 
                 <!-- NEU: Coming Soon - Fortschrittstracker -->
                 <div class="relative bg-white p-5 rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white bg-opacity-80 backdrop-blur-sm p-4 text-center rounded-xl">
+                    <div class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white bg-opacity%80 backdrop-blur-sm p-4 text-center rounded-xl">
                         <span class="font-bold text-indigo-600 text-lg">Coming Soon</span>
                         <p class="text-sm text-gray-600 mt-1">Diese Funktion ist in Arbeit!</p>
                     </div>
@@ -441,7 +459,7 @@
 
                 <!-- NEU: Coming Soon - Journaling-Tool -->
                 <div class="relative bg-white p-5 rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white bg-opacity-80 backdrop-blur-sm p-4 text-center rounded-xl">
+                    <div class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white bg-opacity%80 backdrop-blur-sm p-4 text-center rounded-xl">
                         <span class="font-bold text-indigo-600 text-lg">Coming Soon</span>
                         <p class="text-sm text-gray-600 mt-1">Diese Funktion ist in Arbeit!</p>
                     </div>
@@ -458,7 +476,7 @@
 
                 <!-- NEU: Coming Soon - Gruppenpinnwand -->
                 <div class="relative bg-white p-5 rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white bg-opacity-80 backdrop-blur-sm p-4 text-center rounded-xl">
+                    <div class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white bg-opacity%80 backdrop-blur-sm p-4 text-center rounded-xl">
                         <span class="font-bold text-indigo-600 text-lg">Coming Soon</span>
                         <p class="text-sm text-gray-600 mt-1">Diese Funktion ist in Arbeit!</p>
                     </div>
@@ -475,7 +493,7 @@
 
                 <!-- NEU: Coming Soon - Bonuspunkte -->
                 <div class="relative bg-white p-5 rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white bg-opacity-80 backdrop-blur-sm p-4 text-center rounded-xl">
+                    <div class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white bg-opacity%80 backdrop-blur-sm p-4 text-center rounded-xl">
                         <span class="font-bold text-indigo-600 text-lg">Coming Soon</span>
                         <p class="text-sm text-gray-600 mt-1">Diese Funktion ist in Arbeit!</p>
                     </div>
