@@ -1,27 +1,38 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, user-scalable=no"
+  />
   <title>Dein persönliches Portal</title>
 
-  <!-- CSP: Jotform-Domains hinzugefügt -->
-  <meta http-equiv="Content-Security-Policy" content="
-    default-src 'self';
-    script-src 'self' https://cdn.tailwindcss.com https://conversations-widget.brevo.com https://cdn.jotfor.ms 'unsafe-inline' 'unsafe-eval';
-    frame-src 'self' https://conversations-widget.brevo.com https://www.youtube.com https://book.stripe.com https://buy.stripe.com https://form.jotform.com https://www.jotform.com;
-    img-src 'self' data: https://www.gravatar.com https://conversations-widget.brevo.com https://cdn.jotfor.ms https://files.jotform.com;
-    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://conversations-widget.brevo.com https://cdn.jotfor.ms;
-    font-src 'self' https://fonts.gstatic.com;
-    connect-src 'self' https://recovery-worker-api.coffee-recoveryhh.workers.dev https://conversations-widget.brevo.com https://form.jotform.com https://www.jotform.com https://cdn.jotfor.ms;
-    worker-src 'self' blob:;
-    child-src 'self';
-  ">
+  <!-- Content Security Policy – erweitert um JotForm Submit-Domains -->
+  <meta
+    http-equiv="Content-Security-Policy"
+    content="
+      default-src 'self';
+      script-src 'self' https://cdn.tailwindcss.com https://conversations-widget.brevo.com https://cdn.jotfor.ms 'unsafe-inline' 'unsafe-eval';
+      frame-src 'self' https://conversations-widget.brevo.com https://www.youtube.com https://book.stripe.com https://buy.stripe.com
+                 https://form.jotform.com https://www.jotform.com https://submit.jotform.com https://eu-submit.jotform.com;
+      img-src 'self' data: https://www.gravatar.com https://conversations-widget.brevo.com https://cdn.jotfor.ms https://files.jotform.com;
+      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://conversations-widget.brevo.com https://cdn.jotfor.ms;
+      font-src 'self' https://fonts.gstatic.com;
+      connect-src 'self' https://recovery-worker-api.coffee-recoveryhh.workers.dev https://conversations-widget.brevo.com
+                   https://form.jotform.com https://www.jotform.com https://cdn.jotfor.ms https://submit.jotform.com https://eu-submit.jotform.com;
+      worker-src 'self' blob:;
+      child-src 'self';
+    "
+  />
 
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
 
   <style>
     html, body { height: 100%; margin: 0; font-family: 'Inter', sans-serif; background-color: #f8f7fa; }
@@ -29,33 +40,32 @@
     .main-content { padding-bottom: 80px; }
     ::-webkit-scrollbar { display: none; }
     .page { display: none; min-height: calc(100vh - 72px - 80px); }
-    .page.active { display: block; animation: fadeIn 0.4s ease-in-out; }
-    @keyframes fadeIn { from { opacity: 0;} to { opacity: 1;} }
-    .nav-bar { box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05); z-index: 30; }
+    .page.active { display: block; animation: fadeIn .4s ease-in-out; }
+    @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+    .nav-bar { box-shadow: 0 -2px 10px rgba(0,0,0,.05); z-index: 30; }
     .nav-item.active svg, .nav-item.active .nav-text { color: #6366f1; }
     .nav-item.active .nav-text { font-weight: 600; }
-    .nav-card { transition: transform 0.2s, box-shadow 0.2s; }
-    .nav-card:hover { transform: translateY(-4px); box-shadow: 0 10px 15px -3-px rgb(0 0 0 / 0.07), 0 4px 6px -4px rgb(0 0 0 / 0.07); }
-    .off-canvas-menu { position: fixed; top: 0; right: 0; width: 80%; max-width: 320px; height: 100%; background-color: white; z-index: 40; transform: translateX(100%); transition: transform 0.3s; box-shadow: -2px 0 10px rgba(0,0,0,0.1); }
-    .off-canvas-menu.open { transform: translateX(0); }
-    .off-canvas-overlay { position: fixed; inset: 0; background-color: rgba(0,0,0,0.4); z-index: 35; opacity: 0; visibility: hidden; transition: opacity .3s, visibility .3s; }
+    .nav-card { transition: transform .2s, box-shadow .2s; }
+    .nav-card:hover { transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgb(0 0 0 / .07), 0 4px 6px -4px rgb(0 0 0 / .07); }
+    .off-canvas-menu { position: fixed; top: 0; right: 0; width: 80%; max-width: 320px; height: 100%; background: #fff; z-index: 40; transform: translateX(100%); transition: transform .3s; box-shadow: -2px 0 10px rgba(0,0,0,.1); }
+    .off-canvas-menu.open { transform: translateX(0) }
+    .off-canvas-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 35; opacity: 0; visibility: hidden; transition: opacity .3s, visibility .3s; }
     .off-canvas-overlay.open { opacity: 1; visibility: visible; }
-    .shop-card { background: linear-gradient(145deg, #ffffff, #f0f0f0); border-radius: 1rem; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); transition: all .3s; }
-    .shop-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
-    .shop-card .badge { font-size: 0.75rem; font-weight: 700; padding: 0.25rem 0.75rem; border-radius: 9999px; color: #ffffff; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
+    .placeholder-pulse { background-color: #e5e7eb; border-radius: .75rem; animation: pulse 2s cubic-bezier(.4,0,.6,1) infinite; }
+    @keyframes pulse { 50% { opacity: .5 } }
+    .shop-card { background: linear-gradient(145deg,#fff,#f0f0f0); border-radius: 1rem; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,.1), 0 2px 4px -1px rgba(0,0,0,.06); transition: all .3s; }
+    .shop-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,.15); }
+    .shop-card .badge { font-size: .75rem; font-weight: 700; padding: .25rem .75rem; border-radius: 9999px; color: #fff; text-shadow: 1px 1px 2px rgba(0,0,0,.1); }
     .shop-card .badge.indigo { background-color: #6366f1; }
     .shop-card .badge.green { background-color: #10b981; }
     .shop-card .price { font-size: 2.5rem; line-height: 1; font-weight: 800; color: #1a202c; }
-    .shop-card .description { color: #718096; margin-top: 0.5rem; font-size: 0.875rem; }
-    .shop-card .buy-button { display: block; width: 100%; text-align: center; font-weight: 600; padding: 0.75rem 1.25rem; border-radius: 0.5rem; color: #ffffff; transition: background-color 0.3s; margin-top: 1.5rem; background-color: #6366f1; }
-    .shop-card .buy-button.indigo { background-color: #6366f1; }
+    .shop-card .description { color: #718096; margin-top: .5rem; font-size: .875rem; }
+    .shop-card .buy-button { display: block; width: 100%; text-align: center; font-weight: 600; padding: .75rem 1.25rem; border-radius: .5rem; color: #fff; transition: background-color .3s; margin-top: 1.5rem; background-color: #6366f1; }
     .shop-card .buy-button.green { background-color: #10b981; }
-    .shop-card .buy-button:hover.indigo { background-color: #4f46e5; }
-    .shop-card .buy-button:hover.green { background-color: #059669; }
+    .shop-card .buy-button:hover { filter: brightness(.95); }
   </style>
 </head>
 <body class="antialiased">
-
   <!-- Header -->
   <header class="fixed top-0 left-0 right-0 z-20 bg-white/80 backdrop-blur-sm border-b border-gray-200">
     <div class="max-w-3xl mx-auto flex items-center justify-between h-18 px-6">
@@ -95,7 +105,6 @@
 
   <!-- Main -->
   <div class="main-content max-w-3xl mx-auto md:rounded-b-xl">
-
     <!-- HOME -->
     <div id="home" class="page active p-6">
       <header class="text-left pt-2 pb-6">
@@ -136,7 +145,7 @@
       </div>
     </div>
 
-    <!-- MONATSPLANUNG (mit Jotform) -->
+    <!-- MONATSPLANUNG (mit JotForm) -->
     <div id="monatsplanung-page" class="page p-6">
       <header class="pt-2 pb-6">
         <h1 class="text-3xl font-bold text-gray-800">Monatsplanung</h1>
@@ -144,7 +153,7 @@
       </header>
 
       <div class="bg-white p-0 rounded-xl shadow-sm border border-gray-200">
-        <!-- Jotform iFrame -->
+        <!-- JotForm iFrame -->
         <iframe
           id="JotFormIFrame-252311488402047"
           title="Monatsplanung Donnerstag"
@@ -153,37 +162,35 @@
           allow="geolocation; microphone; camera; fullscreen; payment"
           src="https://form.jotform.com/252311488402047"
           frameborder="0"
-          style="min-width:100%;max-width:100%;height:539px;border:none;"
+          style="min-width:100%;max-width:100%;height:580px;border:none;"
           scrolling="no">
         </iframe>
       </div>
 
-      <!-- Jotform Embed Handler (Auto-Resize, Messaging) -->
+      <!-- JotForm Embed Handler (Auto-Resize, Messaging) -->
       <script src="https://cdn.jotfor.ms/s/umd/latest/for-form-embed-handler.js"></script>
       <script>
-        // Hängt die Portal-ID aus der Seiten-URL als Query-Parameter an das iFrame an.
-        // -> In Jotform muss das Ziel-Textfeld den Unique Name = 'portalId' haben (oder unten den Param-Namen anpassen).
+        // Prefill der Portal-ID in das JotForm-Formular (Hidden Field)
         (function prefillJotformWithPortalId() {
           const iframe = document.getElementById('JotFormIFrame-252311488402047');
           if (!iframe) return;
 
           const params = new URLSearchParams(window.location.search);
-          const portalId = params.get('id');
-          const prefillParamName = 'portalId'; // <-- hier ggf. an deinen Jotform-Feldnamen anpassen
+          const portalId = params.get('id');                 // <- deine Portal-ID aus der App-URL
+          const prefillParamName = 'portalId';               // <- muss zum Hidden-Feld-Namen in JotForm passen!
 
           try {
-            const base = new URL(iframe.src);
+            const url = new URL(iframe.src);
             if (portalId) {
-              base.searchParams.set(prefillParamName, portalId);
-              iframe.src = base.toString();
+              url.searchParams.set(prefillParamName, portalId);
+              iframe.src = url.toString();
             }
           } catch (e) {
-            console.warn('Konnte Jotform-URL nicht anpassen:', e);
+            console.warn('Konnte JotForm-URL nicht anpassen:', e);
           }
 
-          // Jotform Embed initialisieren (Auto-Resize etc.)
           if (window.jotformEmbedHandler) {
-            window.jotformEmbedHandler("iframe[id='JotFormIFrame-252311488402047']", "https://form.jotform.com/");
+            window.jotformEmbedHandler(\"iframe[id='JotFormIFrame-252311488402047']\", \"https://form.jotform.com/\");
           }
         })();
       </script>
@@ -215,7 +222,7 @@
           </div>
           <p class="price mb-2">240 €</p>
           <p class="description">Enthält 5 Sitzungen (inkl. 1 gratis Sitzung).</p>
-          <a href="https://buy.stripe.com/dRmdR96dj8MN1pcgLn3Je04" target="_blank" class="buy-button indigo">Jetzt kaufen</a>
+          <a href="https://buy.stripe.com/dRmdR96dj8MN1pcgLn3Je04" target="_blank" class="buy-button">Jetzt kaufen</a>
         </div>
 
         <div class="shop-card p-6">
@@ -244,8 +251,6 @@
             <div class="placeholder-pulse h-16 w-full"></div>
           </div>
         </div>
-
-        <!-- weitere Kacheln (Coming Soon) wie gehabt ... -->
       </div>
     </div>
 
@@ -300,7 +305,7 @@
   </script>
   <script src="https://conversations-widget.brevo.com/brevo-conversations.js" async></script>
 
-  <!-- App-Logik: Daten laden und anzeigen (unverändert) -->
+  <!-- App-Logik: Daten laden/anzeigen -->
   <script>
     let currentPageId = 'home';
     let pageHistory = ['home'];
@@ -310,7 +315,7 @@
       if (portalId) {
         fetchData(portalId);
       } else {
-        console.error("Keine Portal-ID in der URL gefunden.");
+        console.error('Keine Portal-ID in der URL gefunden.');
         document.getElementById('user-greeting').textContent = 'Fehler!';
         document.querySelector('.main-content').innerHTML = '<p class="text-center text-red-500 mt-8">Keine Portal-ID in der URL gefunden. Bitte stelle sicher, dass du den korrekten Link verwendest.</p>';
       }
@@ -337,7 +342,6 @@
 
         const data = await response.json();
         renderData(data);
-
       } catch (error) {
         console.error('Fehler beim Abrufen oder Verarbeiten der Daten:', error);
         document.getElementById('user-greeting').textContent = 'Fehler beim Laden!';
@@ -354,9 +358,7 @@
       newsContainer.innerHTML = `
         <div class="flex items-center space-x-3 mb-3">
           <div class="flex-shrink-0 flex items-center justify-center h-8 w-8 rounded-full bg-indigo-100">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-            </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
           </div>
           <h2 class="font-semibold text-gray-700">News & Aktuelles</h2>
         </div>
@@ -380,7 +382,7 @@
             </div>
           </div>
           <button class="w-full bg-white text-teal-700 font-semibold py-2 px-4 rounded-lg border border-teal-300 hover:bg-teal-100 transition-colors text-sm flex items-center justify-center space-x-2" onclick="addToCalendar('${data.nextAppointment.date}', 'Gruppensitzung', 'Ihre nächste Gruppensitzung', '19:00', '20:30'); return false;">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+            <svg xmlns='http://www.w3.org/2000/svg' class='h-4 w-4' fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2'><path stroke-linecap='round' stroke-linejoin='round' d='M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'/></svg>
             <span>Zum Kalender hinzufügen</span>
           </button>`;
       } else {
@@ -395,11 +397,11 @@
             <a href="${resource.url}" target="_blank" class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between transition hover:border-indigo-400">
               <div class="flex items-center space-x-4">
                 <div class="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-lg bg-blue-100">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                  <svg xmlns='http://www.w3.org/2000/svg' class='h-6 w-6 text-blue-600' fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2'><path stroke-linecap='round' stroke-linejoin='round' d='M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4'/></svg>
                 </div>
                 <span class="font-medium text-gray-700">${resource.name}</span>
               </div>
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+              <svg xmlns='http://www.w3.org/2000/svg' class='h-5 w-5 text-gray-400' fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2'><path stroke-linecap='round' stroke-linejoin='round' d='M9 5l7 7-7 7'/></svg>
             </a>`;
         });
       } else {
@@ -451,7 +453,7 @@
                 </div>
               </a>`;
           } catch (e) {
-            console.error("Fehler beim Rendern einer Rechnung:", invoice, e);
+            console.error('Fehler beim Rendern einer Rechnung:', invoice, e);
           }
         });
       } else {
@@ -462,24 +464,23 @@
       appointmentsContainer.innerHTML = '';
       if (data.confirmedAppointments && data.confirmedAppointments.length > 0) {
         data.confirmedAppointments.forEach(appointment => {
-          if (appointment && appointment.date) {
-            const dateObj = new Date(appointment.date);
-            const weekday = dateObj.toLocaleString('de-DE', { weekday: 'short' });
-            appointmentsContainer.innerHTML += `
-              <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex items-center space-x-4">
-                <div class="flex-shrink-0 bg-green-600 text-white rounded-lg p-3 text-center">
-                  <p class="font-bold text-xl">${appointment.day}</p>
-                  <p class="text-xs font-medium">${appointment.month}</p>
-                </div>
-                <div>
-                  <p class="font-semibold text-gray-900">Bestätigter Termin (${weekday})</p>
-                  <p class="text-sm text-green-700">${appointment.time}</p>
-                </div>
-                <button class="ml-auto text-green-700 hover:text-green-900 transition" onclick="addToCalendar('${appointment.date}', 'Gruppensitzung', 'Ihre Gruppensitzung', '19:00', '20:30'); return false;">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" /></svg>
-                </button>
-              </div>`;
-          }
+          if (!appointment?.date) return;
+          const dateObj = new Date(appointment.date);
+          const weekday = dateObj.toLocaleString('de-DE', { weekday: 'short' });
+          appointmentsContainer.innerHTML += `
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex items-center space-x-4">
+              <div class="flex-shrink-0 bg-green-600 text-white rounded-lg p-3 text-center">
+                <p class="font-bold text-xl">${appointment.day}</p>
+                <p class="text-xs font-medium">${appointment.month}</p>
+              </div>
+              <div>
+                <p class="font-semibold text-gray-900">Bestätigter Termin (${weekday})</p>
+                <p class="text-sm text-green-700">${appointment.time}</p>
+              </div>
+              <button class="ml-auto text-green-700 hover:text-green-900 transition" onclick="addToCalendar('${appointment.date}', 'Gruppensitzung', 'Ihre Gruppensitzung', '19:00', '20:30'); return false;">
+                <svg xmlns='http://www.w3.org/2000/svg' class='h-5 w-5' viewBox='0 0 20 20' fill='currentColor'><path fill-rule='evenodd' d='M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z' clip-rule='evenodd'/></svg>
+              </button>
+            </div>`;
         });
       } else {
         appointmentsContainer.innerHTML = `<p class="text-center text-gray-500 mt-8">Aktuell sind keine Termine bestätigt.</p>`;
@@ -493,10 +494,10 @@
       document.getElementById(pageId).classList.add('active');
 
       const backButton = document.getElementById('back-button');
-      if (pageId !== 'home') backButton.classList.remove('hidden'); else backButton.classList.add('hidden');
+      backButton.classList.toggle('hidden', pageId === 'home');
 
       document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-      const navItem = document.querySelector(`.nav-item[onclick*="showPage('${pageId}')"]`);
+      const navItem = document.querySelector(\`.nav-item[onclick*="showPage('\${pageId}')"]\`);
       if (navItem) navItem.classList.add('active');
       currentPageId = pageId;
     }
@@ -519,7 +520,7 @@
       if (window.BrevoConversations) {
         window.BrevoConversations('openChat', true);
       } else {
-        console.warn("Brevo Conversations API not loaded yet.");
+        console.warn('Brevo Conversations API not loaded yet.');
       }
     }
 
