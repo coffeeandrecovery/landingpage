@@ -357,8 +357,9 @@
                             // Entferne alte portalId-Parameter, falls vorhanden
                             currentSrc = currentSrc.split('?')[0];
                             // Hänge den neuen Portal-ID Parameter an.
-                            // WICHTIG: Ersetze 'q8_portalID' mit dem tatsächlichen Parameternamen deines JotForm-Feldes!
-                            iframe.src = `${currentSrc}?q8_portalID=${portalId}`; 
+                            // WICHTIG: Ersetze 'portalId' mit dem tatsächlichen Parameternamen deines JotForm-Feldes!
+                            // Basierend auf deinem Screenshot ist der Unique Name 'portalId', also verwenden wir diesen.
+                            iframe.src = `${currentSrc}?portalId=${portalId}`; 
                             console.log("JotForm iframe src updated with portalId:", iframe.src);
                         }
                     }
@@ -447,7 +448,7 @@
                         <span class="font-bold text-indigo-600 text-lg">Coming Soon</span>
                         <p class="text-sm text-gray-600 mt-1">Diese Funktion ist in Arbeit!</p>
                     </div>
-                    <div class="flex items-center space-x-4 opacity-50">
+                    <div class="flex items-center space-x-4 opacity%50">
                         <div class="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-lg bg-red-100">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l3-3 3 3v13M12 9l-3 3m3-3l3 3m-3-3v8" /></svg>
                         </div>
@@ -464,7 +465,7 @@
                         <span class="font-bold text-indigo-600 text-lg">Coming Soon</span>
                         <p class="text-sm text-gray-600 mt-1">Diese Funktion ist in Arbeit!</p>
                     </div>
-                    <div class="flex items-center space-x-4 opacity-50">
+                    <div class="flex items-center space-x-4 opacity%50">
                         <div class="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-lg bg-yellow-100">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                         </div>
