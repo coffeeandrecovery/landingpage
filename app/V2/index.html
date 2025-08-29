@@ -349,7 +349,6 @@
                 </iframe>
                 <script src='https://cdn.jotfor.ms/s/umd/latest/for-form-embed-handler.js'></script>
                 <script>
-                    window.jotformEmbedHandler("iframe[id='JotFormIFrame-252311488402047']", "https://form.jotform.com/");
                     // Funktion zum Aktualisieren der iframe-Src mit Portal-ID
                     function updateJotFormIframeSrc(portalId) {
                         const iframe = document.getElementById('JotFormIFrame-252311488402047');
@@ -357,7 +356,9 @@
                             let currentSrc = iframe.src;
                             // Entferne alte portalId-Parameter, falls vorhanden
                             currentSrc = currentSrc.split('?')[0];
-                            iframe.src = `${currentSrc}?portalId=${portalId}`;
+                            // Hänge den neuen Portal-ID Parameter an.
+                            // WICHTIG: Ersetze 'q8_portalID' mit dem tatsächlichen Parameternamen deines JotForm-Feldes!
+                            iframe.src = `${currentSrc}?q8_portalID=${portalId}`; 
                             console.log("JotForm iframe src updated with portalId:", iframe.src);
                         }
                     }
@@ -480,7 +481,7 @@
                         <span class="font-bold text-indigo-600 text-lg">Coming Soon</span>
                         <p class="text-sm text-gray-600 mt-1">Diese Funktion ist in Arbeit!</p>
                     </div>
-                    <div class="flex items-center space-x-4 opacity-50">
+                    <div class="flex items-center space-x-4 opacity%50">
                         <div class="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-lg bg-indigo-100">
                              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
                         </div>
@@ -497,7 +498,7 @@
                         <span class="font-bold text-indigo-600 text-lg">Coming Soon</span>
                         <p class="text-sm text-gray-600 mt-1">Diese Funktion ist in Arbeit!</p>
                     </div>
-                    <div class="flex items-center space-x-4 opacity-50">
+                    <div class="flex items-center space-x-4 opacity%50">
                         <div class="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-lg bg-teal-100">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c1.657 0 3 1.343 3 3v2a3 3 0 01-3 3h-2a3 3 0 01-3-3v-2a3 3 0 013-3h2zm0 0V5m0 3h-2a3 3 0 00-3 3v2a3 3 0 003 3h2a3 3 0 003-3v-2a3 3 0 00-3-3zM12 8c1.657 0 3 1.343 3 3v2a3 3 0 01-3 3h-2a3 3 0 01-3-3v-2a3 3 0 013-3h2z" /></svg>
                         </div>
