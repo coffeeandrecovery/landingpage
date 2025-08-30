@@ -5,11 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Dein persönliches Portal</title>
     
+    <!-- Content Security Policy: erweitert für JotForm -->
     <meta http-equiv="Content-Security-Policy" content="
-        default-src 'self' https://drive.google.com;
+        default-src 'self';
         script-src 'self' https://cdn.tailwindcss.com https://conversations-widget.brevo.com https://cdn.jotfor.ms 'unsafe-inline' 'unsafe-eval';
         frame-src 'self' https://conversations-widget.brevo.com https://www.youtube.com https://book.stripe.com https://buy.stripe.com https://form.jotform.com https://www.jotform.com https://submit.jotform.com https://eu-submit.jotform.com;
-        img-src 'self' data: https://www.gravatar.com https://conversations-widget.brevo.com https://cdn.jotfor.ms https://files.jotform.com https://drive.google.com;
+        img-src 'self' data: https://www.gravatar.com https://conversations-widget.brevo.com https://cdn.jotfor.ms https://files.jotform.com;
         style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://conversations-widget.brevo.com https://cdn.jotfor.ms;
         font-src 'self' https://fonts.gstatic.com;
         connect-src 'self' https://recovery-worker-api.coffee-recoveryhh.workers.dev https://conversations-widget.brevo.com https://form.jotform.com https://www.jotform.com https://cdn.jotfor.ms https://submit.jotform.com https://eu-submit.jotform.com;
@@ -58,35 +59,18 @@
         .shop-card .buy-button:hover.green { background: #059669; }
     </style>
 </head>
-
-<!-- PIN Modal -->
-<div id="pin-modal" class="fixed inset-0 z-[100] bg-black/40 hidden">
-  <div class="absolute inset-0 flex items-center justify-center p-6">
-    <div class="w-full max-w-sm bg-white rounded-xl shadow p-6">
-      <h2 class="text-lg font-semibold text-gray-900 mb-2">Sicherheit</h2>
-      <p class="text-sm text-gray-600 mb-4">Bitte gib deinen 4-stelligen Code ein.</p>
-      <input id="pin-input" inputmode="numeric" pattern="[0-9]*" maxlength="4"
-             class="w-full border rounded-lg px-4 py-3 tracking-widest text-center text-lg"
-             placeholder="••••" />
-      <p id="pin-error" class="hidden mt-2 text-sm text-red-600">Code ist ungültig.</p>
-      <button id="pin-submit" class="w-full mt-4 bg-gray-900 text-white font-semibold py-2.5 rounded-lg">Weiter</button>
-    </div>
-  </div>
-</div>
-
 <body class="antialiased">
 
+    <!-- HEADER -->
     <header class="fixed top-0 left-0 right-0 z-20 bg-white/80 backdrop-blur-sm border-b border-gray-200">
         <div class="max-w-3xl mx-auto flex items-center justify-between h-18 px-6">
             <button id="back-button" onclick="goBack()" class="text-gray-600 hover:text-indigo-500 transition hidden" aria-label="Zurück">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
             </button>
             <div class="font-bold text-gray-800 text-lg">Recovery Gruppen</div>
-            <div class="flex items-center space-x-2">
-                <img src="/assets/icon1.jpeg" class="h-6 w-6" alt="Icon 1">
-                <img src="/assets/icon2.jpeg" class="h-6 w-6" alt="Icon 2">
-                <img src="/assets/icon3.jpeg" class="h-6 w-6" alt="Icon 3">
+            <div class="flex items-center space-x-5">
                 <button id="gamification-points" class="flex items-center space-x-1.5 text-gray-600 hover:text-indigo-500 transition" aria-label="Punkte">
+                    <img src="/assets/icon4.png" alt="Punkte" class="h-6 w-6 rounded object-cover">
                     <span class="font-semibold text-sm">...</span>
                 </button>
                 <button id="menu-button" onclick="toggleMenu()" class="text-gray-600 hover:text-indigo-500 transition" aria-label="Menü">
@@ -96,6 +80,7 @@
         </div>
     </header>
 
+    <!-- Off-Canvas Menu -->
     <div id="off-canvas-menu" class="off-canvas-menu">
         <div class="p-6">
             <h2 class="text-xl font-bold text-gray-800 mb-6">Menü</h2>
@@ -113,8 +98,10 @@
     </div>
     <div id="off-canvas-overlay" class="off-canvas-overlay" onclick="toggleMenu()"></div>
 
+    <!-- MAIN -->
     <div class="main-content max-w-3xl mx-auto md:rounded-b-xl">
         
+        <!-- HOME -->
         <div id="home" class="page active p-6">
             <header class="text-left pt-2 pb-6">
                 <h1 id="user-greeting" class="text-3xl font-bold text-gray-800">Willkommen!</h1>
@@ -154,12 +141,14 @@
             </div>
         </div>
 
+        <!-- MONATSPLANUNG (JotForm eingebettet mit Prefill) -->
         <div id="monatsplanung-page" class="page p-6">
             <header class="pt-2 pb-6">
                 <h1 class="text-3xl font-bold text-gray-800">Monatsplanung</h1>
                 <p class="text-gray-600 mt-2">Teile deine Verfügbarkeiten über das Formular.</p>
             </header>
             <div class="bg-white p-0 rounded-xl shadow-sm border border-gray-200">
+                <!-- JotForm iFrame -->
                 <iframe
                   id="JotFormIFrame-252311488402047"
                   title="Monatsplanung Donnerstag"
@@ -172,6 +161,7 @@
                 </iframe>
             </div>
 
+            <!-- PREFILL SCRIPT – muss VOR dem Embed-Handler stehen -->
             <script>
               (function initJotformPrefill(){
                 try {
@@ -195,10 +185,12 @@
               })();
             </script>
 
+            <!-- Embed-Handler NACH dem Prefill laden/aufrufen -->
             <script src="https://cdn.jotfor.ms/s/umd/latest/for-form-embed-handler.js"></script>
             <script>window.jotformEmbedHandler("iframe[id='JotFormIFrame-252311488402047']", "https://form.jotform.com/")</script>
         </div>
 
+        <!-- BESTÄTIGTE TERMINE -->
         <div id="bestaetigte-termine-page" class="page p-6">
             <header class="pt-2 pb-6">
                 <h1 class="text-3xl font-bold text-gray-800">Bestätigte Termine</h1>
@@ -209,6 +201,7 @@
             </div>
         </div>
 
+        <!-- SHOP -->
         <div id="shop-page" class="page p-6">
             <header class="pt-2 pb-6">
                 <h1 class="text-3xl font-bold text-gray-800">Gruppenkarten kaufen</h1>
@@ -236,6 +229,7 @@
             </div>
         </div>
 
+        <!-- BIBLIOTHEK -->
         <div id="bibliothek" class="page p-6">
             <header class="pt-2 pb-6">
                 <h1 class="text-3xl font-bold text-gray-800">Bibliothek</h1>
@@ -249,12 +243,13 @@
                     </div>
                 </div>
 
+                <!-- Coming Soon Cards (beibehalten) -->
                 <div class="relative bg-white p-5 rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white bg-opacity-80 backdrop-blur-sm p-4 text-center rounded-xl">
+                    <div class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white bg-opacity%80 backdrop-blur-sm p-4 text-center rounded-xl">
                         <span class="font-bold text-indigo-600 text-lg">Coming Soon</span>
                         <p class="text-sm text-gray-600 mt-1">Diese Funktion ist in Arbeit!</p>
                     </div>
-                    <div class="flex items-center space-x-4 opacity-50">
+                    <div class="flex items-center space-x-4 opacity%50">
                         <div class="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-lg bg-red-100">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l3-3 3 3v13M12 9l-3 3m3-3l3 3m-3-3v8" /></svg>
                         </div>
@@ -266,11 +261,11 @@
                 </div>
 
                 <div class="relative bg-white p-5 rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white bg-opacity-80 backdrop-blur-sm p-4 text-center rounded-xl">
+                    <div class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white bg-opacity%80 backdrop-blur-sm p-4 text-center rounded-xl">
                         <span class="font-bold text-indigo-600 text-lg">Coming Soon</span>
                         <p class="text-sm text-gray-600 mt-1">Diese Funktion ist in Arbeit!</p>
                     </div>
-                    <div class="flex items-center space-x-4 opacity-50">
+                    <div class="flex items-center space-x-4 opacity%50">
                         <div class="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-lg bg-yellow-100">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                         </div>
@@ -282,11 +277,11 @@
                 </div>
 
                 <div class="relative bg-white p-5 rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white bg-opacity-80 backdrop-blur-sm p-4 text-center rounded-xl">
+                    <div class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white bg-opacity%80 backdrop-blur-sm p-4 text-center rounded-xl">
                         <span class="font-bold text-indigo-600 text-lg">Coming Soon</span>
                         <p class="text-sm text-gray-600 mt-1">Diese Funktion ist in Arbeit!</p>
                     </div>
-                    <div class="flex items-center space-x-4 opacity-50">
+                    <div class="flex items-center space-x-4 opacity%50">
                         <div class="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-lg bg-indigo-100">
                              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
                         </div>
@@ -298,11 +293,11 @@
                 </div>
 
                 <div class="relative bg-white p-5 rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white bg-opacity-80 backdrop-blur-sm p-4 text-center rounded-xl">
+                    <div class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white bg-opacity%80 backdrop-blur-sm p-4 text-center rounded-xl">
                         <span class="font-bold text-indigo-600 text-lg">Coming Soon</span>
                         <p class="text-sm text-gray-600 mt-1">Diese Funktion ist in Arbeit!</p>
                     </div>
-                    <div class="flex items-center space-x-4 opacity-50">
+                    <div class="flex items-center space-x-4 opacity%50">
                         <div class="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-lg bg-teal-100">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c1.657 0 3 1.343 3 3v2a3 3 0 01-3 3h-2a3 3 0 01-3-3v-2a3 3 0 013-3h2zm0 0V5m0 3h-2a3 3 0 00-3 3v2a3 3 0 003 3h2a3 3 0 003-3v-2a3 3 0 00-3-3zM12 8c1.657 0 3 1.343 3 3v2a3 3 0 01-3 3h-2a3 3 0 01-3-3v-2a3 3 0 013-3h2z" /></svg>
                         </div>
@@ -316,6 +311,7 @@
             </div>
         </div>
 
+        <!-- MEIN BEREICH -->
         <div id="mein-bereich" class="page p-6">
             <header class="pt-2 pb-6">
                 <h1 class="text-3xl font-bold text-gray-800">Mein Bereich</h1>
@@ -339,6 +335,7 @@
         </div>
     </div>
 
+    <!-- Bottom Nav -->
     <nav class="nav-bar fixed bottom-0 left-0 right-0 h-20 bg-white border-t border-gray-200 z-30">
         <div class="max-w-3xl mx-auto flex justify-around items-center h-full">
             <button onclick="showPage('home'); return false;" class="nav-item text-center text-gray-500 transition active p-2">
@@ -356,12 +353,14 @@
         </div>
     </nav>
 
+    <!-- Brevo Chat -->
     <script>
         window.BrevoConversationsID = '68966b452e29685a19096555';
         window.BrevoConversationsSetup = { customWidgetButton: '.brevo-chat-trigger' };
     </script>
     <script src="https://conversations-widget.brevo.com/brevo-conversations.js" async></script>
 
+    <!-- APP SCRIPT -->
     <script>
         let currentPageId = 'home';
         let pageHistory = ['home'];
@@ -597,6 +596,7 @@ END:VCALENDAR`;
         }
     </script>
 
+    <!-- Toast nach Redirect (&submitted=1) -->
     <script>
       (function showSubmissionToastIfNeeded(){
         const params = new URLSearchParams(location.search);
@@ -610,5 +610,52 @@ END:VCALENDAR`;
         setTimeout(()=>toast.remove(), 3500);
       })();
     </script>
+    
+<!-- PIN Modal -->
+<div id="pin-modal" class="fixed inset-0 z-[200] bg-black/40">
+  <div class="absolute inset-0 flex items-center justify-center p-6">
+    <div class="w-full max-w-sm bg-white rounded-xl shadow p-6">
+      <h2 class="text-lg font-semibold text-gray-900 mb-2">Sicherheit</h2>
+      <p class="text-sm text-gray-600 mb-4">Bitte gib deinen 4-stelligen Code ein.</p>
+      <input id="pin-input" type="password" inputmode="numeric" maxlength="4"
+             class="w-full border rounded-lg px-4 py-3 tracking-widest text-center text-lg"
+             placeholder="••••" />
+      <p id="pin-error" class="hidden mt-2 text-sm text-red-600">Code ist ungültig.</p>
+      <button id="pin-submit" class="w-full mt-4 bg-gray-900 text-white font-semibold py-2.5 rounded-lg">Weiter</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const CORRECT_PIN = "4289"; // <-- fester PIN für alle
+  const modal = document.getElementById('pin-modal');
+  const input = document.getElementById('pin-input');
+  const btn   = document.getElementById('pin-submit');
+  const err   = document.getElementById('pin-error');
+
+  // Bereits eingeloggt?
+  if (localStorage.getItem("portalPinOk") === "1") {
+    modal.remove(); // Modal gar nicht erst anzeigen
+    return;
+  }
+
+  function checkPin() {
+    const val = (input.value || "").trim();
+    if (val === CORRECT_PIN) {
+      localStorage.setItem("portalPinOk", "1");
+      modal.remove();
+      location.reload(); // App frisch laden
+    } else {
+      err.classList.remove("hidden");
+      input.value = "";
+      input.focus();
+    }
+  }
+
+  btn.addEventListener("click", checkPin);
+  input.addEventListener("keydown", e => { if (e.key === "Enter") checkPin(); });
+})();
+</script>
 </body>
 </html>
