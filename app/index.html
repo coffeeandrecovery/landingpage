@@ -58,6 +58,22 @@
         .shop-card .buy-button:hover.green { background: #059669; }
     </style>
 </head>
+
+<!-- PIN Modal -->
+<div id="pin-modal" class="fixed inset-0 z-[100] bg-black/40 hidden">
+  <div class="absolute inset-0 flex items-center justify-center p-6">
+    <div class="w-full max-w-sm bg-white rounded-xl shadow p-6">
+      <h2 class="text-lg font-semibold text-gray-900 mb-2">Sicherheit</h2>
+      <p class="text-sm text-gray-600 mb-4">Bitte gib deinen 4-stelligen Code ein.</p>
+      <input id="pin-input" inputmode="numeric" pattern="[0-9]*" maxlength="4"
+             class="w-full border rounded-lg px-4 py-3 tracking-widest text-center text-lg"
+             placeholder="••••" />
+      <p id="pin-error" class="hidden mt-2 text-sm text-red-600">Code ist ungültig.</p>
+      <button id="pin-submit" class="w-full mt-4 bg-gray-900 text-white font-semibold py-2.5 rounded-lg">Weiter</button>
+    </div>
+  </div>
+</div>
+
 <body class="antialiased">
 
     <header class="fixed top-0 left-0 right-0 z-20 bg-white/80 backdrop-blur-sm border-b border-gray-200">
