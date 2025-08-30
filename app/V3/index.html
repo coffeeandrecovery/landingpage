@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Dein persönliches Portal</title>
+    
+    <!-- Content Security Policy: erweitert für JotForm -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' https://cdn.tailwindcss.com https://conversations-widget.brevo.com https://cdn.jotfor.ms 'unsafe-inline' 'unsafe-eval';
+        frame-src 'self' https://conversations-widget.brevo.com https://www.youtube.com https://book.stripe.com https://buy.stripe.com https://form.jotform.com https://www.jotform.com https://submit.jotform.com https://eu-submit.jotform.com;
+        img-src 'self' data: https://www.gravatar.com https://conversations-widget.brevo.com https://cdn.jotfor.ms https://files.jotform.com;
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://conversations-widget.brevo.com https://cdn.jotfor.ms;
+        font-src 'self' https://fonts.gstatic.com;
+        connect-src 'self' https://recovery-worker-api.coffee-recoveryhh.workers.dev https://conversations-widget.brevo.com https://form.jotform.com https://www.jotform.com https://cdn.jotfor.ms https://submit.jotform.com https://eu-submit.jotform.com;
+        worker-src 'self' blob:;
+        child-src 'self';
+    ">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        html, body { height: 100%; margin: 0; font-family: 'Inter', sans-serif; background-color: #f8f7fa; }
+        body { padding-top: 72px; }
+        .main-content { padding-bottom: 80px; }
+        ::-webkit-scrollbar { display: none; }
+        .page { display: none; min-height: calc(100vh - 72px - 80px); }
+        .page.active { display: block; animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .nav-bar { box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05); z-index: 30; }
+        .nav-item.active svg, .nav-item.active .nav-text { color: #6366f1; }
+        .nav-item.active .nav-text { font-weight: 600; }
+
+        .nav-card { transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; }
+        .nav-card:hover { transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.07), 0 4px 6px -4px rgba(0,0,0,0.07); }
+
+        .off-canvas-menu { position: fixed; top: 0; right: 0; width: 80%; max-width: 320px; height: 100%; background: #fff; z-index: 40; transform: translateX(100%); transition: transform .3s; box-shadow: -2px 0 10px rgba(0,0,0,.1); }
+        .off-canvas-menu.open { transform: translateX(0); }
+        .off-canvas-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 35; opacity: 0; visibility: hidden; transition: opacity .3s, visibility .3s; }
+        .off-canvas-overlay.open { opacity: 1; visibility: visible; }
+
+        .placeholder-pulse { background-color: #e5e7eb; border-radius: 0.75rem; animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes pulse { 50% { opacity: .5; } }
+
+        .shop-card { background: linear-gradient(145deg, #ffffff, #f0f0f0); border-radius: 1rem; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,.1), 0 2px 4px -1px rgba(0,0,0,.06); transition: all .3s; }
+        .shop-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,.15); }
+        .shop-card .badge { font-size: .75rem; font-weight: 700; padding: .25rem .75rem; border-radius: 9999px; color: #fff; text-shadow: 1px 1px 2px rgba(0,0,0,.1); }
+        .shop-card .badge.indigo { background: #6366f1; }
+        .shop-card .badge.green { background: #10b981; }
+        .shop-card .price { font-size: 2.5rem; line-height: 1; font-weight: 800; color: #1a202c; }
+        .shop-card .description { color: #718096; margin-top: .5rem; font-size: .875rem; }
+        .shop-card .buy-button { display: block; width: 100%; text-align: center; font-weight: 600; padding: .75rem 1.25rem; border-radius: .5rem; color: #fff; margin-top: 1.5rem; background: #6366f1; transition: background .2s; }
+        .shop-card .buy-button.indigo { background: #6366f1; }
+        .shop-card .buy-button.green { background: #10b981; }
+        .shop-card .buy-button:hover.indigo { background: #4f46e5; }
+        .shop-card .buy-button:hover.green { background: #059669; }
+
+        /* Loader Styles */
+        #loading-spinner {
+            position: fixed;
+            inset: 0;
+            background-color: #f8f7fa;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        #loading-spinner.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .spinner {
+            width: 4rem;
+            height: 4rem;
+            border: 4px solid #e5e7eb;
+            border-top-color: #6366f1;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Pin Modal Blur Effect */
+        .content-blurred {
+            filter: blur(8px);
+            pointer-events: none;
+            user-select: none;
+            transition: filter 0.5s ease-in-out;
+        }
+        
+        .price-text {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .old-price {
+            text-decoration: line-through;
+            font-size: 1.25rem;
+            color: #9ca3af;
+        }
+
+        .new-price {
+            font-size: 2.5rem;
+            line-height: 1;
+            font-weight: 800;
+            color: #1a202c;
+        }
+        
+        .credits-info {
+            font-size: 0.875rem;
+            color: #10b981;
+            font-weight: 600;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .redeem-card {
+            background: linear-gradient(145deg, #ffffff, #f0f0f0); 
+            border-radius: 1rem; 
+            border: 1px solid #e2e8f0; 
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); 
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 1.5rem;
+        }
+        .redeem-card:hover { 
+            transform: translateY(-5px); 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15); 
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Loading Spinner -->
+    <div id="loading-spinner" class="hidden">
+        <div class="spinner"></div>
+        <p class="mt-4 text-gray-600 font-semibold">Lädt Daten...</p>
+    </div>
+
+    <!-- PIN Modal Overlay -->
+    <div id="pin-modal-overlay" class="fixed inset-0 z-[200] bg-white/40 backdrop-blur-md">
+      <div class="absolute inset-0 flex items-center justify-center p-6">
+        <div class="w-full max-w-sm bg-white rounded-xl shadow-xl p-6">
+          <h2 class="text-xl font-bold text-gray-900 mb-2">Sicherheit</h2>
+          <p class="text-sm text-gray-600 mb-4">Bitte gib deinen 4-stelligen Code ein.</p>
+          <input id="pin-input" type="password" inputmode="numeric" maxlength="4"
+                 class="w-full border rounded-lg px-4 py-3 tracking-widest text-center text-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+                 placeholder="••••" />
+          <p id="pin-error" class="hidden mt-2 text-sm text-red-600">Code ist ungültig.</p>
+          <button id="pin-submit" class="w-full mt-4 bg-indigo-600 text-white font-semibold py-2.5 rounded-lg hover:bg-indigo-700 transition">Weiter</button>
+        </div>
+      </div>
+    </div>
+    
+    <div id="app-wrapper">
+        <!-- HEADER -->
+        <header class="fixed top-0 left-0 right-0 z-20 bg-white/80 backdrop-blur-sm border-b border-gray-200">
+            <div class="max-w-3xl mx-auto flex items-center justify-between h-18 px-6">
+                <button id="back-button" onclick="goBack()" class="text-gray-600 hover:text-indigo-500 transition hidden" aria-label="Zurück">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                </button>
+                <div class="font-bold text-gray-800 text-lg">Recovery Gruppen</div>
+                <div class="flex items-center space-x-5">
+                    <button id="gamification-points" onclick="showPage('gamification-shop-page'); return false;" class="flex items-center space-x-1.5 text-gray-600 hover:text-indigo-500 transition" aria-label="Punkte">
+                        <img src="/assets/icon4.png" alt="Punkte" class="h-6 w-6 rounded object-cover">
+                        <span class="font-semibold text-sm">...</span>
+                    </button>
+                    <button id="menu-button" onclick="toggleMenu()" class="text-gray-600 hover:text-indigo-500 transition" aria-label="Menü">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16m-7 6h7" /></svg>
+                    </button>
+                </div>
+            </div>
+        </header>
+    
+        <!-- Off-Canvas Menu -->
+        <div id="off-canvas-menu" class="off-canvas-menu">
+            <div class="p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-6">Menü</h2>
+                <nav class="space-y-4">
+                    <a href="#" onclick="showPage('home'); toggleMenu(); return false;" class="block text-gray-700 font-semibold hover:text-indigo-500 transition">Home</a>
+                    <a href="#" onclick="showPage('monatsplanung-page'); toggleMenu(); return false;" class="block text-gray-700 font-semibold hover:text-indigo-500 transition">Monatsplanung</a>
+                    <a href="#" onclick="showPage('bestaetigte-termine-page'); toggleMenu(); return false;" class="block text-gray-700 font-semibold hover:text-indigo-500 transition">Bestätigte Termine</a>
+                    <a href="#" onclick="showPage('mein-bereich'); toggleMenu(); return false;" class="block text-gray-700 font-semibold hover:text-indigo-500 transition">Rechnungen</a>
+                    <a href="#" onclick="showPage('bibliothek'); toggleMenu(); return false;" class="block text-gray-700 font-semibold hover:text-indigo-500 transition">Ressourcen</a>
+                    <a href="#" onclick="openBrevoChat(); toggleMenu(); return false;" class="block text-gray-700 font-semibold hover:text-indigo-500 transition">Kontakt</a>
+                    <span class="block text-gray-400 font-semibold transition cursor-not-allowed">Gruppenpinnwand / Coming Soon</span>
+                    <a href="#" onclick="showPage('gamification-shop-page'); toggleMenu(); return false;" class="block text-gray-700 font-semibold hover:text-indigo-500 transition">Bonuspunkte einlösen</a>
+                </nav>
+            </div>
+        </div>
+        <div id="off-canvas-overlay" class="off-canvas-overlay" onclick="toggleMenu()"></div>
+    
+        <!-- MAIN -->
+        <div class="main-content max-w-3xl mx-auto md:rounded-b-xl">
+            
+            <!-- HOME -->
+            <div id="home" class="page active p-6">
+                <header class="text-left pt-2 pb-6">
+                    <h1 id="user-greeting" class="text-3xl font-bold text-gray-800">Willkommen!</h1>
+                    <p class="text-md text-gray-500 mt-1">Schön, dass du da bist.</p>
+                </header>
+    
+                <div id="news-container" class="bg-white border border-gray-200 rounded-xl p-5 mb-8 shadow-sm">
+                    <div class="placeholder-pulse h-16 w-full"></div>
+                </div>
+                
+                <div id="next-appointment-container" class="bg-teal-50 border-2 border-teal-200 rounded-xl p-5 mb-8">
+                    <div class="placeholder-pulse h-24 w-full bg-teal-200"></div>
+                </div>
+    
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                     <a href="#" onclick="showPage('monatsplanung-page'); return false;" id="link-monatsplanung" class="nav-card bg-white rounded-xl shadow-sm p-6 border border-gray-200 block">
+                        <div class="flex items-center justify-center h-12 w-12 rounded-full bg-purple-100 mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                        </div>
+                        <h3 class="font-semibold text-lg text-gray-900">Monatsplanung</h3>
+                        <p class="text-sm text-gray-500 mt-1">Plane deine Verfügbarkeit.</p>
+                    </a>
+                    <a href="#" onclick="showPage('bestaetigte-termine-page'); return false;" id="link-termine" class="nav-card bg-white rounded-xl shadow-sm p-6 border border-gray-200 block">
+                        <div class="flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
+                               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        </div>
+                        <h3 class="font-semibold text-lg text-gray-900">Bestätigte Termine</h3>
+                        <p class="text-sm text-gray-500 mt-1">Sieh alle Sitzungen ein.</p>
+                    </a>
+                    <a href="#" onclick="openBrevoChat(); return false;" id="link-kontakt" class="nav-card brevo-chat-trigger bg-white rounded-xl shadow-sm p-6 border border-gray-200 block sm:col-span-2">
+                        <div class="flex items-center justify-center h-12 w-12 rounded-full bg-sky-100 mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-sky-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+                        </div>
+                        <h3 class="font-semibold text-lg text-gray-900">Kontakt</h3>
+                        <p class="text-sm text-gray-500 mt-1">Direkte Nachricht an uns senden.</p>
+                    </a>
+                </div>
+            </div>
+    
+            <!-- MONATSPLANUNG (JotForm eingebettet mit Prefill) -->
+            <div id="monatsplanung-page" class="page p-6">
+                <header class="pt-2 pb-6">
+                    <h1 class="text-3xl font-bold text-gray-800">Monatsplanung</h1>
+                    <p class="text-gray-600 mt-2">Teile deine Verfügbarkeiten über das Formular.</p>
+                </header>
+                <div class="bg-white p-0 rounded-xl shadow-sm border border-gray-200">
+                    <!-- JotForm iFrame -->
+                    <iframe
+                      id="JotFormIFrame-252311488402047"
+                      title="Monatsplanung Donnerstag"
+                      allowtransparency="true"
+                      allow="geolocation; microphone; camera; fullscreen"
+                      src="https://form.jotform.com/252311488402047"
+                      frameborder="0"
+                      style="min-width:100%;max-width:100%;height:580px;border:none;"
+                      scrolling="no">
+                    </iframe>
+                </div>
+    
+                <!-- PREFILL SCRIPT – muss VOR dem Embed-Handler stehen -->
+                <script>
+                  (function initJotformPrefill(){
+                    try {
+                      const iframe = document.getElementById('JotFormIFrame-252311488402047');
+                      if (!iframe) return;
+    
+                      // Portal-ID aus ?id= der App-URL robust lesen
+                      const match = (location.search||'').match(/[?&]id=([^&#]+)/i);
+                      const portalId = match ? decodeURIComponent(match[1]).trim().replace(/%23$/, '').replace(/#$/, '') : '';
+    
+                      // 👉 Trage hier den EXAKTEN Unique Name deines Hidden-Feldes in JotForm ein!
+                      const JF_UNIQUE_NAME = 'portalId'; // z.B. 'portalId' oder 'portalId3'
+    
+                      if (portalId) {
+                        const u = new URL(iframe.src);
+                        u.searchParams.set(JF_UNIQUE_NAME, portalId);
+                        // Nur setzen, wenn sich etwas ändert
+                        if (iframe.src !== u.toString()) iframe.src = u.toString();
+                      }
+                    } catch (e) { console.warn('Prefill Fehler:', e); }
+                  })();
+                </script>
+    
+                <!-- Embed-Handler NACH dem Prefill laden/aufrufen -->
+                <script src="https://cdn.jotfor.ms/s/umd/latest/for-form-embed-handler.js"></script>
+                <script>window.jotformEmbedHandler("iframe[id='JotFormIFrame-252311488402047']", "https://form.jotform.com/")</script>
+            </div>
+    
+            <!-- BESTÄTIGTE TERMINE -->
+            <div id="bestaetigte-termine-page" class="page p-6">
+                <header class="pt-2 pb-6">
+                    <h1 class="text-3xl font-bold text-gray-800">Bestätigte Termine</h1>
+                    <p class="text-gray-600 mt-2">Deine festen Gruppensitzungen.</p>
+                </header>
+                <div id="confirmed-appointments-container" class="space-y-4">
+                    <p class="text-center text-gray-500 mt-8">Lade Termine...</p>
+                </div>
+            </div>
+    
+            <!-- KARTEN KAUFEN -->
+            <div id="shop-page" class="page p-6">
+                <header class="pt-2 pb-6">
+                    <h1 class="text-3xl font-bold text-gray-800">Gruppenkarten kaufen</h1>
+                    <p class="text-gray-600 mt-2">Wähle die passende Karte für deine Bedürfnisse.</p>
+                </header>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="shop-card p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-2xl font-bold text-indigo-600">5er-Karte</h3>
+                            <div class="badge indigo">1 Sitzung gratis</div>
+                        </div>
+                        <div class="price-text">
+                            <span class="old-price">300 €</span>
+                            <span class="new-price">240 €</span>
+                        </div>
+                        <p class="description">Enthält 5 Sitzungen (inkl. 1 gratis Sitzung).</p>
+                        <div class="credits-info">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-green-500">
+                                <path d="M12 7.5a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9Z" />
+                                <path fill-rule="evenodd" d="M1.5 4.5a3 3 0 0 1 3-3h15a3 3 0 0 1 3 3v13.5a3 3 0 0 1-3 3h-15a3 3 0 0 1-3-3V4.5Zm17.25 0a.75.75 0 0 0-.75-.75h-15a.75.75 0 0 0-.75.75v13.5c0 .414.336.75.75.75h15a.75.75 0 0 0 .75-.75V4.5Zm-12.75 3a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5h-6Zm.75 3a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 0 1.5h-3a.75.75 0 0 1-.75-.75Zm.75 3a.75.75 0 0 1 .75-.75h.75a.75.75 0 0 1 0 1.5H9.75a.75.75 0 0 1-.75-.75Z" clip-rule="evenodd" />
+                            </svg>
+                            <span>+40 Credits</span>
+                        </div>
+                        <a href="https://buy.stripe.com/dRmdR96dj8MN1pcgLn3Je04" target="_blank" class="buy-button indigo">Jetzt kaufen</a>
+                    </div>
+                    <div class="shop-card p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-2xl font-bold text-green-600">10er-Karte</h3>
+                            <div class="badge green">3 Sitzungen gratis</div>
+                        </div>
+                        <div class="price-text">
+                            <span class="old-price">600 €</span>
+                            <span class="new-price">420 €</span>
+                        </div>
+                        <p class="description">Enthält 10 Sitzungen (inkl. 3 gratis Sitzungen).</p>
+                         <div class="credits-info">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-green-500">
+                                <path d="M12 7.5a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9Z" />
+                                <path fill-rule="evenodd" d="M1.5 4.5a3 3 0 0 1 3-3h15a3 3 0 0 1 3 3v13.5a3 3 0 0 1-3 3h-15a3 3 0 0 1-3-3V4.5Zm17.25 0a.75.75 0 0 0-.75-.75h-15a.75.75 0 0 0-.75.75v13.5c0 .414.336.75.75.75h15a.75.75 0 0 0 .75-.75V4.5Zm-12.75 3a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5h-6Zm.75 3a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 0 1.5h-3a.75.75 0 0 1-.75-.75Zm.75 3a.75.75 0 0 1 .75-.75h.75a.75.75 0 0 1 0 1.5H9.75a.75.75 0 0 1-.75-.75Z" clip-rule="evenodd" />
+                            </svg>
+                            <span>+70 Credits</span>
+                        </div>
+                        <a href="https://buy.stripe.com/eVq3cv1X35ABfg252F3Je05" target="_blank" class="buy-button green">Jetzt kaufen</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GAMIFICATION SHOP -->
+            <div id="gamification-shop-page" class="page p-6">
+                <header class="pt-2 pb-6">
+                    <h1 class="text-3xl font-bold text-gray-800">Bonuspunkte einlösen</h1>
+                    <p class="text-gray-600 mt-2">Tausche deine Bonuspunkte gegen tolle Prämien!</p>
+                </header>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Reward 1: Notizblock -->
+                    <div class="redeem-card">
+                        <div class="flex items-center justify-center w-24 h-24 mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 text-indigo-500">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Notizblock</h3>
+                        <p class="text-gray-500 mb-4">Halte deine Gedanken fest.</p>
+                        <p class="text-3xl font-bold text-indigo-600">10 Pkt.</p>
+                        <button class="w-full mt-4 bg-indigo-600 text-white font-semibold py-2.5 rounded-lg hover:bg-indigo-700 transition" onclick="redeemPoints(10);">Einlösen</button>
+                    </div>
+
+                    <!-- Reward 2: LEGO Blume -->
+                    <div class="redeem-card">
+                        <div class="flex items-center justify-center w-24 h-24 mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-16 h-16 text-red-500">
+                                <path fill-rule="evenodd" d="M5.478 5.559A1.5 1.5 0 0 1 6.912 4.305v-1.12a.75.75 0 0 1 1.5 0v1.12c.495.353.965.754 1.41 1.198l.011.012a.75.75 0 0 1 .098.81l-.99 1.826a.75.75 0 1 1-1.299-.704l.799-1.47a6.262 6.262 0 0 0-.965-.85L8.5.75a.75.75 0 0 1 .75-.75h.5a.75.75 0 0 1 .75.75V2.5a.75.75 0 0 1-.75.75h-1a.75.75 0 0 0-.75.75V5.25c0 .178.077.348.214.465l.02.017a6.264 6.264 0 0 0 1.01.625l.08.04c.119.06.244.114.372.162l.064.024c.424.16.851.298 1.272.413a.75.75 0 0 1 .531 1.343 14.12 14.12 0 0 1-3.328-1.554l-.066-.035a6.273 6.273 0 0 0-1.077-.661l-.014-.007a.75.75 0 0 1-.223-.526V4.305a1.5 1.5 0 0 0-1.434-1.258h-.028a1.5 1.5 0 0 0-1.434 1.258v1.12a.75.75 0 0 1-1.5 0v-1.12A3 3 0 0 1 5.478 2.805Z" clip-rule="evenodd" />
+                                <path d="M13.5 10.5a.75.75 0 0 1 .75-.75h1.5a.75.75 0 0 1 0 1.5h-1.5a.75.75 0 0 1-.75-.75Z" />
+                                <path fill-rule="evenodd" d="M12 15a4.5 4.5 0 0 1 4.5-4.5h1.75c.083 0 .15.067.15.15v5.8c0 .083-.067.15-.15.15H16.5a4.5 4.5 0 0 1-4.5-4.5Zm-7.5.75A.75.75 0 0 0 5.25 16.5h8.5a.75.75 0 0 0 0-1.5h-8.5a.75.75 0 0 0-.75.75Z" clip-rule="evenodd" />
+                                <path fill-rule="evenodd" d="M16.5 13.5h-3a.75.75 0 0 0 0 1.5h3a.75.75 0 0 0 0-1.5Z" clip-rule="evenodd" />
+                                <path d="M12 12a.75.75 0 0 1 .75-.75h1.5a.75.75 0 0 1 0 1.5h-1.5a.75.75 0 0 1-.75-.75Z" />
+                                <path fill-rule="evenodd" d="M16.5 15.75a.75.75 0 0 0 0 1.5h1.5a.75.75 0 0 0 0-1.5h-1.5Z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">LEGO Blume</h3>
+                        <p class="text-gray-500 mb-4">Ein kreatives Set zum Entspannen.</p>
+                        <p class="text-3xl font-bold text-indigo-600">100 Pkt.</p>
+                        <button class="w-full mt-4 bg-indigo-600 text-white font-semibold py-2.5 rounded-lg hover:bg-indigo-700 transition" onclick="redeemPoints(100);">Einlösen</button>
+                    </div>
+
+                    <!-- Reward 3: Spa Tag -->
+                    <div class="redeem-card">
+                        <div class="flex items-center justify-center w-24 h-24 mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 text-teal-500">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9.75 9.75m0 0l-.003-.096a.75.75 0 01.597-.788l9.736-1.517M9.75 9.75L19.5 7.5m-9.75 2.25l-4.225 1.772M14.25 5.25l-7.5 7.5m7.5-7.5v-1.5m7.5 1.5v-1.5m-14.25 10.5l-2.25 2.25m10.5-10.5L20.25 21m-4.269-9.814l.872.436m-4.269 9.814l-.872-.436M4.5 14.25l-2.25 2.25m10.5-9.75L2.25 21m0 0l21.25-18.75m-21.25 18.75h18m-18 0v-18" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Wellness Spa Tag</h3>
+                        <p class="text-gray-500 mb-4">Entspannung pur im Meridian Hamburg.</p>
+                        <p class="text-3xl font-bold text-indigo-600">1000 Pkt.</p>
+                        <button class="w-full mt-4 bg-indigo-600 text-white font-semibold py-2.5 rounded-lg hover:bg-indigo-700 transition" onclick="redeemPoints(1000);">Einlösen</button>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- BIBLIOTHEK -->
+            <div id="bibliothek" class="page p-6">
+                <header class="pt-2 pb-6">
+                    <h1 class="text-3xl font-bold text-gray-800">Bibliothek</h1>
+                    <p class="text-gray-600 mt-2">Ein Ort für Ressourcen und den Austausch.</p>
+                </header>
+                <div class="space-y-8">
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-700 mb-4">Ressourcen & Hilfsmittel</h2>
+                        <div id="resources-container" class="space-y-3">
+                            <div class="placeholder-pulse h-16 w-full"></div>
+                        </div>
+                    </div>
+    
+                    <!-- Coming Soon Cards (beibehalten) -->
+                    <div class="relative bg-white p-5 rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                        <div class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white bg-opacity%80 backdrop-blur-sm p-4 text-center rounded-xl">
+                            <span class="font-bold text-indigo-600 text-lg">Coming Soon</span>
+                            <p class="text-sm text-gray-600 mt-1">Diese Funktion ist in Arbeit!</p>
+                        </div>
+                        <div class="flex items-center space-x-4 opacity%50">
+                            <div class="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-lg bg-red-100">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l3-3 3 3v13M12 9l-3 3m3-3l3 3m-3-3v8" /></svg>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-800">Dein Fortschrittstracker</h3>
+                                <p class="text-sm text-gray-500">Visualisiere deine Entwicklung und Erfolge.</p>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="relative bg-white p-5 rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                        <div class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white bg-opacity%80 backdrop-blur-sm p-4 text-center rounded-xl">
+                            <span class="font-bold text-indigo-600 text-lg">Coming Soon</span>
+                            <p class="text-sm text-gray-600 mt-1">Diese Funktion ist in Arbeit!</p>
+                        </div>
+                        <div class="flex items-center space-x-4 opacity%50">
+                            <div class="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-lg bg-yellow-100">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-800">Journaling & Gedanken</h3>
+                                <p class="text-sm text-gray-500">Halte deine Gedanken fest und reflektiere.</p>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="relative bg-white p-5 rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                        <div class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white bg-opacity%80 backdrop-blur-sm p-4 text-center rounded-xl">
+                            <span class="font-bold text-indigo-600 text-lg">Coming Soon</span>
+                            <p class="text-sm text-gray-600 mt-1">Diese Funktion ist in Arbeit!</p>
+                        </div>
+                        <div class="flex items-center space-x-4 opacity%50">
+                            <div class="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-lg bg-indigo-100">
+                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-800">Gruppenpinnwand</h3>
+                                <p class="text-sm text-gray-500">Teile Gedanken mit deiner Gruppe.</p>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="relative bg-white p-5 rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                        <div class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white bg-opacity%80 backdrop-blur-sm p-4 text-center rounded-xl">
+                            <span class="font-bold text-indigo-600 text-lg">Coming Soon</span>
+                            <p class="text-sm text-gray-600 mt-1">Diese Funktion ist in Arbeit!</p>
+                        </div>
+                        <div class="flex items-center space-x-4 opacity%50">
+                            <div class="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-lg bg-teal-100">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c1.657 0 3 1.343 3 3v2a3 3 0 01-3 3h-2a3 3 0 01-3-3v-2a3 3 0 013-3h2zm0 0V5m0 3h-2a3 3 0 00-3 3v2a3 3 0 003 3h2a3 3 0 003-3v-2a3 3 0 00-3-3zM12 8c1.657 0 3 1.343 3 3v2a3 3 0 01-3 3h-2a3 3 0 01-3-3v-2a3 3 0 013-3h2z" /></svg>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-800">Bonuspunkte einlösen</h3>
+                                <p class="text-sm text-gray-500">Tausche deine Bonuspunkte gegen Prämien ein.</p>
+                            </div>
+                        </div>
+                    </div>
+    
+                </div>
+            </div>
+    
+            <!-- MEIN BEREICH -->
+            <div id="mein-bereich" class="page p-6">
+                <header class="pt-2 pb-6">
+                    <h1 class="text-3xl font-bold text-gray-800">Mein Bereich</h1>
+                    <p class="text-gray-600 mt-2">Deine Übersicht über Guthaben und Rechnungen.</p>
+                </header>
+                
+                <div class="space-y-8">
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-700 mb-4">Dein Guthaben</h2>
+                        <div id="guthaben-container"><div class="placeholder-pulse h-20 w-full"></div></div>
+                        <a href="#" onclick="showPage('shop-page'); return false;" class="block mt-4 w-full text-center bg-indigo-600 text-white font-semibold py-3 px-5 rounded-lg hover:bg-indigo-700 transition-colors">Neue Gruppenkarte kaufen</a>
+                    </div>
+    
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-700 mb-4">Deine Rechnungen</h2>
+                        <div id="invoice-list-container" class="bg-white rounded-xl shadow-sm border border-gray-200 divide-y divide-gray-200">
+                            <div class="p-5 h-20 placeholder-pulse"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Bottom Nav -->
+        <nav class="nav-bar fixed bottom-0 left-0 right-0 h-20 bg-white border-t border-gray-200 z-30">
+            <div class="max-w-3xl mx-auto flex justify-around items-center h-full">
+                <button onclick="showPage('home'); return false;" class="nav-item text-center text-gray-500 transition active p-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+                    <span class="nav-text text-xs mt-1">Home</span>
+                </button>
+                <button onclick="showPage('bibliothek'); return false;" class="nav-item text-center text-gray-500 transition p-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+                    <span class="nav-text text-xs mt-1">Bibliothek</span>
+                </button>
+                <button onclick="showPage('mein-bereich'); return false;" class="nav-item text-center text-gray-500 transition p-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                    <span class="nav-text text-xs mt-1">Mein Bereich</span>
+                </button>
+            </div>
+        </nav>
+    
+        <!-- Brevo Chat -->
+        <script>
+            window.BrevoConversationsID = '68966b452e29685a19096555';
+            window.BrevoConversationsSetup = { customWidgetButton: '.brevo-chat-trigger' };
+        </script>
+        <script src="https://conversations-widget.brevo.com/brevo-conversations.js" async></script>
+    
+        <!-- APP SCRIPT -->
+        <script>
+            let currentPageId = 'home';
+            let pageHistory = ['home'];
+    
+            document.addEventListener('DOMContentLoaded', () => {
+                const portalId = getPortalIdFromUrl();
+                if (!portalId) {
+                    console.error("Keine Portal-ID in der URL gefunden.");
+                    document.getElementById('user-greeting').textContent = 'Fehler!';
+                    document.querySelector('.main-content').innerHTML = '<p class="text-center text-red-500 mt-8">Keine Portal-ID in der URL gefunden. Bitte stelle sicher, dass du den korrekten Link verwendest.</p>';
+                    return;
+                }
+                
+                // PIN-Modal-Logik
+                const CORRECT_PIN = "4289"; // <-- fester PIN für alle
+                const pinModalOverlay = document.getElementById('pin-modal-overlay');
+                const pinInput = document.getElementById('pin-input');
+                const pinBtn = document.getElementById('pin-submit');
+                const pinErr = document.getElementById('pin-error');
+                const appWrapper = document.getElementById('app-wrapper');
+    
+                function checkPin() {
+                    const val = (pinInput.value || "").trim();
+                    if (val === CORRECT_PIN) {
+                        localStorage.setItem("portalPinOk", "1");
+                        appWrapper.classList.remove('content-blurred');
+                        pinModalOverlay.classList.add('hidden');
+                        fetchData(portalId); // Daten nach erfolgreicher PIN-Eingabe laden
+                    } else {
+                        pinErr.classList.remove("hidden");
+                        pinInput.value = "";
+                        pinInput.focus();
+                    }
+                }
+    
+                if (localStorage.getItem("portalPinOk") === "1") {
+                    pinModalOverlay.classList.add('hidden');
+                    fetchData(portalId); // Daten sofort laden
+                } else {
+                    pinModalOverlay.classList.remove('hidden');
+                    appWrapper.classList.add('content-blurred');
+                }
+    
+                pinBtn.addEventListener("click", checkPin);
+                pinInput.addEventListener("keydown", e => { if (e.key === "Enter") checkPin(); });
+            });
+    
+            function getPortalIdFromUrl() {
+                const q = window.location.search || '';
+                const m = q.match(/[?&]id=([^&#]+)/i);
+                if (!m) return '';
+                return decodeURIComponent(m[1]).trim().replace(/%23$/, '').replace(/#$/, '');
+            }
+    
+            async function fetchData(portalId) {
+                const CLOUDFLARE_WORKER_URL = 'https://recovery-worker-api.coffee-recoveryhh.workers.dev/';
+                const loadingSpinner = document.getElementById('loading-spinner');
+                loadingSpinner.classList.remove('hidden');
+    
+                try {
+                    const response = await fetch(CLOUDFLARE_WORKER_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ id: portalId })
+                    });
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        throw new Error(`HTTP error! status: ${response.status}, Details: ${errorText}`);
+                    }
+                    const data = await response.json();
+                    renderData(data);
+                } catch (error) {
+                    console.error('Fehler beim Abrufen oder Verarbeiten der Daten:', error);
+                    document.getElementById('user-greeting').textContent = 'Fehler beim Laden!';
+                    document.querySelector('.main-content').innerHTML = '<p class="text-center text-red-500 mt-8">Daten konnten nicht geladen werden. Bitte versuche es später erneut oder kontaktiere den Support.</p>';
+                } finally {
+                    loadingSpinner.classList.add('hidden');
+                }
+            }
+            
+            function renderData(data) {
+                document.getElementById('user-greeting').textContent = `Willkommen, ${data.firstName || ''}!`;
+                document.querySelector('#gamification-points span').textContent = data.gamificationPoints || 0;
+    
+                const newsContainer = document.getElementById('news-container');
+                newsContainer.innerHTML = `
+                    <div class="flex items-center space-x-3 mb-3">
+                        <div class="flex-shrink-0 flex items-center justify-center h-8 w-8 rounded-full bg-indigo-100">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                            </svg>
+                        </div>
+                        <h2 class="font-semibold text-gray-700">News & Aktuelles</h2>
+                    </div>
+                    <p class="text-gray-600 text-sm">${data.news || 'Keine neuen Ankündigungen.'}</p>`;
+    
+                const apptContainer = document.getElementById('next-appointment-container');
+                apptContainer.innerHTML = '';
+                if (data.nextAppointment && data.nextAppointment.date) {
+                    const dateObj = new Date(data.nextAppointment.date);
+                    const weekday = dateObj.toLocaleString('de-DE', { weekday: 'short' });
+                    apptContainer.innerHTML = `
+                        <h2 class="font-semibold text-teal-800 mb-3">Dein nächster Termin:</h2>
+                        <div class="flex items-center space-x-4 mb-4">
+                            <div class="flex-shrink-0 bg-teal-600 text-white rounded-lg p-3 text-center">
+                                <p class="font-bold text-xl">${data.nextAppointment.day}</p>
+                                <p class="text-xs font-medium">${data.nextAppointment.month}</p>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-gray-900">Bestätigter Termin (${weekday})</p>
+                                <p class="text-sm text-teal-700">${data.nextAppointment.time}</p>
+                            </div>
+                        </div>
+                        <button class="w-full bg-white text-teal-700 font-semibold py-2 px-4 rounded-lg border border-teal-300 hover:bg-teal-100 transition-colors text-sm flex items-center justify-center space-x-2" onclick="addToCalendar('${data.nextAppointment.date}', 'Gruppensitzung', 'Ihre nächste Gruppensitzung', '19:00', '20:30'); return false;">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                            <span>Zum Kalender hinzufügen</span>
+                        </button>`;
+                } else {
+                     apptContainer.innerHTML = `<p class="p-5 text-center text-gray-500 bg-white rounded-xl shadow-sm border">Aktuell sind keine Termine für dich bestätigt.</p>`;
+                }
+    
+                const resourcesContainer = document.getElementById('resources-container');
+                resourcesContainer.innerHTML = '';
+                if (data.resources && data.resources.length > 0) {
+                    data.resources.forEach(resource => {
+                        resourcesContainer.innerHTML += `
+                         <a href="${resource.url}" target="_blank" class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between transition hover:border-indigo-400">
+                             <div class="flex items-center space-x-4"><div class="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-lg bg-blue-100"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg></div><span class="font-medium text-gray-700">${resource.name}</span></div>
+                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+                         </a>`;
+                    });
+                } else {
+                    resourcesContainer.innerHTML = `<p class="p-5 text-center text-gray-500 bg-white rounded-xl shadow-sm border">Momentan sind keine Ressourcen verfügbar.</p>`;
+                }
+    
+                const guthabenContainer = document.getElementById('guthaben-container');
+                guthabenContainer.innerHTML = '';
+                if (data.guthaben && data.guthaben.total !== undefined) {
+                    const percentage = (data.guthaben.used / data.guthaben.total) * 100;
+                    guthabenContainer.innerHTML = `
+                        <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200">
+                            <div class="flex justify-between items-center mb-2"><span class="font-semibold text-gray-800">${data.guthaben.type}</span><span class="font-medium text-gray-600">${data.guthaben.used} von ${data.guthaben.total} genutzt</span></div>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5"><div class="bg-indigo-500 h-2.5 rounded-full" style="width: ${percentage}%"></div></div>
+                        </div>`;
+                } else {
+                    guthabenContainer.innerHTML = `<p class="p-5 text-center text-gray-500 bg-white rounded-xl shadow-sm border">Du hast aktuell keine aktive Gruppenkarte.</p>`;
+                }
+    
+                const invoiceContainer = document.getElementById('invoice-list-container');
+                invoiceContainer.innerHTML = '';
+                const invoices = data.invoices;
+                if (Array.isArray(invoices) && invoices.length > 0) {
+                    invoices.forEach(invoice => {
+                        try {
+                            const formattedDate = invoice.Datum; 
+                            const rechnungsName = `Rechnung von ${formattedDate}`;
+                            const rechnungsNummer = `Nr. ${invoice.Rechnungsnummer || 'unbekannt'}`;
+                            const amount = parseFloat(invoice.Betrag) || 0;
+                            const formattedAmount = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(amount);
+                            const status = invoice.Status || 'Unbekannt';
+                            const statusColor = status === 'Bezahlt' ? 'green' : (status === 'Offen' ? 'orange' : 'gray');
+                            const url = invoice['PDF-URL'] || '#';
+                            invoiceContainer.innerHTML += `
+                                 <a href="${url}" download="Rechnung_${invoice.Rechnungsnummer || 'unbekannt'}.pdf" target="_blank" class="p-5 flex justify-between items-center transition hover:bg-gray-50">
+                                     <div><p class="font-semibold text-gray-800">${rechnungsName}</p><p class="text-sm text-gray-500">${rechnungsNummer}</p></div>
+                                     <div class="text-right"><p class="font-semibold text-gray-900">${formattedAmount}</p><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-${statusColor}-100 text-${statusColor}-800">${status}</span></div>
+                                 </a>`;
+                        } catch (e) { console.error("Fehler beim Rendern einer Rechnung:", invoice, e); }
+                    });
+                } else {
+                    invoiceContainer.innerHTML = `<p class="p-5 text-gray-500">Du hast noch keine Rechnungen.</p>`;
+                }
+    
+                const appointmentsContainer = document.getElementById('confirmed-appointments-container');
+                appointmentsContainer.innerHTML = '';
+                if (data.confirmedAppointments && data.confirmedAppointments.length > 0) {
+                     data.confirmedAppointments.forEach(appointment => {
+                        if (appointment && appointment.date) {
+                            const dateObj = new Date(appointment.date);
+                            const weekday = dateObj.toLocaleString('de-DE', { weekday: 'short' });
+                            appointmentsContainer.innerHTML += `
+                                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex items-center space-x-4">
+                                    <div class="flex-shrink-0 bg-green-600 text-white rounded-lg p-3 text-center">
+                                        <p class="font-bold text-xl">${appointment.day}</p>
+                                        <p class="text-xs font-medium">${appointment.month}</p>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-gray-900">Bestätigter Termin (${weekday})</p>
+                                        <p class="text-sm text-green-700">${appointment.time}</p>
+                                    </div>
+                                    <button class="ml-auto text-green-700 hover:text-green-900 transition" onclick="addToCalendar('${appointment.date}', 'Gruppensitzung', 'Ihre Gruppensitzung', '19:00', '20:30'); return false;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" /></svg>
+                                    </button>
+                                </div>
+                            `;
+                        }
+                     });
+                } else {
+                     appointmentsContainer.innerHTML = `<p class="text-center text-gray-500 mt-8">Aktuell sind keine Termine bestätigt.</p>`;
+                }
+            }
+    
+            // Navigation
+            function showPage(pageId) {
+                const previousPage = currentPageId;
+                if (pageId === currentPageId) {
+                    const activePage = document.querySelector('.page.active');
+                    if (activePage) activePage.scrollTo({ top: 0, behavior: 'smooth' });
+                    return;
+                }
+                if (pageHistory[pageHistory.length - 1] !== pageId) pageHistory.push(pageId);
+    
+                document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+                document.getElementById(pageId).classList.add('active');
+    
+                const backButton = document.getElementById('back-button');
+                backButton.classList.toggle('hidden', pageId === 'home');
+    
+                document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+                const navItem = document.querySelector(`.nav-item[onclick*="showPage('${pageId}')"]`);
+                if (navItem) navItem.classList.add('active');
+    
+                currentPageId = pageId;
+            }
+            function goBack() {
+                if (pageHistory.length > 1) {
+                    pageHistory.pop();
+                    const previousPageId = pageHistory[pageHistory.length - 1];
+                    showPage(previousPageId);
+                } else { showPage('home'); }
+            }
+            function toggleMenu() {
+                const menu = document.getElementById('off-canvas-menu');
+                const overlay = document.getElementById('off-canvas-overlay');
+                menu.classList.toggle('open');
+                overlay.classList.toggle('open');
+            }
+            function openBrevoChat() {
+                if (window.BrevoConversations) window.BrevoConversations('openChat', true);
+                else console.warn("Brevo Conversations API not loaded yet.");
+            }
+            function redeemPoints(cost) {
+                const currentPoints = parseInt(document.querySelector('#gamification-points span').textContent, 10);
+                if (currentPoints >= cost) {
+                    showToast(`Prämie eingelöst! ${cost} Punkte wurden abgezogen.`);
+                    // Hier würde die Backend-Logik für das Einlösen der Punkte stehen.
+                    // Da es keine gibt, aktualisieren wir die Punkte nur im Frontend.
+                    document.querySelector('#gamification-points span').textContent = currentPoints - cost;
+                } else {
+                    showToast(`Nicht genug Punkte! Du hast nur ${currentPoints} Punkte.`, 'red');
+                }
+            }
+            
+            function showToast(message, color = 'green') {
+                const toast = document.createElement('div');
+                toast.style.cssText = `position:fixed;left:50%;transform:translateX(-50%);bottom:88px;z-index:999999;background:${color === 'green' ? '#10b981' : '#ef4444'};color:#fff;padding:10px 14px;border-radius:10px;font:600 14px/1.2 system-ui;box-shadow:0 8px 20px rgba(0,0,0,.12);`;
+                toast.textContent = message;
+                document.body.appendChild(toast);
+                setTimeout(()=>toast.remove(), 3500);
+            }
+    
+            // Kalender (ICS)
+            function addToCalendar(date, summary, description, startTime, endTime) {
+                const formattedDate = date.replace(/-/g, '');
+                const formattedStartTime = startTime.replace(/:/g, '') + '00';
+                const formattedEndTime = endTime.replace(/:/g, '') + '00';
+                const eventStart = formattedDate + 'T' + formattedStartTime;
+                const eventEnd = formattedDate + 'T' + formattedEndTime;
+                const escapeICS = (text) => (text || '').replace(/\\/g, '\\\\').replace(/,/g, '\\,').replace(/;/g, '\\;');
+                const icsContent = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Recovery Group//DE//NONSGML v1.0//EN
+BEGIN:VEVENT
+UID:${new Date().toISOString()}
+DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z
+DTSTART:${eventStart}
+DTEND:${eventEnd}
+SUMMARY:${escapeICS(summary)}
+DESCRIPTION:${escapeICS(description)}
+END:VEVENT
+END:VCALENDAR`;
+                const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.setAttribute('download', 'Gruppensitzung.ics');
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        </script>
+    
+        <!-- Toast nach Redirect (&submitted=1) -->
+        <script>
+          (function showSubmissionToastIfNeeded(){
+            const params = new URLSearchParams(location.search);
+            const submitted = params.get('submitted');
+            if (!submitted) return;
+    
+            const toast = document.createElement('div');
+            toast.style.cssText = 'position:fixed;left:50%;transform:translateX(-50%);bottom:88px;z-index:999999;background:#10b981;color:#fff;padding:10px 14px;border-radius:10px;font:600 14px/1.2 system-ui;box-shadow:0 8px 20px rgba(0,0,0,.12)';
+            toast.textContent = 'Danke! Deine Verfügbarkeiten wurden gespeichert.';
+            document.body.appendChild(toast);
+            setTimeout(()=>toast.remove(), 3500);
+          })();
+        </script>
+    </div>
+</body>
+</html>
