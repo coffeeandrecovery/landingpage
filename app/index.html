@@ -827,18 +827,10 @@ END:VCALENDAR`;
             }
         </script>
         
-        <!-- ADMIN TESTBOX (nur vorübergehend) -->
-<div id="admin-tools" style="position:fixed;right:12px;bottom:92px;z-index:9999;">
-  <button id="dry-run-btn"
-    style="background:#111827;color:#fff;border:none;padding:10px 14px;border-radius:12px;font-weight:600;cursor:pointer;opacity:.85">
-    Worker: Trockenlauf
-  </button>
-  <button id="live-run-btn"
-    style="background:#10b981;color:#fff;border:none;padding:10px 14px;border-radius:12px;font-weight:600;cursor:pointer;margin-left:8px;opacity:.95">
-    Worker: Echtlauf
-  </button>
-</div>
 
+<script>
+(function adminWorkerTest(){
+  const WURL = 'https://verfuegbarkeiten-worker.coffee-recoveryhh.workers.dev/run';
   const dryBtn = document.getElementById('dry-run-btn');
   const liveBtn = document.getElementById('live-run-btn');
   if (dryBtn) dryBtn.addEventListener('click', ()=>runWorker(true));
