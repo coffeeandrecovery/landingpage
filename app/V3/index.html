@@ -5,25 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Dein persönliches Portal</title>
     
-    <!-- Content Security Policy: erweitert für JotForm -->
-   
+    <!-- Content Security Policy: erweitert -->
     <meta http-equiv="Content-Security-Policy" content="
-  default-src 'self';
-  script-src 'self' https://cdn.tailwindcss.com https://conversations-widget.brevo.com https://cdn.jotfor.ms 'unsafe-inline' 'unsafe-eval';
-  frame-src 'self' https://conversations-widget.brevo.com https://www.youtube.com https://book.stripe.com https://buy.stripe.com https://form.jotform.com https://www.jotform.com https://submit.jotform.com https://eu-submit.jotform.com;
-  img-src 'self' data: https://www.gravatar.com https://conversations-widget.brevo.com https://cdn.jotfor.ms https://files.jotform.com;
-  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://conversations-widget.brevo.com https://cdn.jotfor.ms;
-  font-src 'self' https://fonts.gstatic.com;
-  connect-src 'self'
-    https://recovery-worker-api.coffee-recoveryhh.workers.dev
-    https://verfuegbarkeiten-worker.coffee-recoveryhh.workers.dev
-    https://conversations-widget.brevo.com
-    https://form.jotform.com https://www.jotform.com https://cdn.jotfor.ms
-    https://submit.jotform.com https://eu-submit.jotform.com;
-  worker-src 'self' blob:;
-  child-src 'self';
-">
-    
+        default-src 'self';
+        script-src 'self' https://cdn.tailwindcss.com https://conversations-widget.brevo.com https://cdn.jotfor.ms 'unsafe-inline' 'unsafe-eval';
+        frame-src 'self' https://conversations-widget.brevo.com https://www.youtube.com https://book.stripe.com https://buy.stripe.com https://form.jotform.com https://www.jotform.com https://submit.jotform.com https://eu-submit.jotform.com;
+        img-src 'self' data: https://www.gravatar.com https://conversations-widget.brevo.com https://cdn.jotfor.ms https://files.jotform.com;
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://conversations-widget.brevo.com https://cdn.jotfor.ms;
+        font-src 'self' https://fonts.gstatic.com;
+        connect-src 'self'
+          https://recovery-worker-api.coffee-recoveryhh.workers.dev
+          https://verfuegbarkeiten-worker.coffee-recoveryhh.workers.dev
+          https://conversations-widget.brevo.com
+          https://form.jotform.com https://www.jotform.com https://cdn.jotfor.ms
+          https://submit.jotform.com https://eu-submit.jotform.com;
+        worker-src 'self' blob:;
+        child-src 'self';
+    ">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -79,74 +77,30 @@
             visibility: visible;
             transition: opacity 0.5s ease, visibility 0.5s ease;
         }
-        #loading-spinner.hidden {
-            opacity: 0;
-            visibility: hidden;
-        }
+        #loading-spinner.hidden { opacity: 0; visibility: hidden; }
         .spinner {
-            width: 4rem;
-            height: 4rem;
-            border: 4px solid #e5e7eb;
-            border-top-color: #6366f1;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+            width: 4rem; height: 4rem; border: 4px solid #e5e7eb; border-top-color: #6366f1;
+            border-radius: 50%; animation: spin 1s linear infinite;
         }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
         /* Pin Modal Blur Effect */
-        .content-blurred {
-            filter: blur(8px);
-            pointer-events: none;
-            user-select: none;
-            transition: filter 0.5s ease-in-out;
-        }
-        
-        .price-text {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
+        .content-blurred { filter: blur(8px); pointer-events: none; user-select: none; transition: filter 0.5s ease-in-out; }
 
-        .old-price {
-            text-decoration: line-through;
-            font-size: 1.25rem;
-            color: #9ca3af;
+        /* Subtle danger button for Absagen */
+        .btn-ghost-danger {
+          border: 1px solid #fecaca; /* red-200 */
+          color: #dc2626;           /* red-600 */
+          padding: .375rem .625rem; border-radius: .5rem; font-weight: 600;
+          transition: background .15s ease, border-color .15s ease, color .15s ease, opacity .15s ease;
+          background: #fff;
         }
+        .btn-ghost-danger:hover { background: #fef2f2; border-color: #fca5a5; } /* red-50 / red-300 */
 
-        .new-price {
-            font-size: 2.5rem;
-            line-height: 1;
-            font-weight: 800;
-            color: #1a202c;
-        }
-        
-        .credits-info {
-            font-size: 0.875rem;
-            color: #10b981;
-            font-weight: 600;
-            margin-top: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-        }
-
-        .redeem-card {
-            background: linear-gradient(145deg, #ffffff, #f0f0f0); 
-            border-radius: 1rem; 
-            border: 1px solid #e2e8f0; 
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); 
-            transition: all 0.3s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            padding: 1.5rem;
-        }
-        .redeem-card:hover { 
-            transform: translateY(-5px); 
-            box-shadow: 0 10px 20px rgba(0,0,0,0.15); 
+        /* Tiny spinner for inline buttons */
+        .inline-spinner {
+          width: 14px; height: 14px; border: 2px solid #fecaca; border-top-color: #dc2626; border-radius: 9999px;
+          display: inline-block; vertical-align: middle; margin-right: 6px; animation: spin .8s linear infinite;
         }
     </style>
 </head>
@@ -183,7 +137,7 @@
                 <div class="font-bold text-gray-800 text-lg">Recovery Gruppen</div>
                 <div class="flex items-center space-x-5">
                     <button id="gamification-points" onclick="showPage('gamification-shop-page'); return false;" class="flex items-center space-x-1.5 text-gray-600 hover:text-indigo-500 transition" aria-label="Punkte">
-                        <img src="/assets/icon21.jpeg" alt="Punkte" class="h-6 w-6 rounded object-cover">
+                        <img src="/assets/icon4.png" alt="Punkte" class="h-6 w-6 rounded object-cover">
                         <span class="font-semibold text-sm">...</span>
                     </button>
                     <button id="menu-button" onclick="toggleMenu()" class="text-gray-600 hover:text-indigo-500 transition" aria-label="Menü">
@@ -286,12 +240,11 @@
                       const portalId = match ? decodeURIComponent(match[1]).trim().replace(/%23$/, '').replace(/#$/, '') : '';
     
                       // 👉 Trage hier den EXAKTEN Unique Name deines Hidden-Feldes in JotForm ein!
-                      const JF_UNIQUE_NAME = 'portalId'; // z.B. 'portalId' oder 'portalId3'
+                      const JF_UNIQUE_NAME = 'portalId';
     
                       if (portalId) {
                         const u = new URL(iframe.src);
                         u.searchParams.set(JF_UNIQUE_NAME, portalId);
-                        // Nur setzen, wenn sich etwas ändert
                         if (iframe.src !== u.toString()) iframe.src = u.toString();
                       }
                     } catch (e) { console.warn('Prefill Fehler:', e); }
@@ -369,7 +322,7 @@
                     <p class="text-gray-600 mt-2">Tausche deine Bonuspunkte gegen tolle Prämien!</p>
                 </header>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <!-- Reward 1: Notizblock -->
+                    <!-- Rewards … (unverändert) -->
                     <div class="redeem-card">
                         <div class="flex items-center justify-center w-24 h-24 mb-4">
                             <img src="/assets/credit1.png" alt="Notizblock" class="w-24 h-24 object-contain">
@@ -379,8 +332,6 @@
                         <p class="text-3xl font-bold text-indigo-600">10 Pkt.</p>
                         <button class="w-full mt-4 bg-indigo-600 text-white font-semibold py-2.5 rounded-lg hover:bg-indigo-700 transition" onclick="redeemPoints(10);">Einlösen</button>
                     </div>
-
-                    <!-- Reward 2: LEGO Blume -->
                     <div class="redeem-card">
                         <div class="flex items-center justify-center w-24 h-24 mb-4">
                             <img src="/assets/credit2.png" alt="LEGO Blume" class="w-24 h-24 object-contain">
@@ -390,8 +341,6 @@
                         <p class="text-3xl font-bold text-indigo-600">100 Pkt.</p>
                         <button class="w-full mt-4 bg-indigo-600 text-white font-semibold py-2.5 rounded-lg hover:bg-indigo-700 transition" onclick="redeemPoints(100);">Einlösen</button>
                     </div>
-
-                    <!-- Reward 3: Spa Tag -->
                     <div class="redeem-card">
                         <div class="flex items-center justify-center w-24 h-24 mb-4">
                             <img src="/assets/credit3.png" alt="Wellness Spa Tag" class="w-24 h-24 object-contain">
@@ -417,8 +366,8 @@
                             <div class="placeholder-pulse h-16 w-full"></div>
                         </div>
                     </div>
-    
-                    <!-- Coming Soon Cards (beibehalten) -->
+
+                    <!-- Coming Soon Cards (unverändert) -->
                     <div class="relative bg-white p-5 rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                         <div class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white bg-opacity%80 backdrop-blur-sm p-4 text-center rounded-xl">
                             <span class="font-bold text-indigo-600 text-lg">Coming Soon</span>
@@ -434,7 +383,7 @@
                             </div>
                         </div>
                     </div>
-    
+
                     <div class="relative bg-white p-5 rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                         <div class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white bg-opacity%80 backdrop-blur-sm p-4 text-center rounded-xl">
                             <span class="font-bold text-indigo-600 text-lg">Coming Soon</span>
@@ -450,7 +399,7 @@
                             </div>
                         </div>
                     </div>
-    
+
                     <div class="relative bg-white p-5 rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                         <div class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white bg-opacity%80 backdrop-blur-sm p-4 text-center rounded-xl">
                             <span class="font-bold text-indigo-600 text-lg">Coming Soon</span>
@@ -466,7 +415,7 @@
                             </div>
                         </div>
                     </div>
-    
+
                     <div class="relative bg-white p-5 rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                         <div class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white bg-opacity%80 backdrop-blur-sm p-4 text-center rounded-xl">
                             <span class="font-bold text-indigo-600 text-lg">Coming Soon</span>
@@ -482,7 +431,7 @@
                             </div>
                         </div>
                     </div>
-    
+
                 </div>
             </div>
     
@@ -539,9 +488,11 @@
         <script>
             let currentPageId = 'home';
             let pageHistory = ['home'];
-    
+            let CURRENT_PORTAL_ID = null; // <— global gemerkt
+
             document.addEventListener('DOMContentLoaded', () => {
                 const portalId = getPortalIdFromUrl();
+                CURRENT_PORTAL_ID = portalId;
                 if (!portalId) {
                     console.error("Keine Portal-ID in der URL gefunden.");
                     document.getElementById('user-greeting').textContent = 'Fehler!';
@@ -550,7 +501,7 @@
                 }
                 
                 // PIN-Modal-Logik
-                const CORRECT_PIN = "4289"; // <-- fester PIN für alle
+                const CORRECT_PIN = "4289"; // fester PIN
                 const pinModalOverlay = document.getElementById('pin-modal-overlay');
                 const pinInput = document.getElementById('pin-input');
                 const pinBtn = document.getElementById('pin-submit');
@@ -717,7 +668,7 @@
                             const dateObj = new Date(appointment.date);
                             const weekday = dateObj.toLocaleString('de-DE', { weekday: 'short' });
                             appointmentsContainer.innerHTML += `
-                                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex items-center space-x-4">
+                                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex items-center space-x-4" data-date="${appointment.date}">
                                     <div class="flex-shrink-0 bg-green-600 text-white rounded-lg p-3 text-center">
                                         <p class="font-bold text-xl">${appointment.day}</p>
                                         <p class="text-xs font-medium">${appointment.month}</p>
@@ -726,9 +677,16 @@
                                         <p class="font-semibold text-gray-900">Bestätigter Termin (${weekday})</p>
                                         <p class="text-sm text-green-700">${appointment.time}</p>
                                     </div>
-                                    <button class="ml-auto text-green-700 hover:text-green-900 transition" onclick="addToCalendar('${appointment.date}', 'Gruppensitzung', 'Ihre Gruppensitzung', '19:00', '20:30'); return false;">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" /></svg>
-                                    </button>
+                                    <div class="ml-auto flex items-center space-x-2">
+                                      <button class="text-green-700 hover:text-green-900 transition" 
+                                              title="Zum Kalender hinzufügen"
+                                              onclick="addToCalendar('${appointment.date}', 'Gruppensitzung', 'Ihre Gruppensitzung', '19:00', '20:30'); return false;">
+                                          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" /></svg>
+                                      </button>
+                                      <button class="btn-ghost-danger" onclick="cancelAppointment(this, '${appointment.date}'); return false;">
+                                        Absagen
+                                      </button>
+                                    </div>
                                 </div>
                             `;
                         }
@@ -781,8 +739,6 @@
                 const currentPoints = parseInt(document.querySelector('#gamification-points span').textContent, 10);
                 if (currentPoints >= cost) {
                     showToast(`Prämie eingelöst! ${cost} Punkte wurden abgezogen.`);
-                    // Hier würde die Backend-Logik für das Einlösen der Punkte stehen.
-                    // Da es keine gibt, aktualisieren wir die Punkte nur im Frontend.
                     document.querySelector('#gamification-points span').textContent = currentPoints - cost;
                 } else {
                     showToast(`Nicht genug Punkte! Du hast nur ${currentPoints} Punkte.`, 'red');
@@ -795,6 +751,57 @@
                 toast.textContent = message;
                 document.body.appendChild(toast);
                 setTimeout(()=>toast.remove(), 3500);
+            }
+
+            // Eleganter Cancel-Handler mit Inline-Spinner & Optimistic UI
+            async function cancelAppointment(btnEl, dateISO) {
+              try {
+                if (!CURRENT_PORTAL_ID) return showToast('Fehlende Portal-ID.', 'red');
+
+                // Sicherheitsabfrage
+                const ok = confirm('Möchtest du diesen bestätigten Termin wirklich absagen?');
+                if (!ok) return;
+
+                // Button in Ladezustand versetzen
+                const oldHtml = btnEl.innerHTML;
+                btnEl.disabled = true;
+                btnEl.style.opacity = '0.8';
+                btnEl.innerHTML = '<span class="inline-spinner"></span>Wird abgesagt…';
+
+                const WURL = 'https://verfuegbarkeiten-worker.coffee-recoveryhh.workers.dev/cancel';
+                const res = await fetch(WURL, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ portalId: CURRENT_PORTAL_ID, date: dateISO })
+                });
+
+                let json = {};
+                try { json = await res.json(); } catch (e) { /* fallback auf Fehlertext */ }
+
+                if (!res.ok || !json.ok) {
+                  console.error('Cancel failed', json);
+                  btnEl.innerHTML = oldHtml;
+                  btnEl.disabled = false;
+                  btnEl.style.opacity = '1';
+                  return showToast('Absage fehlgeschlagen. Bitte später erneut versuchen.', 'red');
+                }
+
+                // Karte aus DOM entfernen (optimistisch)
+                const card = document.querySelector(`#confirmed-appointments-container [data-date="${dateISO}"]`);
+                if (card) card.remove();
+
+                showToast('Termin abgesagt. Die Übersicht aktualisiert sich zeitnah.');
+              } catch (e) {
+                console.error(e);
+                showToast('Netzwerkfehler bei Absage.', 'red');
+              } finally {
+                // Falls der Button noch existiert (z. B. bei Fehler), wiederherstellen
+                if (btnEl && btnEl.isConnected) {
+                  btnEl.disabled = false;
+                  btnEl.style.opacity = '1';
+                  btnEl.innerHTML = 'Absagen';
+                }
+              }
             }
     
             // Kalender (ICS)
@@ -827,50 +834,49 @@ END:VCALENDAR`;
             }
         </script>
         
-        <!-- ADMIN TESTBOX (nur vorübergehend) -->
-<div id="admin-tools" style="position:fixed;right:12px;bottom:92px;z-index:9999;">
-  <button id="dry-run-btn"
-    style="background:#111827;color:#fff;border:none;padding:10px 14px;border-radius:12px;font-weight:600;cursor:pointer;opacity:.85">
-    Worker: Trockenlauf
-  </button>
-  <button id="live-run-btn"
-    style="background:#10b981;color:#fff;border:none;padding:10px 14px;border-radius:12px;font-weight:600;cursor:pointer;margin-left:8px;opacity:.95">
-    Worker: Echtlauf
-  </button>
-</div>
+        <!-- ADMIN TESTBOX -->
+        <div id="admin-tools" style="position:fixed;right:12px;bottom:92px;z-index:9999;">
+          <button id="dry-run-btn"
+            style="background:#111827;color:#fff;border:none;padding:10px 14px;border-radius:12px;font-weight:600;cursor:pointer;opacity:.85">
+            Worker: Trockenlauf
+          </button>
+          <button id="live-run-btn"
+            style="background:#10b981;color:#fff;border:none;padding:10px 14px;border-radius:12px;font-weight:600;cursor:pointer;margin-left:8px;opacity:.95">
+            Worker: Echtlauf
+          </button>
+        </div>
 
-<script>
-(function adminWorkerTest(){
-  const WURL = 'https://verfuegbarkeiten-worker.coffee-recoveryhh.workers.dev/run';
+        <script>
+        (function adminWorkerTest(){
+          const WURL = 'https://verfuegbarkeiten-worker.coffee-recoveryhh.workers.dev/run';
 
-  async function runWorker(dryRun){
-    try {
-      const res = await fetch(WURL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ dryRun })
-      });
-      const text = await res.text(); // text lesen, damit wir auch Fehlerseiten sehen
-      // Kleiner Screen-Toast:
-      const toast = document.createElement('pre');
-      toast.style.cssText = 'position:fixed;left:12px;bottom:92px;max-width:86vw;max-height:40vh;overflow:auto;z-index:9999;background:#111827;color:#e5e7eb;padding:10px 12px;border-radius:10px;box-shadow:0 8px 20px rgba(0,0,0,.16);font-size:12px;white-space:pre-wrap;';
-      toast.textContent = (res.ok ? '✅ OK ' : '❌ ' + res.status) + '\n' + text;
-      document.body.appendChild(toast);
-      setTimeout(()=>toast.remove(), 8000);
-    } catch (e) {
-      alert('Fetch-Fehler: ' + e.message);
-      console.error(e);
-    }
-  }
+          async function runWorker(dryRun){
+            try {
+              const res = await fetch(WURL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ dryRun })
+              });
+              const text = await res.text();
+              const toast = document.createElement('pre');
+              toast.style.cssText = 'position:fixed;left:12px;bottom:92px;max-width:86vw;max-height:40vh;overflow:auto;z-index:9999;background:#111827;color:#e5e7eb;padding:10px 12px;border-radius:10px;box-shadow:0 8px 20px rgba(0,0,0,.16);font-size:12px;white-space:pre-wrap;';
+              toast.textContent = (res.ok ? '✅ OK ' : '❌ ' + res.status) + '\n' + text;
+              document.body.appendChild(toast);
+              setTimeout(()=>toast.remove(), 8000);
+            } catch (e) {
+              alert('Fetch-Fehler: ' + e.message);
+              console.error(e);
+            }
+          }
 
-  const dryBtn = document.getElementById('dry-run-btn');
-  const liveBtn = document.getElementById('live-run-btn');
-  if (dryBtn) dryBtn.addEventListener('click', ()=>runWorker(true));
-  if (liveBtn) liveBtn.addEventListener('click', ()=> {
-    if (confirm('Sicher? Das schreibt in Airtable.')) runWorker(false);
-  });
-})();
-</script>
+          const dryBtn = document.getElementById('dry-run-btn');
+          const liveBtn = document.getElementById('live-run-btn');
+          if (dryBtn) dryBtn.addEventListener('click', ()=>runWorker(true));
+          if (liveBtn) liveBtn.addEventListener('click', ()=> {
+            if (confirm('Sicher? Das schreibt in Airtable.')) runWorker(false);
+          });
+        })();
+        </script>
     
         <!-- Toast nach Redirect (&submitted=1) -->
         <script>
