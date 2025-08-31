@@ -275,6 +275,28 @@
           <h1 class="text-3xl font-bold text-gray-800">Credits einlösen</h1>
           <p class="text-gray-600 mt-2">Tausche deine Credits gegen Prämien.</p>
         </header>
+        
+        // beim Einlösen eines Rewards (z. B. 100 Credits)
+const WURL = 'https://verfuegbarkeiten-worker.coffee-recoveryhh.workers.dev/credits/redeem';
+const res = await fetch(WURL, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    portalId: CURRENT_PORTAL_ID,
+    amount: 100,     // abzuziehende Credits
+    dryRun: false    // true = nur testen
+  })
+});
+const json = await res.json();
+if (json.ok) {
+  // neuen Kontostand in der UI anzeigen
+  document.querySelector('#gamification-points span').textContent = json.balance;
+  showToast('Prämie eingelöst! Danke 🤍');
+} else if (json.error === 'insufficient_credits') {
+  showToast(`Nicht genug Credits (verfügbar: ${json.balance}).`, 'red');
+} else {
+  showToast('Konnte nicht einlösen.', 'red');
+}
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <!-- Reward 1 -->
