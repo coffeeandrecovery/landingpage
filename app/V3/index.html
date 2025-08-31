@@ -208,25 +208,114 @@
                 </div>
             </div>
     
-            <!-- MONATSPLANUNG (JotForm eingebettet mit Prefill) -->
-            <div id="monatsplanung-page" class="page p-6">
-                <header class="pt-2 pb-6">
-                    <h1 class="text-3xl font-bold text-gray-800">Monatsplanung</h1>
-                    <p class="text-gray-600 mt-2">Teile deine Verfügbarkeiten über das Formular.</p>
-                </header>
-                <div class="bg-white p-0 rounded-xl shadow-sm border border-gray-200">
-                    <!-- JotForm iFrame -->
-                    <iframe
-                      id="JotFormIFrame-252311488402047"
-                      title="Monatsplanung Donnerstag"
-                      allowtransparency="true"
-                      allow="geolocation; microphone; camera; fullscreen"
-                      src="https://form.jotform.com/252311488402047"
-                      frameborder="0"
-                      style="min-width:100%;max-width:100%;height:580px;border:none;"
-                      scrolling="no">
-                    </iframe>
-                </div>
+            <!-- MONATSPLANUNG (JotForm: DO/FR mit Prefill & Umschalter) -->
+<div id="monatsplanung-page" class="page p-6">
+  <header class="pt-2 pb-6">
+    <h1 class="text-3xl font-bold text-gray-800">Monatsplanung</h1>
+    <p class="text-gray-600 mt-2">Wähle deine Gruppe und teile deine Verfügbarkeiten.</p>
+
+    <!-- Umschalter -->
+    <div class="mt-4 inline-flex rounded-lg border border-gray-200 overflow-hidden">
+      <button id="btn-do"
+              class="px-4 py-2 text-sm font-semibold bg-white text-gray-700 hover:bg-gray-50 border-r border-gray-200"
+              type="button"
+              onclick="selectGroup('do')">
+        Donnerstag
+      </button>
+      <button id="btn-fr"
+              class="px-4 py-2 text-sm font-semibold bg-white text-gray-700 hover:bg-gray-50"
+              type="button"
+              onclick="selectGroup('fr')">
+        Freitag
+      </button>
+    </div>
+  </header>
+
+  <div class="bg-white p-0 rounded-xl shadow-sm border border-gray-200">
+    <iframe
+      id="jotform-iframe"
+      title="Monatsplanung"
+      allowtransparency="true"
+      allow="geolocation; microphone; camera; fullscreen"
+      src=""  <!-- wird per JS gesetzt -->
+      frameborder="0"
+      style="min-width:100%;max-width:100%;height:580px;border:none;"
+      scrolling="no">
+    </iframe>
+  </div>
+
+  <!-- JotForm Embed-Handler -->
+  <script src="https://cdn.jotfor.ms/s/umd/latest/for-form-embed-handler.js"></script>
+  <script>
+    // === Konfiguration: Form-IDs für DO/FR ===
+    const JF_FORMS = {
+      do: "252311488402047",  // Donnerstag (vorher schon eingebaut)
+      fr: "252312335231342"   // Freitag (NEU)
+    };
+    // Hidden-Feld Unique Name in JotForm:
+    const JF_PORTAL_FIELD = "portalId"; // bitte sicherstellen, dass das Hidden-Feld so heißt
+
+    // Gruppe anhand URL ?grp=fr|do bestimmen (default: do)
+    function getInitialGroup() {
+      const m = (location.search||'').match(/[?&]grp=([^&#]+)/i);
+      const g = m ? decodeURIComponent(m[1]).toLowerCase() : '';
+      return (g === 'fr' || g === 'do') ? g : 'do';
+    }
+
+    function getPortalIdFromUrlLocal() {
+      const q = window.location.search || '';
+      const m = q.match(/[?&]id=([^&#]+)/i);
+      return m ? decodeURIComponent(m[1]).trim().replace(/%23$/, '').replace(/#$/, '') : '';
+    }
+
+    function styleGroupButtons(active) {
+      const doBtn = document.getElementById('btn-do');
+      const frBtn = document.getElementById('btn-fr');
+      const makeActive = (btn) => {
+        btn.classList.remove('bg-white','text-gray-700');
+        btn.classList.add('bg-indigo-600','text-white');
+      };
+      const makeInactive = (btn) => {
+        btn.classList.add('bg-white','text-gray-700');
+        btn.classList.remove('bg-indigo-600','text-white');
+      };
+      if (active === 'do') {
+        makeActive(doBtn); makeInactive(frBtn);
+      } else {
+        makeActive(frBtn); makeInactive(doBtn);
+      }
+    }
+
+    function buildJotformUrl(group, portalId) {
+      const base = `https://form.jotform.com/${JF_FORMS[group]}`;
+      const u = new URL(base);
+      if (portalId) u.searchParams.set(JF_PORTAL_FIELD, portalId);
+      return u.toString();
+    }
+
+    // Wird von den Buttons aufgerufen
+    function selectGroup(group) {
+      const portalId = getPortalIdFromUrlLocal();
+      const iframe = document.getElementById('jotform-iframe');
+      if (!iframe) return;
+
+      // URL setzen (mit Prefill)
+      iframe.src = buildJotformUrl(group, portalId);
+      styleGroupButtons(group);
+
+      // JotForm Embed-Handler erneut „attachen“
+      try {
+        window.jotformEmbedHandler("iframe[id='jotform-iframe']", "https://form.jotform.com/");
+      } catch(e) { /* beim ersten Laden ggf. noch nicht nötig */ }
+    }
+
+    // Beim erstmaligen Anzeigen der Seite Default-Gruppe laden
+    (function initMonatsplanung(){
+      const group = getInitialGroup(); // 'do' oder 'fr'
+      selectGroup(group);
+    })();
+  </script>
+</div>
     
                 <!-- PREFILL SCRIPT – muss VOR dem Embed-Handler stehen -->
                 <script>
