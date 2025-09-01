@@ -78,7 +78,7 @@
     .btn-ghost-danger { border: 1px solid #fecaca; color: #dc2626; padding: .375rem .625rem; border-radius: .5rem; font-weight: 600; transition: background .15s, border-color .15s, color .15s, opacity .15s; background: #fff; }
     .btn-ghost-danger:hover { background: #fef2f2; border-color: #fca5a5; }
 
-    .inline-spinner { width: 14px; height: 14px; border: 2px solid #e5e7eb; border-top-color: #dc2626; border-radius: 9999px; display: inline-block; vertical-align: middle; margin-right: 6px; animation: spin .8s linear infinite; }
+    .inline-spinner { width: 14px; height: 14px; border: 2px solid #e5e7eb; border-right-color: #dc2626; border-radius: 9999px; display: inline-block; vertical-align: middle; margin-right: 6px; animation: spin .8s linear infinite; }
 
     .modal-overlay { position: fixed; inset: 0; background-color: rgba(0, 0, 0, 0.5); z-index: 200; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; }
     .modal-overlay.visible { opacity: 1; visibility: visible; }
@@ -430,7 +430,7 @@
             renderData(data);
         } catch (error) {
             console.error('Fehler beim Abrufen der Daten:', error);
-            document.querySelector('.main-content').innerHTML = '<p class="text-center text-red-500 mt-8 p-8">Daten konnten nicht geladen werden. Bitte versuchen Sie es später erneut oder kontaktieren Sie den Support.</p>';
+            document.querySelector('main.main-content').innerHTML = '<p class="text-center text-red-500 mt-8 p-8">Daten konnten nicht geladen werden. Bitte versuchen Sie es später erneut oder kontaktieren Sie den Support.</p>';
         } finally {
             loadingSpinner.classList.add('hidden');
         }
