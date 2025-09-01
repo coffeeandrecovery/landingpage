@@ -1,0 +1,157 @@
+/**
+ * Cloudflare Worker zur Integration mit Airtable (Lese-Endpunkt).
+ *
+ * Verantwortlichkeiten:
+ * 1. Ruft alle primären Daten für einen Teilnehmer anhand seiner Portal-ID ab.
+ * 2. Löst verknüpfte Datensätze auf (z.B. Bestätigte Termine, Rechnungen).
+ * 3. PRÜFT, ob der Teilnehmer für den aktuellen Kalendermonat bereits eine
+ * Verfügbarkeit in der 'Verfügbarkeiten Raw'-Tabelle eingereicht hat.
+ * 4. Bündelt alle Informationen in einem sauberen JSON-Objekt für die Web-App.
+ */
+
+export default {
+    async fetch(request, env, ctx) {
+        // Standard-Header für Cross-Origin Resource Sharing (CORS)
+        const defaultHeaders = {
+            'Access-Control-Allow-Origin': 'https://www.burnouthilfe.org', // Passen Sie dies an Ihre Domain an
+            'Access-Control-Allow-Methods': 'POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type',
+        };
+
+        // Behandelt Preflight-Anfragen des Browsers
+        if (request.method === 'OPTIONS') {
+            return new Response(null, { status: 204, headers: defaultHeaders });
+        }
+
+        const url = new URL(request.url);
+        if (request.method === 'POST' && url.pathname === '/') {
+            try {
+                const AIRTABLE_API_KEY = env.AIRTABLE_API_KEY;
+                const AIRTABLE_BASE_ID = env.AIRTABLE_BASE_ID;
+                if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID) {
+                    throw new Error("Serverkonfiguration unvollständig. API Key oder Base ID fehlen.");
+                }
+
+                const requestBody = await request.json();
+                const portalId = requestBody.id;
+                if (!portalId) {
+                    return jsonResponse({ error: 'Portal-ID fehlt im Request Body.' }, 400, defaultHeaders);
+                }
+
+                // Helper-Funktion für saubere Airtable-API-Aufrufe
+                const fetchAirtable = async (table, params = "") => {
+                    const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(table)}?${params}`;
+                    const res = await fetch(url, { headers: { 'Authorization': `Bearer ${AIRTABLE_API_KEY}` } });
+                    if (!res.ok) {
+                        const errorText = await res.text();
+                        console.error(`Airtable API Fehler [${table}]: ${res.status} - ${errorText}`);
+                        throw new Error(`Airtable API Fehler: ${res.status}`);
+                    }
+                    return res.json();
+                };
+
+                // --- 1. Haupt-Teilnehmerinnen-Daten abrufen ---
+                const teilnehmerFilter = `filterByFormula=${encodeURIComponent(`{Portal-ID} = '${portalId}'`)}`;
+                const teilnehmerData = await fetchAirtable("Teilnehmerinnen", teilnehmerFilter);
+
+                if (!teilnehmerData.records || teilnehmerData.records.length === 0) {
+                    return jsonResponse({ error: 'Teilnehmerin mit dieser Portal-ID nicht gefunden.' }, 404, defaultHeaders);
+                }
+                const userRecord = teilnehmerData.records[0];
+                const userFields = userRecord.fields;
+                const userRecordId = userRecord.id;
+
+                // --- 2. NEU: Prüfen, ob eine Verfügbarkeit für den aktuellen Monat existiert ---
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = now.getMonth() + 1; // JS-Monate sind 0-basiert, Airtable's sind 1-basiert
+
+                const availabilityFilter = `filterByFormula=${encodeURIComponent(
+                    `AND(RECORD_ID({Teilnehmerinnen}) = '${userRecordId}', YEAR({Eingang}) = ${year}, MONTH({Eingang}) = ${month})`
+                )}`;
+                const availabilityData = await fetchAirtable("Verfügbarkeiten Raw", availabilityFilter);
+                const hatVerfuegbarkeitAbgegeben = (availabilityData.records && availabilityData.records.length > 0);
+
+                // --- 3. Bestätigte Termine abrufen (durch Auflösung der IDs) ---
+                const linkedAppointmentIds = userFields["Bestätigte Termine"] || [];
+                let confirmedAppointmentsData = { records: [] };
+                if (linkedAppointmentIds.length > 0) {
+                    const appointmentFilter = `filterByFormula=OR(${linkedAppointmentIds.map(id => `RECORD_ID()='${id}'`).join(',')})`;
+                    // Termine nach Datum aufsteigend sortieren
+                    const sortParam = `&sort%5B0%5D%5Bfield%5D=Datum&sort%5B0%5D%5Bdirection%5D=asc`;
+                    confirmedAppointmentsData = await fetchAirtable("Bestätigte Termine", `${appointmentFilter}${sortParam}`);
+                }
+                
+                // (Hier können weitere Datenabrufe wie Rechnungen, etc. hinzugefügt werden)
+
+                // --- 4. Finales Datenobjekt für die Web-App zusammenbauen ---
+                const appData = {
+                    firstName: userFields["Vorname"] || '',
+                    news: userFields["Aktuelle News"] || 'Keine neuen Ankündigungen.',
+                    gamificationPoints: userFields["Gamification Punkte"] || 0,
+                    credits: userFields["Credits"] || 0,
+                    groupKey: userFields["Gruppe"] || '', // Für die Jotform-Auswahl
+                    hatVerfuegbarkeitAbgegeben: hatVerfuegbarkeitAbgegeben, // Der neue, entscheidende Wert
+                    
+                    guthaben: {
+                        used: userFields["Guthaben genutzt"] || 0,
+                        total: userFields["Guthaben total"] || 0,
+                        type: Array.isArray(userFields["Kartentyp"]) ? userFields["Kartentyp"][0] : 'Keine Karte',
+                    },
+
+                    resources: parseJsonField(userFields["Ressourcen JSON"]),
+
+                    confirmedAppointments: (confirmedAppointmentsData.records || []).map(rec => {
+                        return formatAppointment(rec.fields.Datum, "19:00 - 20:30 Uhr");
+                    }).filter(Boolean),
+                };
+                
+                // Nächsten Termin hinzufügen, falls vorhanden
+                appData.nextAppointment = appData.confirmedAppointments.length > 0 ? appData.confirmedAppointments[0] : null;
+
+                return jsonResponse(appData, 200, defaultHeaders);
+
+            } catch (e) {
+                console.error("Schwerwiegender Worker-Fehler:", e.stack);
+                return jsonResponse({ error: 'Worker-Absturz.', details: e.message }, 500, defaultHeaders);
+            }
+        }
+        return new Response('Endpunkt nicht gefunden.', { status: 404 });
+    }
+};
+
+// --- Helper-Funktionen ---
+
+function jsonResponse(data, status = 200, headers = {}) {
+    return new Response(JSON.stringify(data, null, 2), {
+        status,
+        headers: { ...headers, 'Content-Type': 'application/json' },
+    });
+}
+
+function parseJsonField(fieldContent) {
+    if (!fieldContent) return [];
+    try {
+        return JSON.parse(fieldContent);
+    } catch (e) {
+        console.warn("Konnte JSON-Feld nicht parsen:", fieldContent);
+        return [];
+    }
+}
+
+function formatAppointment(dateString, timeString) {
+    if (!dateString) return null;
+    try {
+        const date = new Date(dateString);
+        return {
+            date: dateString,
+            day: String(date.getDate()).padStart(2, '0'),
+            month: date.toLocaleString('de-DE', { month: 'short' }),
+            time: timeString
+        };
+    } catch (e) {
+        console.warn(`Ungültiges Datumsformat: ${dateString}`);
+        return null;
+    }
+}
+
