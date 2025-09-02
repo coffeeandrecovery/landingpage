@@ -613,12 +613,14 @@ const JF_GROUP_FIELD = 'gruppe'; // Name des neuen, versteckten Gruppen-Feldes i
     // --- Helper & Action Functions ---
 
     function resolveGroupKey(data) {
-        const raw = (data?.groupKey || data?.group || data?.Gruppe || '').toString().trim().toLowerCase();
-        if (!raw) return '';
-        if (['do','donnerstag'].some(k => raw.includes(k))) return 'do';
-        if (['fr','freitag'].some(k => raw.includes(k))) return 'fr';
-        return '';
-    }
+    const raw = (data?.groupKey || data?.group || data?.Gruppe || data?.groupLabel || '').toString().trim().toLowerCase();
+    if (!raw) return '';
+    if (['do','donnerstag','thu','thursday'].includes(raw)) return 'do';
+    if (['fr','freitag','fri','friday'].includes(raw)) return 'fr';
+    if (raw.includes('donnerstag')) return 'do';
+    if (raw.includes('freitag'))    return 'fr';
+    return '';
+}
 
     function mountMonatsplanungForm(grpKey, portalId) {
     const iframe = document.getElementById('jotform-iframe');
