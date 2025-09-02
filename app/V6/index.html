@@ -88,10 +88,6 @@
     .modal-content { background-color: white; padding: 1.5rem; border-radius: 0.75rem; width: 90%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); transform: scale(0.95); transition: transform 0.3s; }
     .modal-overlay.visible .modal-content { transform: scale(1); }
 
-    /* Spezifische Anpassung nur fÃ¼r die Monatsplanungsseite */
-    #monatsplanung-page {
-  max-width: 40rem; /* Schmaler als die 48rem der anderen Seiten, passt besser zum Formular */
-    }
   </style>
 </head>
 <body class="antialiased">
@@ -230,7 +226,7 @@
                   allow="geolocation; microphone; camera; fullscreen"
                   src="about:blank"
                   frameborder="0"
-                  style="min-width:100%;max-width:100%;height:580px;border:none;" scrolling="no"></iframe>
+                  style="min-width:100%;max-width:100%;height:450px;border:none;" scrolling="no"></iframe>
         </div>
       </div>
 
@@ -493,26 +489,31 @@
     }
 
     function renderNextAppointment(appointment) {
-        const container = document.getElementById('next-appointment-container');
-        if (appointment && appointment.date) {
-            const dateObj = new Date(appointment.date);
-            const weekday = dateObj.toLocaleString('de-DE', { weekday: 'short' });
-            container.innerHTML = `
-                <h2 class="font-semibold text-teal-800 mb-3">Dein nÃ¤chster Termin:</h2>
-                <div class="flex items-center space-x-4">
-                    <div class="flex-shrink-0 bg-teal-600 text-white rounded-lg p-3 text-center w-16">
-                         <p class="font-bold text-xl">${appointment.day}</p>
-                        <p class="text-xs font-medium">${appointment.month}</p>
-                    </div>
-                    <div>
-                        <p class="font-semibold text-gray-900">BestÃ¤tigter Termin (${weekday})</p>
-                        <p class="text-sm text-teal-700">${appointment.time}</p>
-                    </div>
-                </div>`;
-        } else {
-            container.innerHTML = `<p class="p-5 text-center text-gray-500 bg-white rounded-xl shadow-sm border">Aktuell sind keine Termine fÃ¼r dich bestÃ¤tigt.</p>`;
-        }
+    const container = document.getElementById('next-appointment-container');
+    if (appointment && appointment.date) {
+        const dateObj = new Date(appointment.date);
+        const weekday = dateObj.toLocaleString('de-DE', { weekday: 'short' });
+        container.innerHTML = `
+            <h2 class="font-semibold text-teal-800 mb-3">Dein nächster Termin:</h2>
+            <div class="flex items-center space-x-4 mb-4">
+                <div class="flex-shrink-0 bg-teal-600 text-white rounded-lg p-3 text-center w-16">
+                     <p class="font-bold text-xl">${appointment.day}</p>
+                    <p class="text-xs font-medium">${appointment.month}</p>
+                </div>
+                <div>
+                    <p class="font-semibold text-gray-900">Bestätigter Termin (${weekday})</p>
+                    <p class="text-sm text-teal-700">${appointment.time}</p>
+                </div>
+            </div>
+            <button class="w-full bg-white text-teal-700 font-semibold py-2 px-4 rounded-lg border border-teal-300 hover:bg-teal-100 transition-colors text-sm flex items-center justify-center gap-2"
+                    onclick="addToCalendar('${appointment.date}', 'Gruppensitzung', 'Ihre nächste Gruppensitzung', '19:00', '20:30'); return false;">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+              <span>Zum Kalender hinzufügen</span>
+            </button>`;
+    } else {
+        container.innerHTML = `<p class="p-5 text-center text-gray-500 bg-white rounded-xl shadow-sm border">Aktuell sind keine Termine für dich bestätigt.</p>`;
     }
+}
 
     function renderConfirmedAppointments(appointments) {
     const container = document.getElementById('confirmed-appointments-container');
@@ -529,12 +530,12 @@
                             <p class="text-xs font-medium">${appt.month}</p>
                         </div>
                         <div class="flex-grow">
-                            <p class="font-semibold text-gray-900">BestÃ¤tigter Termin (${weekday})</p>
+                            <p class="font-semibold text-gray-900">Bestätigter Termin (${weekday})</p>
                             <p class="text-sm text-green-700">${appt.time}</p>
                         </div>
                         <div class="ml-auto flex items-center space-x-2">
                             <button class="text-green-700 hover:text-green-900 transition"
-                                    title="Zum Kalender hinzufÃ¼gen"
+                                    title="Zum Kalender hinzufügen"
                                     onclick="addToCalendar('${appt.date}', 'Gruppensitzung', 'Ihre Gruppensitzung', '19:00', '20:30'); return false;">
                               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" /></svg>
                             </button>
@@ -544,7 +545,7 @@
             }
         });
     } else {
-        container.innerHTML = `<p class="text-center text-gray-500 mt-8">Aktuell sind keine Termine bestÃ¤tigt.</p>`;
+        container.innerHTML = `<p class="text-center text-gray-500 mt-8">Aktuell sind keine Termine bestätigt.</p>`;
     }
 }
 
