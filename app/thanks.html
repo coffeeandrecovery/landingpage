@@ -48,8 +48,8 @@
 
     // *** Ziel-URL: submitted=1 VOR dem Hash, damit die App den Toast sicher findet ***
     const target = portalId
-      ? `https://www.burnouthilfe.org/app/V2/?id=${encodeURIComponent(portalId)}&submitted=1#bestaetigte-termine-page`
-      : `https://www.burnouthilfe.org/app/V2/`;
+      ? `https://www.burnouthilfe.org/app/V6/?id=${encodeURIComponent(portalId)}`
+      : `https://www.burnouthilfe.org/app/V6/`;
 
     // Button klickbar machen
     document.getElementById('link').href = target;
@@ -59,7 +59,7 @@
       setTimeout(() => {
         if (window.top) window.top.location.href = target;
         else location.href = target;
-      }, 1200);
+      }, 12000);
     } else {
       document.getElementById('hint').textContent =
         'Portal-ID fehlt – bitte über den App-Link neu einsteigen.';
