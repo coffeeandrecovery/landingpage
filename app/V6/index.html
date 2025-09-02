@@ -596,17 +596,17 @@
     }
     
     function renderInvoices(invoices) {
-        const container = document.getElementById('invoice-list-container');
-        container.innerHTML = '';
-        if (Array.isArray(invoices) && invoices.length) {
-            invoices.forEach(inv => {
-                const statusColor = inv.Status === 'Bezahlt' ? 'green' : (inv.Status === 'Offen' ? 'orange' : 'gray');
-                container.innerHTML += `<a href="${inv['PDF-URL'] || '#'}" target="_blank" class="p-5 flex justify-between items-center transition hover:bg-gray-50"><div><p class="font-semibold text-gray-800">Rechnung von ${inv.Datum}</p><p class="text-sm text-gray-500">Nr. ${inv.Rechnungsnummer}</p></div><div class="text-right"><p class="font-semibold text-gray-900">${new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(inv.Betrag)}</p><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-${statusColor}-100 text-${statusColor}-800">${inv.Status}</span></div></a>`;
-            });
-        } else {
-            container.innerHTML = `<p class="p-5 text-gray-500">Keine Rechnungen vorhanden.</p>`;
-        }
+    const container = document.getElementById('invoice-list-container');
+    container.innerHTML = '';
+    if (Array.isArray(invoices) && invoices.length) {
+        invoices.forEach(inv => {
+            const statusColor = inv.Status === 'Bezahlt' ? 'green' : (inv.Status === 'Offen' ? 'orange' : 'gray');
+            container.innerHTML += `<a href="${inv['PDF-URL'] || '#'}" target="_blank" class="p-5 flex justify-between items-center transition hover:bg-gray-50"><div><p class="font-semibold text-gray-800">${inv.Rechnungstext}</p><p class="text-sm text-gray-500">Nr. ${inv.Rechnungsnummer}</p></div><div class="text-right"><p class="font-semibold text-gray-900">${new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(inv.Betrag)}</p><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-${statusColor}-100 text-${statusColor}-800">${inv.Status}</span></div></a>`;
+        });
+    } else {
+        container.innerHTML = `<p class="p-5 text-gray-500">Keine Rechnungen vorhanden.</p>`;
     }
+}
 
     // --- Helper & Action Functions ---
 
