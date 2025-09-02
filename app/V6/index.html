@@ -395,8 +395,10 @@
     let pageHistory = ['home'];
     let CURRENT_PORTAL_ID = null;
 
-    const FORM_IDS = { do: '252311488402047', fr: '252312335231342' };
-    const JF_PORTAL_FIELD = 'portalId';
+    // NEU: Nur noch eine Formular-ID für das zentrale Formular
+const FORM_ID = '252311488402047'; // Die ID Ihres bestehenden Donnerstag-Formulars
+const JF_PORTAL_FIELD = 'portalId';
+const JF_GROUP_FIELD = 'gruppe'; // Name des neuen, versteckten Gruppen-Feldes in Jotform
 
     // --- Core App Logic ---
     
@@ -619,21 +621,29 @@
     }
 
     function mountMonatsplanungForm(grpKey, portalId) {
-        const iframe = document.getElementById('jotform-iframe');
-        const lbl = document.getElementById('grp-label');
-        if (!grpKey || !FORM_IDS[grpKey]) {
-            if (lbl) lbl.textContent = '';
-            if (iframe) iframe.src = 'about:blank';
-            return;
-        }
-        if (lbl) lbl.textContent = grpKey === 'do' ? '(Donnerstag)' : '(Freitag)';
-        const baseUrl = `https://form.jotform.com/${FORM_IDS[grpKey]}`;
-        const url = new URL(baseUrl);
-        if (portalId) url.searchParams.set(JF_PORTAL_FIELD, portalId);
-        if (iframe && iframe.src !== url.toString()) {
-            iframe.src = url.toString();
-        }
+    const iframe = document.getElementById('jotform-iframe');
+    const lbl = document.getElementById('grp-label');
+
+    if (!grpKey) {
+        if (lbl) lbl.textContent = '';
+        if (iframe) iframe.src = 'about:blank';
+        return;
     }
+
+    if (lbl) lbl.textContent = grpKey === 'do' ? '(Donnerstag)' : '(Freitag)';
+    
+    // Verwendet jetzt immer die gleiche FORM_ID
+    const baseUrl = `https://form.jotform.com/${FORM_ID}`;
+    const url = new URL(baseUrl);
+
+    // Fügt jetzt BEIDE Parameter zur URL hinzu: die Portal-ID und die Gruppe
+    if (portalId) url.searchParams.set(JF_PORTAL_FIELD, portalId);
+    url.searchParams.set(JF_GROUP_FIELD, grpKey); // z.B. &gruppe=do
+
+    if (iframe && iframe.src !== url.toString()) {
+        iframe.src = url.toString();
+    }
+}
     
     async function cancelAppointment(btnEl, dateISO) {
         const modalOverlay = document.getElementById('cancel-modal-overlay');
