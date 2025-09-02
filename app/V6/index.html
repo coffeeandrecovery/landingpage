@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport"
         content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <title>Dein persÃ¶nliches Portal</title>
+  <title>Recovery Gruppen Portal</title>
 
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
@@ -94,7 +94,7 @@
 
   <div id="loading-spinner">
     <div class="spinner"></div>
-    <p class="mt-4 text-gray-600 font-semibold">LÃ¤dt Daten...</p>
+    <p class="mt-4 text-gray-600 font-semibold">Lädt Daten...</p>
   </div>
 
   <div id="pin-modal-overlay" class="fixed inset-0 z-[200] bg-white/40 backdrop-blur-md" style="display: none;">
@@ -105,7 +105,7 @@
         <input id="pin-input" type="password" inputmode="numeric" maxlength="4"
                class="w-full border rounded-lg px-4 py-3 tracking-widest text-center text-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
                placeholder="â€¢â€¢â€¢â€¢" />
-        <p id="pin-error" class="hidden mt-2 text-sm text-red-600">Code ist ungÃ¼ltig.</p>
+        <p id="pin-error" class="hidden mt-2 text-sm text-red-600">Code ist ungültig.</p>
         <button id="pin-submit"
                 class="w-full mt-4 bg-indigo-600 text-white font-semibold py-2.5 rounded-lg hover:bg-indigo-700 transition">
            Weiter
@@ -117,9 +117,9 @@
   <div id="cancel-modal-overlay" class="modal-overlay">
       <div class="modal-content">
           <h2 class="text-xl font-bold text-gray-900 mb-2">Termin absagen</h2>
-          <p class="text-gray-600 mb-4">MÃ¶chtest du diesen Termin wirklich absagen?</p>
+          <p class="text-gray-600 mb-4">Möchtest du diesen Termin wirklich absagen?</p>
           <div id="cancel-modal-warning" class="hidden bg-yellow-50 border border-yellow-200 text-yellow-900 rounded-lg p-3 mb-4 text-sm">
-              <b>Bitte beachte:</b> Bei Absagen innerhalb von 48 Stunden vor Terminbeginn wird eine AusfallgebÃ¼hr von 29 â‚¬ fÃ¤llig.
+              <b>Bitte beachte:</b> Bei Absagen innerhalb von 48 Stunden vor Terminbeginn wird eine Ausfallgebühr von 29 € fällig.
           </div>
           <div class="flex justify-end gap-3 mt-6">
               <button id="modal-btn-no" class="px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 font-semibold text-gray-800 transition">Abbrechen</button>
@@ -131,7 +131,7 @@
   <div id="app-wrapper">
     <header class="fixed top-0 left-0 right-0 z-20 bg-white/80 backdrop-blur-sm border-b border-gray-200">
       <div class="max-w-3xl mx-auto flex items-center justify-between h-18 px-6">
-        <button id="back-button" onclick="goBack()" class="text-gray-600 hover:text-indigo-500 transition hidden" aria-label="ZurÃ¼ck">
+        <button id="back-button" onclick="goBack()" class="text-gray-600 hover:text-indigo-500 transition hidden" aria-label="Zurück">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
         </button>
         <div class="font-bold text-gray-800 text-lg">Recovery Gruppen</div>
@@ -143,7 +143,7 @@
             <img src="/assets/icon4.png" alt="Credits" class="h-6 w-6 rounded object-contain" />
             <span class="font-semibold text-sm">...</span>
           </button>
-          <button id="menu-button" onclick="toggleMenu()" class="text-gray-600 hover:text-indigo-500 transition" aria-label="MenÃ¼">
+          <button id="menu-button" onclick="toggleMenu()" class="text-gray-600 hover:text-indigo-500 transition" aria-label="Menü">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16m-7 6h7" /></svg>
           </button>
         </div>
@@ -152,16 +152,16 @@
 
     <div id="off-canvas-menu" class="off-canvas-menu">
       <div class="p-6">
-        <h2 class="text-xl font-bold text-gray-800 mb-6">MenÃ¼</h2>
+        <h2 class="text-xl font-bold text-gray-800 mb-6">Menü</h2>
         <nav class="space-y-4">
           <a href="#" onclick="showPage('home'); toggleMenu(); return false;" class="block text-gray-700 font-semibold hover:text-indigo-500 transition">Home</a>
           <a href="#" onclick="showPage('monatsplanung-page'); toggleMenu(); return false;" class="block text-gray-700 font-semibold hover:text-indigo-500 transition">Monatsplanung</a>
-          <a href="#" onclick="showPage('bestaetigte-termine-page'); toggleMenu(); return false;" class="block text-gray-700 font-semibold hover:text-indigo-500 transition">BestÃ¤tigte Termine</a>
+          <a href="#" onclick="showPage('bestaetigte-termine-page'); toggleMenu(); return false;" class="block text-gray-700 font-semibold hover:text-indigo-500 transition">Bestätigte Termine</a>
           <a href="#" onclick="showPage('mein-bereich'); toggleMenu(); return false;" class="block text-gray-700 font-semibold hover:text-indigo-500 transition">Rechnungen</a>
           <a href="#" onclick="showPage('bibliothek'); toggleMenu(); return false;" class="block text-gray-700 font-semibold hover:text-indigo-500 transition">Ressourcen</a>
           <a href="#" onclick="openBrevoChat(); toggleMenu(); return false;" class="block text-gray-700 font-semibold hover:text-indigo-500 transition">Kontakt</a>
           <span class="block text-gray-400 font-semibold transition cursor-not-allowed">Gruppenpinnwand / Coming Soon</span>
-          <a href="#" onclick="showPage('gamification-shop-page'); toggleMenu(); return false;" class="block text-gray-700 font-semibold hover:text-indigo-500 transition">Credits einlÃ¶sen</a>
+          <a href="#" onclick="showPage('gamification-shop-page'); toggleMenu(); return false;" class="block text-gray-700 font-semibold hover:text-indigo-500 transition">Credits einlösen</a>
         </nav>
       </div>
     </div>
@@ -172,7 +172,7 @@
       <div id="home" class="page active p-6">
         <header class="text-left pt-2 pb-6">
           <h1 id="user-greeting" class="text-3xl font-bold text-gray-800">Willkommen!</h1>
-          <p class="text-md text-gray-500 mt-1">SchÃ¶n, dass du da bist.</p>
+          <p class="text-md text-gray-500 mt-1">Schön, dass du da bist.</p>
         </header>
 
         <div id="news-container" class="bg-white border border-gray-200 rounded-xl p-5 mb-8 shadow-sm">
@@ -189,13 +189,13 @@
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
             </div>
             <h3 class="font-semibold text-lg text-gray-900">Monatsplanung</h3>
-            <p class="text-sm text-gray-500 mt-1">Plane deine VerfÃ¼gbarkeit.</p>
+            <p class="text-sm text-gray-500 mt-1">Plane deine Verfügbarkeit.</p>
           </a>
           <a href="#" onclick="showPage('bestaetigte-termine-page'); return false;" id="link-termine" class="nav-card bg-white rounded-xl shadow-sm p-6 border border-gray-200 block">
             <div class="flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
             </div>
-            <h3 class="font-semibold text-lg text-gray-900">BestÃ¤tigte Termine</h3>
+            <h3 class="font-semibold text-lg text-gray-900">Bestätigte Termine</h3>
             <p class="text-sm text-gray-500 mt-1">Sieh alle Sitzungen ein.</p>
           </a>
           <a href="#" onclick="openBrevoChat(); return false;" id="link-kontakt" class="nav-card brevo-chat-trigger bg-white rounded-xl shadow-sm p-6 border border-gray-200 block sm:col-span-2">
@@ -211,13 +211,13 @@
       <div id="monatsplanung-page" class="page p-6">
         <header class="pt-2 pb-6">
           <h1 class="text-3xl font-bold text-gray-800">Monatsplanung <span id="grp-label" class="text-indigo-600"></span></h1>
-          <p id="monatsplanung-subtitle" class="text-gray-600 mt-2">Teile deine VerfÃ¼gbarkeiten Ã¼ber das Formular.</p>
+          <p id="monatsplanung-subtitle" class="text-gray-600 mt-2">Teile deine Verfügbarkeiten über das Formular.</p>
         </header>
 
         <div id="monatsplanung-danke" class="hidden bg-white p-6 rounded-xl shadow-sm border border-gray-200 text-center">
           <div class="flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4 mx-auto"><svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></div>
           <h2 class="text-xl font-bold text-gray-800">Vielen Dank!</h2>
-          <p class="text-gray-600 mt-2">Deine VerfÃ¼gbarkeiten fÃ¼r diesen Monat wurden bereits Ã¼bermittelt.</p>
+          <p class="text-gray-600 mt-2">Deine Verfügbarkeiten für diesen Monat wurden bereits Übermittelt.</p>
         </div>
         
         <div id="monatsplanung-form-container" class="bg-white p-0 rounded-xl shadow-sm border border-gray-200">
@@ -232,7 +232,7 @@
 
       <div id="bestaetigte-termine-page" class="page p-6">
         <header class="pt-2 pb-6">
-          <h1 class="text-3xl font-bold text-gray-800">BestÃ¤tigte Termine</h1>
+          <h1 class="text-3xl font-bold text-gray-800">Bestätigte Termine</h1>
           <p class="text-gray-600 mt-2">Deine festen Gruppensitzungen.</p>
          </header>
         <div id="confirmed-appointments-container" class="space-y-4">
@@ -243,7 +243,7 @@
       <div id="shop-page" class="page p-6">
         <header class="pt-2 pb-6">
           <h1 class="text-3xl font-bold text-gray-800">Gruppenkarten kaufen</h1>
-          <p class="text-gray-600 mt-2">WÃ¤hle die passende Karte fÃ¼r deine BedÃ¼rfnisse.</p>
+          <p class="text-gray-600 mt-2">Wähle die passende Karte für deine Bedürfnisse.</p>
         </header>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="shop-card p-6 flex flex-col">
@@ -258,7 +258,7 @@
               <span class="text-gray-500 line-through">300 â‚¬</span>
               <span class="text-4xl font-extrabold text-gray-900 leading-none ml-2">240 â‚¬</span>
             </div>
-            <p class="description flex-grow">EnthÃ¤lt 5 Sitzungen (inkl. 1 gratis Sitzung).</p>
+            <p class="description flex-grow">Enthält 5 Sitzungen (inkl. 1 gratis Sitzung).</p>
             <a href="https://buy.stripe.com/dRmdR96dj8MN1pcgLn3Je04" target="_blank" class="w-full text-center mt-5 bg-indigo-600 text-white font-semibold py-2.5 rounded-lg hover:bg-indigo-700 transition">Jetzt kaufen</a>
           </div>
 
@@ -274,7 +274,7 @@
                 <span class="text-gray-500 line-through">600 â‚¬</span>
                 <span class="text-4xl font-extrabold text-gray-900 leading-none ml-2">420 â‚¬</span>
             </div>
-            <p class="description flex-grow">EnthÃ¤lt 10 Sitzungen (inkl. 3 gratis Sitzungen).</p>
+            <p class="description flex-grow">Enthält 10 Sitzungen (inkl. 3 gratis Sitzungen).</p>
             <a href="https://buy.stripe.com/eVq3cv1X35ABfg252F3Je05" target="_blank" class="w-full text-center mt-5 bg-green-600 text-white font-semibold py-2.5 rounded-lg hover:bg-green-700 transition">Jetzt kaufen</a>
           </div>
         </div>
@@ -282,27 +282,27 @@
 
       <div id="gamification-shop-page" class="page p-6">
         <header class="pt-2 pb-6">
-          <h1 class="text-3xl font-bold text-gray-800">Credits einlÃ¶sen</h1>
-          <p class="text-gray-600 mt-2">Tausche deine Credits gegen PrÃ¤mien.</p>
+          <h1 class="text-3xl font-bold text-gray-800">Credits einlösen</h1>
+          <p class="text-gray-600 mt-2">Tausche deine Credits gegen Prämien.</p>
         </header>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div class="shop-card p-6 redeem-card">
             <div class="flex items-center justify-center w-24 h-24 mb-4 mx-auto"><img src="/assets/credit1.png" alt="Notizblock" class="w-24 h-24 object-contain" /></div>
             <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">Notizblock</h3>
             <p class="text-2xl font-extrabold text-indigo-600 text-center credit-inline"><span>30</span><img src="/assets/icon4.png" alt="Credits" /></p>
-            <button class="w-full mt-4 bg-indigo-600 text-white font-semibold py-2.5 rounded-lg hover:bg-indigo-700 transition" onclick="redeemCredits(30);">EinlÃ¶sen</button>
+            <button class="w-full mt-4 bg-indigo-600 text-white font-semibold py-2.5 rounded-lg hover:bg-indigo-700 transition" onclick="redeemCredits(30);">Einlösen</button>
           </div>
           <div class="shop-card p-6 redeem-card">
             <div class="flex items-center justify-center w-24 h-24 mb-4 mx-auto"><img src="/assets/credit2.png" alt="LEGO Blume" class="w-24 h-24 object-contain" /></div>
             <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">LEGO Blume</h3>
             <p class="text-2xl font-extrabold text-indigo-600 text-center credit-inline"><span>40</span><img src="/assets/icon4.png" alt="Credits" /></p>
-            <button class="w-full mt-4 bg-indigo-600 text-white font-semibold py-2.5 rounded-lg hover:bg-indigo-700 transition" onclick="redeemCredits(40);">EinlÃ¶sen</button>
+            <button class="w-full mt-4 bg-indigo-600 text-white font-semibold py-2.5 rounded-lg hover:bg-indigo-700 transition" onclick="redeemCredits(40);">Einlösen</button>
           </div>
           <div class="shop-card p-6 redeem-card">
             <div class="flex items-center justify-center w-24 h-24 mb-4 mx-auto"><img src="/assets/credit3.png" alt="Wellness Spa Tag" class="w-24 h-24 object-contain" /></div>
             <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">Wellness Spa Tag</h3>
             <p class="text-2xl font-extrabold text-indigo-600 text-center credit-inline"><span>200</span><img src="/assets/icon4.png" alt="Credits" /></p>
-            <button class="w-full mt-4 bg-indigo-600 text-white font-semibold py-2.5 rounded-lg hover:bg-indigo-700 transition" onclick="redeemCredits(200);">EinlÃ¶sen</button>
+            <button class="w-full mt-4 bg-indigo-600 text-white font-semibold py-2.5 rounded-lg hover:bg-indigo-700 transition" onclick="redeemCredits(200);">Einlösen</button>
           </div>
         </div>
       </div>
@@ -310,7 +310,7 @@
       <div id="bibliothek" class="page p-6">
         <header class="pt-2 pb-6">
           <h1 class="text-3xl font-bold text-gray-800">Bibliothek</h1>
-          <p class="text-gray-600 mt-2">Ein Ort fÃ¼r Ressourcen und den Austausch.</p>
+          <p class="text-gray-600 mt-2">Ein Ort für Ressourcen und den Austausch.</p>
         </header>
         <div class="space-y-8">
           <div>
@@ -327,7 +327,7 @@
       <div id="mein-bereich" class="page p-6">
         <header class="pt-2 pb-6">
           <h1 class="text-3xl font-bold text-gray-800">Mein Bereich</h1>
-          <p class="text-gray-600 mt-2">Deine Ãœbersicht Ã¼ber Guthaben und Rechnungen.</p>
+          <p class="text-gray-600 mt-2">Deine Übersicht über Guthaben und Rechnungen.</p>
         </header>
         <div class="space-y-8">
           <div>
@@ -448,7 +448,7 @@
             renderData(data);
         } catch (error) {
             console.error('Fehler beim Abrufen der Daten:', error);
-            document.querySelector('main.main-content').innerHTML = '<p class="text-center text-red-500 mt-8 p-8">Daten konnten nicht geladen werden. Bitte versuchen Sie es spÃ¤ter erneut oder kontaktieren Sie den Support.</p>';
+            document.querySelector('main.main-content').innerHTML = '<p class="text-center text-red-500 mt-8 p-8">Daten konnten nicht geladen werden. Bitte versuchen Sie es später erneut oder kontaktieren Sie den Support.</p>';
         } finally {
             loadingSpinner.classList.add('hidden');
         }
@@ -477,11 +477,11 @@
         if (data.hatVerfuegbarkeitAbgegeben) {
             formContainer.classList.add('hidden');
             dankeContainer.classList.remove('hidden');
-            subtitle.textContent = "Deine Eingabe fÃ¼r diesen Monat ist bei uns eingegangen.";
+            subtitle.textContent = "Deine Eingabe für diesen Monat ist bei uns eingegangen.";
         } else {
             formContainer.classList.remove('hidden');
             dankeContainer.classList.add('hidden');
-            subtitle.textContent = "Teile deine VerfÃ¼gbarkeiten Ã¼ber das Formular.";
+            subtitle.textContent = "Teile deine Verfügbarkeiten über das Formular.";
             
             const grpKey = resolveGroupKey(data);
             mountMonatsplanungForm(grpKey, CURRENT_PORTAL_ID);
@@ -550,7 +550,7 @@
 }
 
     function renderNews(news) {
-        document.getElementById('news-container').innerHTML = `<div class="flex items-center space-x-3 mb-3"><div class="flex-shrink-0 flex items-center justify-center h-8 w-8 rounded-full bg-indigo-100"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg></div><h2 class="font-semibold text-gray-700">News & Aktuelles</h2></div><p class="text-gray-600 text-sm">${news || 'Keine neuen AnkÃ¼ndigungen.'}</p>`;
+        document.getElementById('news-container').innerHTML = `<div class="flex items-center space-x-3 mb-3"><div class="flex-shrink-0 flex items-center justify-center h-8 w-8 rounded-full bg-indigo-100"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg></div><h2 class="font-semibold text-gray-700">News & Aktuelles</h2></div><p class="text-gray-600 text-sm">${news || 'Keine neuen Ankündigungen.'}</p>`;
     }
 
     function renderResources(resources) {
@@ -561,7 +561,7 @@
                 container.innerHTML += `<a href="${res.url}" target="_blank" class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between transition hover:border-indigo-400"><div class="flex items-center space-x-4"><div class="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-lg bg-blue-100"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg></div><span class="font-medium text-gray-700">${res.name}</span></div><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg></a>`;
             });
         } else {
-            container.innerHTML = `<p class="p-5 text-center text-gray-500 bg-white rounded-xl shadow-sm border">Keine Ressourcen verfÃ¼gbar.</p>`;
+            container.innerHTML = `<p class="p-5 text-center text-gray-500 bg-white rounded-xl shadow-sm border">Keine Ressourcen verfügbar.</p>`;
         }
     }
     
@@ -688,12 +688,12 @@
         const json = await res.json();
         if (!res.ok || !json.ok) {
           badgeEl.textContent = String(current); // Rollback
-          return showToast(json.error || 'EinlÃ¶sen fehlgeschlagen.', 'red');
+          return showToast(json.error || 'Einlösen fehlgeschlagen.', 'red');
         }
         if (typeof json.newBalance === 'number') {
           badgeEl.textContent = String(json.newBalance);
         }
-        showToast('Credits eingelÃ¶st! ðŸŽ‰');
+        showToast('Credits eingelöst! ðŸŽ‰');
       } catch (e) {
         badgeEl.textContent = String(current); // Rollback
         showToast('Netzwerkfehler.', 'red');
@@ -746,7 +746,7 @@
 
     (function showSubmissionToastIfNeeded(){
         if (new URLSearchParams(location.search).get('submitted')) {
-          showToast('Danke! Deine VerfÃ¼gbarkeiten wurden gespeichert.');
+          showToast('Danke! Deine Verfügbarkeiten wurden gespeichert.');
         }
     })();
 
