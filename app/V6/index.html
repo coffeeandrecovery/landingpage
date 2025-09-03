@@ -441,6 +441,9 @@ const JF_GROUP_FIELD = 'gruppe'; // Name des neuen, versteckten Gruppen-Feldes i
     }
 
     function setupPinAuthentication() {
+        // NEU: Hier kannst du die Dauer der Sitzung in Minuten festlegen
+        const SESSION_DURATION_MINUTES = 30;
+
         const pinModalOverlay = document.getElementById('pin-modal-overlay');
         const pinInput = document.getElementById('pin-input');
         const pinBtn = document.getElementById('pin-submit');
@@ -448,20 +451,17 @@ const JF_GROUP_FIELD = 'gruppe'; // Name des neuen, versteckten Gruppen-Feldes i
         const appWrapper = document.getElementById('app-wrapper');
         const loadingSpinner = document.getElementById('loading-spinner');
 
-        // Die Logik, was nach erfolgreichem Login passiert
-        const onLoginSuccess = () => {
-            localStorage.setItem("portalPinOk", "1");
-            appWrapper.classList.remove('content-blurred');
-            pinModalOverlay.style.display = 'none';
-            fetchData(CURRENT_PORTAL_ID);
+        const showPinModal = () => {
+            localStorage.removeItem("portalLoginTimestamp"); // Alten Zeitstempel sicherheitshalber entfernen
+            pinModalOverlay.style.display = 'flex';
+            appWrapper.classList.add('content-blurred');
+            loadingSpinner.classList.add('hidden');
         };
 
-        // Die neue checkPin Funktion, die den Worker fragt
         const checkPin = async () => {
             const pin = pinInput.value.trim();
             if (pin.length < 4) return;
-
-            pinBtn.disabled = true; // Button während der Prüfung deaktivieren
+            pinBtn.disabled = true;
             pinErr.classList.add("hidden");
 
             try {
@@ -470,11 +470,14 @@ const JF_GROUP_FIELD = 'gruppe'; // Name des neuen, versteckten Gruppen-Feldes i
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ portalId: CURRENT_PORTAL_ID, pin: pin })
                 });
-
                 const result = await response.json();
 
                 if (response.ok && result.ok) {
-                    onLoginSuccess();
+                    // NEU: Bei Erfolg den aktuellen Zeitstempel speichern
+                    localStorage.setItem("portalLoginTimestamp", new Date().getTime());
+                    appWrapper.classList.remove('content-blurred');
+                    pinModalOverlay.style.display = 'none';
+                    fetchData(CURRENT_PORTAL_ID);
                 } else {
                     pinErr.classList.remove("hidden");
                     pinInput.value = "";
@@ -485,18 +488,28 @@ const JF_GROUP_FIELD = 'gruppe'; // Name des neuen, versteckten Gruppen-Feldes i
                 pinErr.textContent = "Ein Fehler ist aufgetreten. Bitte erneut versuchen.";
                 pinErr.classList.remove("hidden");
             } finally {
-                pinBtn.disabled = false; // Button wieder aktivieren
+                pinBtn.disabled = false;
             }
         };
 
-        // Prüfen, ob der User bereits eingeloggt ist (wie bisher)
-        if (localStorage.getItem("portalPinOk") === "1") {
-            pinModalOverlay.style.display = 'none';
-            fetchData(CURRENT_PORTAL_ID);
+        // NEU: Komplette Logik zur Prüfung des Zeitstempels
+        const loginTimestamp = localStorage.getItem("portalLoginTimestamp");
+        if (loginTimestamp) {
+            const now = new Date().getTime();
+            const sessionDurationMs = SESSION_DURATION_MINUTES * 60 * 1000;
+            const elapsedTime = now - parseInt(loginTimestamp, 10);
+
+            if (elapsedTime < sessionDurationMs) {
+                // Sitzung ist noch gültig
+                pinModalOverlay.style.display = 'none';
+                fetchData(CURRENT_PORTAL_ID);
+            } else {
+                // Sitzung ist abgelaufen
+                showPinModal();
+            }
         } else {
-            pinModalOverlay.style.display = 'flex';
-            appWrapper.classList.add('content-blurred');
-            loadingSpinner.classList.add('hidden');
+            // Kein Zeitstempel gefunden, also zum ersten Mal hier
+            showPinModal();
         }
 
         pinBtn.addEventListener("click", checkPin);
