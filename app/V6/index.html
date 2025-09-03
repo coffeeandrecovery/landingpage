@@ -441,7 +441,6 @@ const JF_GROUP_FIELD = 'gruppe'; // Name des neuen, versteckten Gruppen-Feldes i
     }
 
     function setupPinAuthentication() {
-        const CORRECT_PIN = "4289";
         const pinModalOverlay = document.getElementById('pin-modal-overlay');
         const pinInput = document.getElementById('pin-input');
         const pinBtn = document.getElementById('pin-submit');
@@ -449,19 +448,48 @@ const JF_GROUP_FIELD = 'gruppe'; // Name des neuen, versteckten Gruppen-Feldes i
         const appWrapper = document.getElementById('app-wrapper');
         const loadingSpinner = document.getElementById('loading-spinner');
 
-        const checkPin = () => {
-            if (pinInput.value.trim() === CORRECT_PIN) {
-                localStorage.setItem("portalPinOk", "1");
-                appWrapper.classList.remove('content-blurred');
-                pinModalOverlay.style.display = 'none';
-                fetchData(CURRENT_PORTAL_ID);
-            } else {
+        // Die Logik, was nach erfolgreichem Login passiert
+        const onLoginSuccess = () => {
+            localStorage.setItem("portalPinOk", "1");
+            appWrapper.classList.remove('content-blurred');
+            pinModalOverlay.style.display = 'none';
+            fetchData(CURRENT_PORTAL_ID);
+        };
+
+        // Die neue checkPin Funktion, die den Worker fragt
+        const checkPin = async () => {
+            const pin = pinInput.value.trim();
+            if (pin.length < 4) return;
+
+            pinBtn.disabled = true; // Button während der Prüfung deaktivieren
+            pinErr.classList.add("hidden");
+
+            try {
+                const response = await fetch('https://verfuegbarkeiten-worker.coffee-recoveryhh.workers.dev/verify-pin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ portalId: CURRENT_PORTAL_ID, pin: pin })
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.ok) {
+                    onLoginSuccess();
+                } else {
+                    pinErr.classList.remove("hidden");
+                    pinInput.value = "";
+                    pinInput.focus();
+                }
+            } catch (error) {
+                console.error("PIN check failed:", error);
+                pinErr.textContent = "Ein Fehler ist aufgetreten. Bitte erneut versuchen.";
                 pinErr.classList.remove("hidden");
-                pinInput.value = "";
-                pinInput.focus();
+            } finally {
+                pinBtn.disabled = false; // Button wieder aktivieren
             }
         };
 
+        // Prüfen, ob der User bereits eingeloggt ist (wie bisher)
         if (localStorage.getItem("portalPinOk") === "1") {
             pinModalOverlay.style.display = 'none';
             fetchData(CURRENT_PORTAL_ID);
