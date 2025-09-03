@@ -480,14 +480,12 @@
     let currentPageId = 'home';
     let pageHistory = ['home'];
     let CURRENT_PORTAL_ID = null;
-
-    // NEU: Nur noch eine Formular-ID für das zentrale Formular
-const FORM_ID = '252311488402047'; // Die ID Ihres bestehenden Donnerstag-Formulars
-const JF_PORTAL_FIELD = 'portalId';
-const JF_GROUP_FIELD = 'gruppe'; // Name des neuen, versteckten Gruppen-Feldes in Jotform
+    
+    const FORM_ID = '252311488402047';
+    const JF_PORTAL_FIELD = 'portalId';
+    const JF_GROUP_FIELD = 'gruppe';
 
     // --- Core App Logic ---
-    
     document.addEventListener('DOMContentLoaded', () => {
         const loadingSpinner = document.getElementById('loading-spinner');
         CURRENT_PORTAL_ID = getPortalIdFromUrl();
@@ -497,7 +495,7 @@ const JF_GROUP_FIELD = 'gruppe'; // Name des neuen, versteckten Gruppen-Feldes i
             return;
         }
         setupPinAuthentication();
-      setupChangePinForm();
+        setupChangePinForm();
     });
 
     function getPortalIdFromUrl() {
@@ -514,12 +512,10 @@ const JF_GROUP_FIELD = 'gruppe'; // Name des neuen, versteckten Gruppen-Feldes i
 
         form.addEventListener('submit', async (event) => {
             event.preventDefault();
-            
             const currentPin = currentPinInput.value;
             const newPin = newPinInput.value;
             const confirmPin = confirmPinInput.value;
 
-            // Frontend-Validierung
             messageEl.textContent = '';
             messageEl.className = 'mt-4 text-center text-sm';
             if (newPin.length !== 4) {
@@ -552,7 +548,7 @@ const JF_GROUP_FIELD = 'gruppe'; // Name des neuen, versteckten Gruppen-Feldes i
                     if (result.ok) {
                         messageEl.textContent = 'PIN erfolgreich geändert!';
                         messageEl.classList.add('text-green-600');
-                        form.reset(); // Formularfelder leeren
+                        form.reset();
                     }
                 } else {
                     const errorResult = await response.json();
@@ -572,11 +568,9 @@ const JF_GROUP_FIELD = 'gruppe'; // Name des neuen, versteckten Gruppen-Feldes i
             }
         });
     }
-    
-    function setupPinAuthentication() {
-        // NEU: Hier kannst du die Dauer der Sitzung in Minuten festlegen
-        const SESSION_DURATION_MINUTES = 30;
 
+    function setupPinAuthentication() {
+        const SESSION_DURATION_MINUTES = 30;
         const pinModalOverlay = document.getElementById('pin-modal-overlay');
         const pinInput = document.getElementById('pin-input');
         const pinBtn = document.getElementById('pin-submit');
@@ -585,7 +579,7 @@ const JF_GROUP_FIELD = 'gruppe'; // Name des neuen, versteckten Gruppen-Feldes i
         const loadingSpinner = document.getElementById('loading-spinner');
 
         const showPinModal = () => {
-            localStorage.removeItem("portalLoginTimestamp"); // Alten Zeitstempel sicherheitshalber entfernen
+            localStorage.removeItem("portalLoginTimestamp");
             pinModalOverlay.style.display = 'flex';
             appWrapper.classList.add('content-blurred');
             loadingSpinner.classList.add('hidden');
@@ -604,9 +598,7 @@ const JF_GROUP_FIELD = 'gruppe'; // Name des neuen, versteckten Gruppen-Feldes i
                     body: JSON.stringify({ portalId: CURRENT_PORTAL_ID, pin: pin })
                 });
                 const result = await response.json();
-
                 if (response.ok && result.ok) {
-                    // NEU: Bei Erfolg den aktuellen Zeitstempel speichern
                     localStorage.setItem("portalLoginTimestamp", new Date().getTime());
                     appWrapper.classList.remove('content-blurred');
                     pinModalOverlay.style.display = 'none';
@@ -625,23 +617,18 @@ const JF_GROUP_FIELD = 'gruppe'; // Name des neuen, versteckten Gruppen-Feldes i
             }
         };
 
-        // NEU: Komplette Logik zur Prüfung des Zeitstempels
         const loginTimestamp = localStorage.getItem("portalLoginTimestamp");
         if (loginTimestamp) {
             const now = new Date().getTime();
             const sessionDurationMs = SESSION_DURATION_MINUTES * 60 * 1000;
             const elapsedTime = now - parseInt(loginTimestamp, 10);
-
             if (elapsedTime < sessionDurationMs) {
-                // Sitzung ist noch gültig
                 pinModalOverlay.style.display = 'none';
                 fetchData(CURRENT_PORTAL_ID);
             } else {
-                // Sitzung ist abgelaufen
                 showPinModal();
             }
         } else {
-            // Kein Zeitstempel gefunden, also zum ersten Mal hier
             showPinModal();
         }
 
@@ -666,45 +653,39 @@ const JF_GROUP_FIELD = 'gruppe'; // Name des neuen, versteckten Gruppen-Feldes i
             renderData(data);
         } catch (error) {
             console.error('Fehler beim Abrufen der Daten:', error);
-            document.querySelector('main.main-content').innerHTML = '<p class="text-center text-red-500 mt-8 p-8">Daten konnten nicht geladen werden. Bitte versuchen Sie es später erneut oder kontaktieren Sie den Support.</p>';
+            document.querySelector('main.main-content').innerHTML = '<p class="text-center text-red-500 mt-8 p-8">Daten konnten nicht geladen werden. Bitte versuchen Sie es später erneut.</p>';
         } finally {
             loadingSpinner.classList.add('hidden');
         }
     }
 
-    // --- Rendering Logic (Refactored from V5) ---
-    
+    // --- Rendering Logic ---
     function renderData(data) {
-        // Die Daten werden global gespeichert, damit die onReady-Funktion sie finden kann
-        window.APP_DATA = data;
-        
-        document.getElementById('user-greeting').textContent = `Willkommen, ${data.firstName || ''}!`;
-        document.querySelector('#credits-display span').textContent = data.credits ?? 0;
+        window.APP_DATA = data; // Daten global speichern für Brevo
+        document.getElementById('user-greeting').textContent = `Willkommen, ${data.firstName || ''}!`;
+        document.querySelector('#credits-display span').textContent = data.credits ?? 0;
 
-        // Prüft, ob Brevo schon bereit ist. Wenn ja, identifizieren.
-        // Wenn nicht, wird die onReady-Funktion das später übernehmen.
         if (window.BREVO_IS_READY && data.email) {
             window.BrevoConversations('identify', {
                 email: data.email,
                 name: data.firstName
             });
         }
-        
-        renderMonatsplanung(data);
-        renderNextAppointment(data.nextAppointment);
-        renderNews(data.news);
-        renderResources(data.resources);
-        renderGuthaben(data.guthaben);
-        renderInvoices(data.invoices);
-        renderRedeemedRewards(data.redeemedRewards);
-        renderConfirmedAppointments(data.confirmedAppointments);
-    }
+        
+        renderMonatsplanung(data);
+        renderNextAppointment(data.nextAppointment);
+        renderNews(data.news);
+        renderResources(data.resources);
+        renderGuthaben(data.guthaben);
+        renderInvoices(data.invoices);
+        renderRedeemedRewards(data.redeemedRewards);
+        renderConfirmedAppointments(data.confirmedAppointments);
+    }
 
     function renderMonatsplanung(data) {
         const formContainer = document.getElementById('monatsplanung-form-container');
         const dankeContainer = document.getElementById('monatsplanung-danke');
         const subtitle = document.getElementById('monatsplanung-subtitle');
-
         if (data.hatVerfuegbarkeitAbgegeben) {
             formContainer.classList.add('hidden');
             dankeContainer.classList.remove('hidden');
@@ -713,51 +694,50 @@ const JF_GROUP_FIELD = 'gruppe'; // Name des neuen, versteckten Gruppen-Feldes i
             formContainer.classList.remove('hidden');
             dankeContainer.classList.add('hidden');
             subtitle.textContent = "Teile deine Verfügbarkeiten über das Formular.";
-            
             const grpKey = resolveGroupKey(data);
             mountMonatsplanungForm(grpKey, CURRENT_PORTAL_ID);
         }
     }
 
     function renderNextAppointment(appointment) {
-    const container = document.getElementById('next-appointment-container');
-    if (appointment && appointment.date) {
-        const dateObj = new Date(appointment.date);
-        const weekday = dateObj.toLocaleString('de-DE', { weekday: 'short' });
-        container.innerHTML = `
-            <h2 class="font-semibold text-teal-800 mb-3">Dein nächster Termin:</h2>
-            <div class="flex items-center space-x-4 mb-4">
-                <div class="flex-shrink-0 bg-teal-600 text-white rounded-lg p-3 text-center w-16">
-                     <p class="font-bold text-xl">${appointment.day}</p>
-                    <p class="text-xs font-medium">${appointment.month}</p>
+        const container = document.getElementById('next-appointment-container');
+        if (appointment && appointment.date) {
+            const dateObj = new Date(appointment.date);
+            const weekday = dateObj.toLocaleString('de-DE', { weekday: 'short' });
+            container.innerHTML = `
+                <h2 class="font-semibold text-teal-800 mb-3">Dein nächster Termin:</h2>
+                <div class="flex items-center space-x-4 mb-4">
+                    <div class="flex-shrink-0 bg-teal-600 text-white rounded-lg p-3 text-center w-16">
+                        <p class="font-bold text-xl">${appointment.day}</p>
+                        <p class="text-xs font-medium">${appointment.month}</p>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-gray-900">Bestätigter Termin (${weekday})</p>
+                        <p class="text-sm text-teal-700">${appointment.time}</p>
+                    </div>
                 </div>
-                <div>
-                    <p class="font-semibold text-gray-900">Bestätigter Termin (${weekday})</p>
-                    <p class="text-sm text-teal-700">${appointment.time}</p>
-                </div>
-            </div>
-            <button class="w-full bg-white text-teal-700 font-semibold py-2 px-4 rounded-lg border border-teal-300 hover:bg-teal-100 transition-colors text-sm flex items-center justify-center gap-2"
-                    onclick="addToCalendar('${appointment.date}', 'Gruppensitzung', 'Ihre nächste Gruppensitzung', '19:00', '20:30'); return false;">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-              <span>Zum Kalender hinzufügen</span>
-            </button>`;
-    } else {
-        container.innerHTML = `<p class="p-5 text-center text-gray-500 bg-white rounded-xl shadow-sm border">Aktuell sind keine Termine für dich bestätigt.</p>`;
+                <button class="w-full bg-white text-teal-700 font-semibold py-2 px-4 rounded-lg border border-teal-300 hover:bg-teal-100 transition-colors text-sm flex items-center justify-center gap-2"
+                        onclick="addToCalendar('${appointment.date}', 'Gruppensitzung', 'Ihre nächste Gruppensitzung', '19:00', '20:30'); return false;">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                  <span>Zum Kalender hinzufügen</span>
+                </button>`;
+        } else {
+            container.innerHTML = `<p class="p-5 text-center text-gray-500 bg-white rounded-xl shadow-sm border">Aktuell sind keine Termine für dich bestätigt.</p>`;
+        }
     }
-}
 
     function renderConfirmedAppointments(appointments) {
-    const container = document.getElementById('confirmed-appointments-container');
-    container.innerHTML = '';
-    if (Array.isArray(appointments) && appointments.length > 0) {
-        appointments.forEach(appt => {
-            if (appt && appt.date) {
+        const container = document.getElementById('confirmed-appointments-container');
+        container.innerHTML = '';
+        if (Array.isArray(appointments) && appointments.length > 0) {
+            appointments.forEach(appt => {
+                if (!appt || !appt.date) return;
                 const dateObj = new Date(appt.date);
                 const weekday = dateObj.toLocaleString('de-DE', { weekday: 'short' });
                 container.innerHTML += `
                     <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex items-center space-x-4" data-date="${appt.date}">
                         <div class="flex-shrink-0 bg-green-600 text-white rounded-lg p-3 text-center w-16">
-                             <p class="font-bold text-xl">${appt.day}</p>
+                            <p class="font-bold text-xl">${appt.day}</p>
                             <p class="text-xs font-medium">${appt.month}</p>
                         </div>
                         <div class="flex-grow">
@@ -765,21 +745,18 @@ const JF_GROUP_FIELD = 'gruppe'; // Name des neuen, versteckten Gruppen-Feldes i
                             <p class="text-sm text-green-700">${appt.time}</p>
                         </div>
                         <div class="ml-auto flex flex-col sm:flex-row items-end sm:items-center gap-2">
-                            <button class="btn-ghost-secondary"
-                                    title="Zum Kalender hinzufügen"
-                                    onclick="addToCalendar('${appt.date}', 'Gruppensitzung', 'Ihre Gruppensitzung', '19:00', '20:30'); return false;">
-                              <svg xmlns="http://www.w.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" /></svg>
+                            <button class="btn-ghost-secondary" title="Zum Kalender hinzufügen" onclick="addToCalendar('${appt.date}', 'Gruppensitzung', 'Ihre Gruppensitzung', '19:00', '20:30'); return false;">
+                              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" /></svg>
                               <span>Kalender</span>
                             </button>
                             <button class="btn-ghost-danger" onclick="cancelAppointment(this, '${appt.date}')">Absagen</button>
                         </div>
                     </div>`;
-            }
-        });
-    } else {
-        container.innerHTML = `<p class="text-center text-gray-500 mt-8">Aktuell sind keine Termine bestätigt.</p>`;
+            });
+        } else {
+            container.innerHTML = `<p class="text-center text-gray-500 mt-8">Aktuell sind keine Termine bestätigt.</p>`;
+        }
     }
-}
 
     function renderNews(news) {
         document.getElementById('news-container').innerHTML = `<div class="flex items-center space-x-3 mb-3"><div class="flex-shrink-0 flex items-center justify-center h-8 w-8 rounded-full bg-indigo-100"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg></div><h2 class="font-semibold text-gray-700">News & Aktuelles</h2></div><p class="text-gray-600 text-sm">${news || 'Keine neuen Ankündigungen.'}</p>`;
@@ -788,7 +765,7 @@ const JF_GROUP_FIELD = 'gruppe'; // Name des neuen, versteckten Gruppen-Feldes i
     function renderResources(resources) {
         const container = document.getElementById('resources-container');
         container.innerHTML = '';
-        if (Array.isArray(resources) && resources.length) {
+        if (Array.isArray(resources) && resources.length > 0) {
             resources.forEach(res => {
                 container.innerHTML += `<a href="${res.url}" target="_blank" class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between transition hover:border-indigo-400"><div class="flex items-center space-x-4"><div class="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-lg bg-blue-100"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg></div><span class="font-medium text-gray-700">${res.name}</span></div><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg></a>`;
             });
@@ -808,23 +785,22 @@ const JF_GROUP_FIELD = 'gruppe'; // Name des neuen, versteckten Gruppen-Feldes i
     }
     
     function renderInvoices(invoices) {
-    const container = document.getElementById('invoice-list-container');
-    container.innerHTML = '';
-    if (Array.isArray(invoices) && invoices.length) {
-        invoices.forEach(inv => {
-            const statusColor = inv.Status === 'Bezahlt' ? 'green' : (inv.Status === 'Offen' ? 'orange' : 'gray');
-            container.innerHTML += `<a href="${inv['PDF-URL'] || '#'}" target="_blank" class="p-5 flex justify-between items-center transition hover:bg-gray-50"><div><p class="font-semibold text-gray-800">${inv.Rechnungstext}</p><p class="text-sm text-gray-500">Nr. ${inv.Rechnungsnummer}</p></div><div class="text-right"><p class="font-semibold text-gray-900">${new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(inv.Betrag)}</p><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-${statusColor}-100 text-${statusColor}-800">${inv.Status}</span></div></a>`;
-        });
-    } else {
-        container.innerHTML = `<p class="p-5 text-gray-500">Keine Rechnungen vorhanden.</p>`;
+        const container = document.getElementById('invoice-list-container');
+        container.innerHTML = '';
+        if (Array.isArray(invoices) && invoices.length > 0) {
+            invoices.forEach(inv => {
+                const statusColor = inv.Status === 'Bezahlt' ? 'green' : (inv.Status === 'Offen' ? 'orange' : 'gray');
+                container.innerHTML += `<a href="${inv['PDF-URL'] || '#'}" target="_blank" class="p-5 flex justify-between items-center transition hover:bg-gray-50"><div><p class="font-semibold text-gray-800">${inv.Rechnungstext}</p><p class="text-sm text-gray-500">Nr. ${inv.Rechnungsnummer}</p></div><div class="text-right"><p class="font-semibold text-gray-900">${new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(inv.Betrag)}</p><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-${statusColor}-100 text-${statusColor}-800">${inv.Status}</span></div></a>`;
+            });
+        } else {
+            container.innerHTML = `<p class="p-5 text-gray-500">Keine Rechnungen vorhanden.</p>`;
+        }
     }
-}
 
-function renderRedeemedRewards(rewards) {
+    function renderRedeemedRewards(rewards) {
         const container = document.getElementById('redeemed-rewards-container');
-        if (!container) return; // Sicherheitsprüfung, falls die Seite nicht aktiv ist
-        container.innerHTML = ''; // Leeren
-
+        if (!container) return;
+        container.innerHTML = '';
         if (Array.isArray(rewards) && rewards.length > 0) {
             rewards.forEach(reward => {
                 const date = reward.date ? new Date(reward.date).toLocaleDateString('de-DE', {day: '2-digit', month: '2-digit', year: 'numeric'}) : 'Unbekanntes Datum';
@@ -847,41 +823,31 @@ function renderRedeemedRewards(rewards) {
     }
 
     // --- Helper & Action Functions ---
-
     function resolveGroupKey(data) {
-    const raw = (data?.groupKey || data?.group || data?.Gruppe || data?.groupLabel || '').toString().trim().toLowerCase();
-    if (!raw) return '';
-    if (['do','donnerstag','thu','thursday'].includes(raw)) return 'do';
-    if (['fr','freitag','fri','friday'].includes(raw)) return 'fr';
-    if (raw.includes('donnerstag')) return 'do';
-    if (raw.includes('freitag'))    return 'fr';
-    return '';
-}
+        const raw = (data?.groupKey || data?.group || data?.Gruppe || data?.groupLabel || '').toString().trim().toLowerCase();
+        if (!raw) return '';
+        if (['do','donnerstag','thu','thursday'].includes(raw)) return 'do';
+        if (['fr','freitag','fri','friday'].includes(raw)) return 'fr';
+        return '';
+    }
 
     function mountMonatsplanungForm(grpKey, portalId) {
-    const iframe = document.getElementById('jotform-iframe');
-    const lbl = document.getElementById('grp-label');
-
-    if (!grpKey) {
-        if (lbl) lbl.textContent = '';
-        if (iframe) iframe.src = 'about:blank';
-        return;
+        const iframe = document.getElementById('jotform-iframe');
+        const lbl = document.getElementById('grp-label');
+        if (!grpKey) {
+            if (lbl) lbl.textContent = '';
+            if (iframe) iframe.src = 'about:blank';
+            return;
+        }
+        if (lbl) lbl.textContent = grpKey === 'do' ? '(Donnerstag)' : '(Freitag)';
+        const baseUrl = `https://form.jotform.com/${FORM_ID}`;
+        const url = new URL(baseUrl);
+        if (portalId) url.searchParams.set(JF_PORTAL_FIELD, portalId);
+        url.searchParams.set(JF_GROUP_FIELD, grpKey);
+        if (iframe && iframe.src !== url.toString()) {
+            iframe.src = url.toString();
+        }
     }
-
-    if (lbl) lbl.textContent = grpKey === 'do' ? '(Donnerstag)' : '(Freitag)';
-    
-    // Verwendet jetzt immer die gleiche FORM_ID
-    const baseUrl = `https://form.jotform.com/${FORM_ID}`;
-    const url = new URL(baseUrl);
-
-    // Fügt jetzt BEIDE Parameter zur URL hinzu: die Portal-ID und die Gruppe
-    if (portalId) url.searchParams.set(JF_PORTAL_FIELD, portalId);
-    url.searchParams.set(JF_GROUP_FIELD, grpKey); // z.B. &gruppe=do
-
-    if (iframe && iframe.src !== url.toString()) {
-        iframe.src = url.toString();
-    }
-}
     
     async function cancelAppointment(btnEl, dateISO) {
         const modalOverlay = document.getElementById('cancel-modal-overlay');
@@ -890,7 +856,7 @@ function renderRedeemedRewards(rewards) {
         const btnNo = document.getElementById('modal-btn-no');
 
         const appointmentDate = new Date(dateISO);
-        appointmentDate.setHours(19, 0, 0, 0); 
+        appointmentDate.setHours(19, 0, 0, 0);
         const now = new Date();
         const hoursUntilAppointment = (appointmentDate.getTime() - now.getTime()) / (1000 * 60 * 60);
         
@@ -941,78 +907,61 @@ function renderRedeemedRewards(rewards) {
         btnNo.addEventListener('click', closeModal, { once: true });
     }
 
-// NEU: Eine wiederverwendbare Funktion, um das Bestätigungs-Pop-up zu zeigen
     function showConfirmationModal(title, message) {
         const modal = document.getElementById('confirmation-modal-overlay');
         document.getElementById('confirmation-modal-title').textContent = title;
         document.getElementById('confirmation-modal-message').textContent = message;
         
         modal.classList.add('visible');
-
         const okButton = document.getElementById('confirmation-modal-btn-ok');
         
-        // Wichtig: Wir erstellen eine "saubere" Version des Buttons ohne alte Klick-Handler
         const newOkButton = okButton.cloneNode(true);
         okButton.parentNode.replaceChild(newOkButton, okButton);
-
         newOkButton.addEventListener('click', () => {
             modal.classList.remove('visible');
         }, { once: true });
     }
 
-    // Lauscht auf Nachrichten vom Jotform-Iframe
     window.addEventListener('message', function(event) {
         if (event.data === 'jotformSubmissionSuccess') {
-            // Ruft das neue Pop-up auf
             showConfirmationModal(
                 'Vielen Dank!',
                 'Deine Verfügbarkeiten für diesen Monat wurden erfolgreich übermittelt.'
             );
-
-            // Blendet das Formular aus und die Dankes-Nachricht ein
             document.getElementById('monatsplanung-form-container')?.classList.add('hidden');
             document.getElementById('monatsplanung-danke')?.classList.remove('hidden');
         }
     });
 
     async function redeemCredits(cost, itemName) {
-      const creditsDisplay = document.querySelector('#credits-display span');
-      if (!creditsDisplay) return showToast('Fehler: Credit-Anzeige nicht gefunden.', 'red');
-
-      const current = parseInt(creditsDisplay.textContent || '0', 10);
-      if (current < cost) return showToast(`Nicht genug Credits.`, 'red');
-      
-      creditsDisplay.textContent = String(current - cost); // Optimistic UI
-      
-      try {
-        const res = await fetch('https://verfuegbarkeiten-worker.coffee-recoveryhh.workers.dev/credits/redeem', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ portalId: CURRENT_PORTAL_ID, cost, itemName }) 
-        });
-        const json = await res.json();
-
-        if (!res.ok || !json.ok) {
-          creditsDisplay.textContent = String(current); 
-          return showToast(json.error || 'Einlösen fehlgeschlagen.', 'red');
+        const creditsDisplay = document.querySelector('#credits-display span');
+        if (!creditsDisplay) return showToast('Fehler: Credit-Anzeige nicht gefunden.', 'red');
+        const current = parseInt(creditsDisplay.textContent || '0', 10);
+        if (current < cost) return showToast(`Nicht genug Credits.`, 'red');
+        creditsDisplay.textContent = String(current - cost);
+        try {
+            const res = await fetch('https://verfuegbarkeiten-worker.coffee-recoveryhh.workers.dev/credits/redeem', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ portalId: CURRENT_PORTAL_ID, cost, itemName })
+            });
+            const json = await res.json();
+            if (!res.ok || !json.ok) {
+                creditsDisplay.textContent = String(current);
+                return showToast(json.error || 'Einlösen fehlgeschlagen.', 'red');
+            }
+            if (typeof json.newBalance === 'number') {
+                creditsDisplay.textContent = String(json.newBalance);
+            }
+            showConfirmationModal(
+                'Prämie eingelöst!',
+                `Super! Wir bringen dir "${itemName}" zu deinem nächsten bestätigten Gruppentermin mit.`
+            );
+        } catch (e) {
+            creditsDisplay.textContent = String(current);
+            showToast('Netzwerkfehler.', 'red');
         }
-
-        if (typeof json.newBalance === 'number') {
-          creditsDisplay.textContent = String(json.newBalance);
-        }
-        
-        // Ruft das neue Pop-up auf
-        showConfirmationModal(
-            'Prämie eingelöst!',
-            `Super! Wir bringen dir "${itemName}" zu deinem nächsten bestätigten Gruppentermin mit.`
-        );
-
-      } catch (e) {
-        creditsDisplay.textContent = String(current); 
-        showToast('Netzwerkfehler.', 'red');
-      }
     }
-
     
     function showPage(pageId) {
         if (currentPageId === pageId && document.getElementById(pageId).classList.contains('active')) return;
@@ -1042,7 +991,7 @@ function renderRedeemedRewards(rewards) {
         document.getElementById('off-canvas-overlay').classList.toggle('open');
     }
     
-    function openBrevoChat() { 
+    function openBrevoChat() {
         if (window.BrevoConversations) window.BrevoConversations('openChat', true);
     }
     
@@ -1058,15 +1007,14 @@ function renderRedeemedRewards(rewards) {
         }, 3500);
     }
 
-
-  function addToCalendar(date, summary, description, startTime, endTime) {
-    const formattedDate = date.replace(/-/g, '');
-    const formattedStartTime = startTime.replace(/:/g, '') + '00';
-    const formattedEndTime   = endTime.replace(/:/g, '') + '00';
-    const eventStart = formattedDate + 'T' + formattedStartTime;
-    const eventEnd   = formattedDate + 'T' + formattedEndTime;
-    const escapeICS = (text) => (text || '').replace(/\\/g, '\\\\').replace(/,/g, '\\,').replace(/;/g, '\\;');
-    const icsContent = `BEGIN:VCALENDAR
+    function addToCalendar(date, summary, description, startTime, endTime) {
+        const formattedDate = date.replace(/-/g, '');
+        const formattedStartTime = startTime.replace(/:/g, '') + '00';
+        const formattedEndTime   = endTime.replace(/:/g, '') + '00';
+        const eventStart = formattedDate + 'T' + formattedStartTime;
+        const eventEnd   = formattedDate + 'T' + formattedEndTime;
+        const escapeICS = (text) => (text || '').replace(/\\/g, '\\\\').replace(/,/g, '\\,').replace(/;/g, '\\;');
+        const icsContent = `BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//Recovery Group//DE//NONSGML v1.0//EN
 BEGIN:VEVENT
@@ -1078,14 +1026,14 @@ SUMMARY:${escapeICS(summary)}
 DESCRIPTION:${escapeICS(description)}
 END:VEVENT
 END:VCALENDAR`;
-    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.setAttribute('download', 'Gruppensitzung.ics');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
-  </script>
+        const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.setAttribute('download', 'Gruppensitzung.ics');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+</script>
 </body>
 </html>
