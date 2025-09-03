@@ -675,28 +675,30 @@ const JF_GROUP_FIELD = 'gruppe'; // Name des neuen, versteckten Gruppen-Feldes i
     // --- Rendering Logic (Refactored from V5) ---
     
     function renderData(data) {
-       window.APP_DATA = data;
-        document.getElementById('user-greeting').textContent = `Willkommen, ${data.firstName || ''}!`;
+        // Die Daten werden global gespeichert, damit die onReady-Funktion sie finden kann
+        window.APP_DATA = data;
+        
+        document.getElementById('user-greeting').textContent = `Willkommen, ${data.firstName || ''}!`;
+        document.querySelector('#credits-display span').textContent = data.credits ?? 0;
 
-      if (window.BrevoConversations && data.email) {
+        // Prüft, ob Brevo schon bereit ist. Wenn ja, identifizieren.
+        // Wenn nicht, wird die onReady-Funktion das später übernehmen.
+        if (window.BREVO_IS_READY && data.email) {
             window.BrevoConversations('identify', {
                 email: data.email,
-                // Wir können auch den Vornamen übergeben für eine persönliche Ansprache
-                name: data.firstName 
+                name: data.firstName
             });
         }
-
-        document.querySelector('#credits-display span').textContent = data.credits ?? 0;
-        
-        renderMonatsplanung(data);
-        renderNextAppointment(data.nextAppointment);
-        renderNews(data.news);
-        renderResources(data.resources);
-        renderGuthaben(data.guthaben);
-        renderInvoices(data.invoices);
-        renderRedeemedRewards(data.redeemedRewards);
-        renderConfirmedAppointments(data.confirmedAppointments);
-    }
+        
+        renderMonatsplanung(data);
+        renderNextAppointment(data.nextAppointment);
+        renderNews(data.news);
+        renderResources(data.resources);
+        renderGuthaben(data.guthaben);
+        renderInvoices(data.invoices);
+        renderRedeemedRewards(data.redeemedRewards);
+        renderConfirmedAppointments(data.confirmedAppointments);
+    }
 
     function renderMonatsplanung(data) {
         const formContainer = document.getElementById('monatsplanung-form-container');
