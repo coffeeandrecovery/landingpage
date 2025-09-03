@@ -404,7 +404,6 @@
               </a>
             </div>
           </div>
-                  </div>
       </div>
 </div> <div id="change-pin-page" class="page p-6">
         <header class="pt-2 pb-6">
@@ -795,6 +794,32 @@ const JF_GROUP_FIELD = 'gruppe'; // Name des neuen, versteckten Gruppen-Feldes i
         container.innerHTML = `<p class="p-5 text-gray-500">Keine Rechnungen vorhanden.</p>`;
     }
 }
+
+function renderRedeemedRewards(rewards) {
+        const container = document.getElementById('redeemed-rewards-container');
+        if (!container) return; // Sicherheitsprüfung, falls die Seite nicht aktiv ist
+        container.innerHTML = ''; // Leeren
+
+        if (Array.isArray(rewards) && rewards.length > 0) {
+            rewards.forEach(reward => {
+                const date = reward.date ? new Date(reward.date).toLocaleDateString('de-DE', {day: '2-digit', month: '2-digit', year: 'numeric'}) : 'Unbekanntes Datum';
+                container.innerHTML += `
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between">
+                        <div>
+                            <p class="font-semibold text-gray-800">${reward.name}</p>
+                            <p class="text-sm text-gray-500">Eingelöst am ${date}</p>
+                        </div>
+                        <div class="font-semibold text-indigo-600 credit-inline">
+                            <span>${reward.cost}</span>
+                            <img src="/assets/icon4.png" alt="Credits" />
+                        </div>
+                    </div>
+                `;
+            });
+        } else {
+            container.innerHTML = `<p class="p-5 text-center text-gray-500 bg-white rounded-xl shadow-sm border">Du hast noch keine Prämien eingelöst.</p>`;
+        }
+    }
 
     // --- Helper & Action Functions ---
 
