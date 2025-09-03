@@ -712,32 +712,44 @@ const JF_GROUP_FIELD = 'gruppe'; // Name des neuen, versteckten Gruppen-Feldes i
         btnNo.addEventListener('click', closeModal, { once: true });
     }
     
-    async function redeemCredits(cost) {
-      const badgeEl = document.querySelector('#gamification-points span');
-      const current = parseInt(badgeEl?.textContent || '0', 10);
-      if (current < cost) return showToast(`Nicht genug Credits.`, 'red');
-      
-      badgeEl.textContent = String(current - cost); // Optimistic UI
-      try {
-        const res = await fetch('https://verfuegbarkeiten-worker.coffee-recoveryhh.workers.dev/credits/redeem', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ portalId: CURRENT_PORTAL_ID, cost })
-        });
-        const json = await res.json();
-        if (!res.ok || !json.ok) {
-          badgeEl.textContent = String(current); // Rollback
-          return showToast(json.error || 'Einlösen fehlgeschlagen.', 'red');
-        }
-        if (typeof json.newBalance === 'number') {
-          badgeEl.textContent = String(json.newBalance);
-        }
-        showToast('Credits eingelöst! ðŸŽ‰');
-      } catch (e) {
-        badgeEl.textContent = String(current); // Rollback
-        showToast('Netzwerkfehler.', 'red');
+    async function redeemCredits(cost, itemName) { // GEÄNDERT: itemName als Parameter hinzugefügt
+    const creditsDisplay = document.querySelector('#credits-display span');
+    if (!creditsDisplay) return showToast('Fehler: Credit-Anzeige nicht gefunden.', 'red');
+
+    const current = parseInt(creditsDisplay.textContent || '0', 10);
+    if (current < cost) return showToast(`Nicht genug Credits.`, 'red');
+
+    // Optimistic UI: Zuerst in der App aktualisieren für eine schnelle Rückmeldung
+    creditsDisplay.textContent = String(current - cost); 
+    
+    try {
+      const res = await fetch('https://verfuegbarkeiten-worker.coffee-recoveryhh.workers.dev/credits/redeem', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        // GEÄNDERT: itemName wird jetzt an den Worker gesendet
+        body: JSON.stringify({ portalId: CURRENT_PORTAL_ID, cost, itemName }) 
+      });
+      const json = await res.json();
+
+      if (!res.ok || !json.ok) {
+        // Rollback: Wenn ein Fehler auftritt, den alten Wert wiederherstellen
+        creditsDisplay.textContent = String(current); 
+        return showToast(json.error || 'Einlösen fehlgeschlagen.', 'red');
       }
+
+      // Bestätigung vom Server, den neuen Kontostand final setzen
+      if (typeof json.newBalance === 'number') {
+        creditsDisplay.textContent = String(json.newBalance);
+      }
+      
+      // NEU: Spezifischere Erfolgsmeldung
+      showToast(`${itemName} eingelöst! 🎉`); 
+    } catch (e) {
+      // Rollback bei Netzwerkfehler
+      creditsDisplay.textContent = String(current); 
+      showToast('Netzwerkfehler.', 'red');
     }
+  }
 
     function showPage(pageId) {
         if (currentPageId === pageId && document.getElementById(pageId).classList.contains('active')) return;
