@@ -663,6 +663,15 @@ const JF_GROUP_FIELD = 'gruppe'; // Name des neuen, versteckten Gruppen-Feldes i
     
     function renderData(data) {
         document.getElementById('user-greeting').textContent = `Willkommen, ${data.firstName || ''}!`;
+
+      if (window.BrevoConversations && data.email) {
+            window.BrevoConversations('identify', {
+                email: data.email,
+                // Wir können auch den Vornamen übergeben für eine persönliche Ansprache
+                name: data.firstName 
+            });
+        }
+
         document.querySelector('#credits-display span').textContent = data.credits ?? 0;
         
         renderMonatsplanung(data);
