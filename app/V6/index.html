@@ -662,6 +662,7 @@ const JF_GROUP_FIELD = 'gruppe'; // Name des neuen, versteckten Gruppen-Feldes i
     // --- Rendering Logic (Refactored from V5) ---
     
     function renderData(data) {
+       window.APP_DATA = data;
         document.getElementById('user-greeting').textContent = `Willkommen, ${data.firstName || ''}!`;
 
       if (window.BrevoConversations && data.email) {
