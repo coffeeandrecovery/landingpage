@@ -459,6 +459,19 @@
     <script>
   window.BrevoConversationsID = '68966b452e29685a19096555';
   window.BrevoConversationsSetup = { customWidgetButton: '.brevo-chat-trigger' };
+      customWidgetButton: '.brevo-chat-trigger',
+    onReady: function() {
+      // Setzt ein globales Signal, dass Brevo jetzt startklar ist
+      window.BREVO_IS_READY = true;
+      // Prüft, ob wir in der Zwischenzeit schon Daten bekommen haben
+      if (window.APP_DATA && window.APP_DATA.email) {
+        window.BrevoConversations('identify', {
+          email: window.APP_DATA.email,
+          name: window.APP_DATA.firstName
+        });
+      }
+    }
+  };
 </script>
 <script src="https://conversations-widget.brevo.com/brevo-conversations.js" async></script>
   </div>
