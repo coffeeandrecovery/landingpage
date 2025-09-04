@@ -507,15 +507,30 @@
     // --- Core App Logic ---
     document.addEventListener('DOMContentLoaded', () => {
         const loadingSpinner = document.getElementById('loading-spinner');
-        CURRENT_PORTAL_ID = getPortalIdFromUrl();
-        if (!CURRENT_PORTAL_ID) {
-            document.body.innerHTML = '<p class="text-center text-red-500 mt-8 p-8">Fehler: Keine Portal-ID in der URL gefunden. Bitte verwenden Sie den korrekten Link.</p>';
-            loadingSpinner.classList.add('hidden');
-            return;
+        
+        let portalIdFromUrl = getPortalIdFromUrl();
+
+        if (portalIdFromUrl) {
+            // Fall 1: ID ist in der URL vorhanden - alles super.
+            CURRENT_PORTAL_ID = portalIdFromUrl;
+            
+            // App normal starten
+            setupPinAuthentication();
+            setupChangePinForm();
+            showAddToHomeScreenBanner();
+        } else {
+            // Fall 2: Keine ID in der URL (z.B. Start vom Home-Bildschirm)
+            const savedPortalId = localStorage.getItem('userPortalId');
+
+            if (savedPortalId) {
+                // Wir haben eine gespeicherte ID! Seite mit der ID neu laden.
+                window.location.search = `id=${savedPortalId}`;
+            } else {
+                // Fall 3: Keine ID in URL UND keine gespeichert. Dann Fehler anzeigen.
+                document.body.innerHTML = '<p class="text-center text-red-500 mt-8 p-8">Fehler: Keine Portal-ID gefunden. Bitte verwenden Sie den persönlichen Link aus Ihrer E-Mail, um das Portal erstmalig zu starten.</p>';
+                loadingSpinner.classList.add('hidden');
+            }
         }
-        setupPinAuthentication();
-        setupChangePinForm();
-        showAddToHomeScreenBanner();
     });
 
     function getPortalIdFromUrl() {
@@ -620,6 +635,7 @@
                 const result = await response.json();
                 if (response.ok && result.ok) {
                     localStorage.setItem("portalLoginTimestamp", new Date().getTime());
+                    localStorage.setItem('userPortalId', CURRENT_PORTAL_ID);
                     appWrapper.classList.remove('content-blurred');
                     pinModalOverlay.style.display = 'none';
                     fetchData(CURRENT_PORTAL_ID);
