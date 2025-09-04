@@ -6,6 +6,13 @@
         content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>Recovery Gruppen Portal</title>
 
+   <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#6366f1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Recovery App">
+  <link rel="apple-touch-icon" href="assets/icon-192x192.png">
+  
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
     script-src 'self' https://cdn.tailwindcss.com https://cdn.jotfor.ms https://d13sozod7hpim.cloudfront.net 'unsafe-inline' 'unsafe-eval';
@@ -108,6 +115,17 @@
 </head>
 <body class="antialiased">
 
+<div id="a2hs-banner" style="display: none; position: fixed; bottom: 85px; left: 1rem; right: 1rem; z-index: 100; background-color: white; border-radius: 0.75rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); padding: 1rem; display: none;">
+    <button id="a2hs-close-btn" style="position: absolute; top: 0.5rem; right: 0.5rem; background: none; border: none; font-size: 1.5rem; line-height: 1; cursor: pointer; color: #9ca3af;">&times;</button>
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <img src="assets/icon-192x192.png" alt="App Icon" style="width: 50px; height: 50px; border-radius: 0.5rem;">
+      <div>
+        <p style="font-weight: 600; color: #1f2937;">App auf deinem Gerät installieren?</p>
+        <p style="font-size: 0.875rem; color: #4b5563;">Tippe auf <svg xmlns="http://www.w3.org/2000/svg" style="display: inline-block; height: 1.25rem; width: 1.25rem; vertical-align: bottom;" viewBox="0 0 20 20" fill="currentColor"><path d="M13 4.5a2.5 2.5 0 11.702 4.283l-1.07 1.071a.75.75 0 01-1.06-1.06l1.07-1.071A2.5 2.5 0 0113 4.5zM9.5 11.25a.75.75 0 000 1.5h.75a.75.75 0 000-1.5H9.5z"></path><path fill-rule="evenodd" d="M4.5 4.5a.75.75 0 01.75-.75h4.5a.75.75 0 010 1.5H5.25A.75.75 0 014.5 4.5zm0 3.75a.75.75 0 01.75-.75h4.5a.75.75 0 010 1.5H5.25a.75.75 0 01-.75-.75zM4 11.25a.75.75 0 01.75-.75h4.5a.75.75 0 010 1.5H4.75a.75.75 0 01-.75-.75zM10 15a1 1 0 00-1-1H4a1 1 0 00-1 1v2a1 1 0 001 1h5a1 1 0 001-1v-2z" clip-rule="evenodd"></path></svg> 'Teilen' und dann 'Zum Home-Bildschirm'."</p>
+      </div>
+    </div>
+  </div>
+  
   <div id="loading-spinner">
     <div class="spinner"></div>
     <p class="mt-4 text-gray-600 font-semibold">Lädt Daten...</p>
@@ -463,6 +481,24 @@
     let currentPageId = 'home';
     let pageHistory = ['home'];
     let CURRENT_PORTAL_ID = null;
+
+    // HIER EINFÜGEN: Logik für iOS "Add to Home Screen" Banner
+    function showAddToHomeScreenBanner() {
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+      const isInStandaloneMode = ('standalone' in window.navigator) && (window.navigator.standalone);
+      const banner = document.getElementById('a2hs-banner');
+      const closeBtn = document.getElementById('a2hs-close-btn');
+
+      // Banner nur auf iOS im Browser anzeigen & wenn es nicht schon weggeklickt wurde
+      if (isIOS && !isInStandaloneMode && localStorage.getItem('a2hsBannerDismissed') !== 'true') {
+        banner.style.display = 'block';
+      }
+
+      closeBtn.addEventListener('click', () => {
+        banner.style.display = 'none';
+        localStorage.setItem('a2hsBannerDismissed', 'true');
+      });
+    }
     
     const FORM_ID = '252311488402047';
     const JF_PORTAL_FIELD = 'portalId';
@@ -479,6 +515,7 @@
         }
         setupPinAuthentication();
         setupChangePinForm();
+        showAddToHomeScreenBanner();
     });
 
     function getPortalIdFromUrl() {
