@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, user-scalable=no" />
+        content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>Recovery Gruppen Portal</title>
 
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#f8f7fa">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Recovery App">
   <link rel="apple-touch-icon" href="assets/icon-192x192.png">
   
@@ -36,6 +37,9 @@
         rel="stylesheet" />
 
   <style>
+    header {
+      padding-top: env(safe-area-inset-top);
+    }
     html, body { height: 100%; margin: 0; font-family: 'Inter', sans-serif; background-color: #f8f7fa; }
     body { padding-top: 72px; }
     .main-content { padding-bottom: 80px; }
@@ -78,6 +82,7 @@
     .btn-ghost-secondary:hover { background: #f9fafb; border-color: #9ca3af; }
   </style>
 </head>
+  
 <body class="antialiased">
 
   <div id="a2hs-banner" style="display: none; position: fixed; bottom: 85px; left: 1rem; right: 1rem; z-index: 100; background-color: white; border-radius: 0.75rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); padding: 1rem;">
