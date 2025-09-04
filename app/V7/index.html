@@ -6,7 +6,7 @@
         content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>Recovery Gruppen Portal</title>
 
-   <link rel="manifest" href="manifest.json">
+  <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#6366f1">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -40,82 +40,47 @@
     body { padding-top: 72px; }
     .main-content { padding-bottom: 80px; }
     ::-webkit-scrollbar { display: none; }
-
-    /* Jede Seite mittig, wie Home (aus V4) */
     .page { display: none; min-height: calc(100vh - 72px - 80px); max-width: 48rem; margin: 0 auto; }
     .page.active { display: block; animation: fadeIn 0.4s ease-in-out; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
     .nav-bar { box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 30; }
     .nav-item.active svg, .nav-item.active .nav-text { color: #6366f1; }
     .nav-item.active .nav-text { font-weight: 600; }
-
     .nav-card { transition: transform .2s, box-shadow .2s; }
     .nav-card:hover { transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.07), 0 4px 6px -4px rgba(0,0,0,0.07); }
-
     .off-canvas-menu { position: fixed; top: 0; right: 0; width: 80%; max-width: 320px; height: 100%; background: #fff; z-index: 40; transform: translateX(100%); transition: transform .3s; box-shadow: -2px 0 10px rgba(0,0,0,.1); }
     .off-canvas-menu.open { transform: translateX(0); }
     .off-canvas-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 35; opacity: 0; visibility: hidden; transition: opacity .3s, visibility .3s; }
     .off-canvas-overlay.open { opacity: 1; visibility: visible; }
-
     .placeholder-pulse { background-color: #e5e7eb; border-radius: 0.75rem; animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
     @keyframes pulse { 50% { opacity: .5; } }
-
     .shop-card { background: linear-gradient(145deg, #ffffff, #f0f0f0); border-radius: 1rem; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,.1), 0 2px 4px -1px rgba(0,0,0,.06); transition: all .3s; }
     .shop-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,.15); }
     .shop-card .badge { font-size: .75rem; font-weight: 700; padding: .25rem .75rem; border-radius: 9999px; color: #fff; text-shadow: 1px 1px 2px rgba(0,0,0,.1); }
     .shop-card .badge.indigo { background: #6366f1; }
     .shop-card .badge.green  { background: #10b981; }
     .shop-card .description { color: #718096; margin-top: .5rem; font-size: .875rem; }
-
-    /* Loader */
     #loading-spinner { position: fixed; inset: 0; background-color: #f8f7fa; z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 1; visibility: visible; transition: opacity .5s, visibility .5s; }
     #loading-spinner.hidden { opacity: 0; visibility: hidden; }
     .spinner { width: 4rem; height: 4rem; border: 4px solid #e5e7eb; border-top-color: #6366f1; border-radius: 50%; animation: spin 1s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* Blur bei PIN */
     .content-blurred { filter: blur(8px); pointer-events: none; user-select: none; transition: filter .5s; }
-
-    /* Danger Ghost Button (Absage) */
     .btn-ghost-danger { border: 1px solid #fecaca; color: #dc2626; padding: .375rem .625rem; border-radius: .5rem; font-weight: 600; transition: background .15s, border-color .15s, color .15s, opacity .15s; background: #fff; }
     .btn-ghost-danger:hover { background: #fef2f2; border-color: #fca5a5; }
-
-    /* Mini-Spinner (inline) */
     .inline-spinner { width: 14px; height: 14px; border: 2px solid #e5e7eb; border-right-color: #dc2626; border-radius: 9999px; display: inline-block; vertical-align: middle; margin-right: 6px; animation: spin .8s linear infinite; }
-
-    /* Credit-Display (Zahl + Icon inline) */
     .credit-inline { display: inline-flex; align-items: center; gap: .35rem; }
     .credit-inline img { width: 1.25rem; height: 1.25rem; object-fit: contain; }
-    
-    /* Absage-Modal (aus V5) */
     .modal-overlay { position: fixed; inset: 0; background-color: rgba(0, 0, 0, 0.5); z-index: 200; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; }
     .modal-overlay.visible { opacity: 1; visibility: visible; }
     .modal-content { background-color: white; padding: 1.5rem; border-radius: 0.75rem; width: 90%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); transform: scale(0.95); transition: transform 0.3s; }
     .modal-overlay.visible .modal-content { transform: scale(1); }
-
-    /* Secondary Ghost Button (Kalender) */
-    .btn-ghost-secondary {
-      border: 1px solid #d1d5db; /* gray-300 */
-      color: #4b5563; /* gray-600 */
-      padding: .375rem .625rem;
-      border-radius: .5rem;
-      font-weight: 600;
-      transition: all .15s;
-      background: #fff;
-      display: inline-flex;
-      align-items: center;
-      gap: .25rem; /* Abstand zwischen Icon und Text */
-    }
-    .btn-ghost-secondary:hover {
-      background: #f9fafb; /* gray-50 */
-      border-color: #9ca3af; /* gray-400 */
-    }
+    .btn-ghost-secondary { border: 1px solid #d1d5db; color: #4b5563; padding: .375rem .625rem; border-radius: .5rem; font-weight: 600; transition: all .15s; background: #fff; display: inline-flex; align-items: center; gap: .25rem; }
+    .btn-ghost-secondary:hover { background: #f9fafb; border-color: #9ca3af; }
   </style>
 </head>
 <body class="antialiased">
 
-<div id="a2hs-banner" style="display: none; position: fixed; bottom: 85px; left: 1rem; right: 1rem; z-index: 100; background-color: white; border-radius: 0.75rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); padding: 1rem; display: none;">
+  <div id="a2hs-banner" style="display: none; position: fixed; bottom: 85px; left: 1rem; right: 1rem; z-index: 100; background-color: white; border-radius: 0.75rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); padding: 1rem;">
     <button id="a2hs-close-btn" style="position: absolute; top: 0.5rem; right: 0.5rem; background: none; border: none; font-size: 1.5rem; line-height: 1; cursor: pointer; color: #9ca3af;">&times;</button>
     <div style="display: flex; align-items: center; gap: 1rem;">
       <img src="assets/icon-192x192.png" alt="App Icon" style="width: 50px; height: 50px; border-radius: 0.5rem;">
@@ -132,52 +97,50 @@
   </div>
 
   <div id="pin-modal-overlay" class="fixed inset-0 z-[200] bg-white/40 backdrop-blur-md" style="display: none;">
-      <div class="absolute inset-0 flex items-center justify-center p-6">
-        <div class="w-full max-w-sm bg-white rounded-xl shadow-xl p-6">
-          <h2 class="text-xl font-bold text-gray-900 mb-2">Sicherheit</h2>
-          <p class="text-sm text-gray-600 mb-4">Bitte gib deinen 4-stelligen Code ein.</p>
-          <input id="pin-input" type="password" 
-                inputmode="numeric" maxlength="4"
-                class="w-full border rounded-lg px-4 py-3 tracking-widest text-center text-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
-                placeholder="••••" />
-          <p id="pin-error" class="hidden mt-2 text-sm text-red-600">Code ist ungültig.</p>
-              
-              <a href="mailto:mayaberger@recovery-gruppen.de?subject=PIN%20zurücksetzen" class="block text-center text-sm text-indigo-600 hover:underline mt-4">PIN vergessen?</a>
-              
-              <button id="pin-submit"
-                      class="w-full mt-2 bg-indigo-600 text-white font-semibold py-2.5 rounded-lg hover:bg-indigo-700 transition"> Weiter
-              </button>
-        </div>
+    <div class="absolute inset-0 flex items-center justify-center p-6">
+      <div class="w-full max-w-sm bg-white rounded-xl shadow-xl p-6">
+        <h2 class="text-xl font-bold text-gray-900 mb-2">Sicherheit</h2>
+        <p class="text-sm text-gray-600 mb-4">Bitte gib deinen 4-stelligen Code ein.</p>
+        <input id="pin-input" type="password" 
+               inputmode="numeric" maxlength="4"
+               class="w-full border rounded-lg px-4 py-3 tracking-widest text-center text-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+               placeholder="••••" />
+        <p id="pin-error" class="hidden mt-2 text-sm text-red-600">Code ist ungültig.</p>
+        <a href="mailto:mayaberger@recovery-gruppen.de?subject=PIN%20zurücksetzen" class="block text-center text-sm text-indigo-600 hover:underline mt-4">PIN vergessen?</a>
+        <button id="pin-submit"
+                class="w-full mt-2 bg-indigo-600 text-white font-semibold py-2.5 rounded-lg hover:bg-indigo-700 transition"> Weiter
+        </button>
       </div>
     </div>
+  </div>
   
   <div id="confirmation-modal-overlay" class="modal-overlay">
-      <div class="modal-content text-center">
-          <div id="confirmation-modal-icon" class="flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4 mx-auto">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-          <h2 id="confirmation-modal-title" class="text-xl font-bold text-gray-900 mb-2">Erfolg!</h2>
-          <p id="confirmation-modal-message" class="text-gray-600 mb-4">Aktion wurde erfolgreich ausgeführt.</p>
-          <div class="flex justify-center mt-6">
-              <button id="confirmation-modal-btn-ok" class="px-6 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 font-semibold text-white transition">Okay</button>
-          </div>
+    <div class="modal-content text-center">
+      <div id="confirmation-modal-icon" class="flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4 mx-auto">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
       </div>
+      <h2 id="confirmation-modal-title" class="text-xl font-bold text-gray-900 mb-2">Erfolg!</h2>
+      <p id="confirmation-modal-message" class="text-gray-600 mb-4">Aktion wurde erfolgreich ausgeführt.</p>
+      <div class="flex justify-center mt-6">
+        <button id="confirmation-modal-btn-ok" class="px-6 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 font-semibold text-white transition">Okay</button>
+      </div>
+    </div>
   </div>
 
   <div id="cancel-modal-overlay" class="modal-overlay">
-      <div class="modal-content">
-          <h2 class="text-xl font-bold text-gray-900 mb-2">Termin absagen</h2>
-          <p class="text-gray-600 mb-4">Möchtest du diesen Termin wirklich absagen?</p>
-          <div id="cancel-modal-warning" class="hidden bg-yellow-50 border border-yellow-200 text-yellow-900 rounded-lg p-3 mb-4 text-sm">
-              <b>Bitte beachte:</b> Bei Absagen innerhalb von 48 Stunden vor Terminbeginn wird eine Ausfallgebühr von 29 € fällig.
-          </div>
-          <div class="flex justify-end gap-3 mt-6">
-              <button id="modal-btn-no" class="px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 font-semibold text-gray-800 transition">Abbrechen</button>
-              <button id="modal-btn-yes" class="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 font-semibold text-white transition">Ja, absagen</button>
-          </div>
+    <div class="modal-content">
+      <h2 class="text-xl font-bold text-gray-900 mb-2">Termin absagen</h2>
+      <p class="text-gray-600 mb-4">Möchtest du diesen Termin wirklich absagen?</p>
+      <div id="cancel-modal-warning" class="hidden bg-yellow-50 border border-yellow-200 text-yellow-900 rounded-lg p-3 mb-4 text-sm">
+        <b>Bitte beachte:</b> Bei Absagen innerhalb von 48 Stunden vor Terminbeginn wird eine Ausfallgebühr von 29 € fällig.
       </div>
+      <div class="flex justify-end gap-3 mt-6">
+        <button id="modal-btn-no" class="px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 font-semibold text-gray-800 transition">Abbrechen</button>
+        <button id="modal-btn-yes" class="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 font-semibold text-white transition">Ja, absagen</button>
+      </div>
+    </div>
   </div>
 
   <div id="app-wrapper">
@@ -227,15 +190,12 @@
           <h1 id="user-greeting" class="text-3xl font-bold text-gray-800">Willkommen!</h1>
           <p class="text-md text-gray-500 mt-1">Schön, dass du da bist.</p>
         </header>
-
         <div id="news-container" class="bg-white border border-gray-200 rounded-xl p-5 mb-8 shadow-sm">
           <div class="placeholder-pulse h-16 w-full"></div>
         </div>
-
         <div id="next-appointment-container" class="bg-teal-50 border-2 border-teal-200 rounded-xl p-5 mb-8">
           <div class="placeholder-pulse h-24 w-full bg-teal-200"></div>
         </div>
-
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <a href="#" onclick="showPage('monatsplanung-page'); return false;" id="link-monatsplanung" class="nav-card bg-white rounded-xl shadow-sm p-6 border border-gray-200 block">
             <div class="flex items-center justify-center h-12 w-12 rounded-full bg-purple-100 mb-4">
@@ -266,13 +226,11 @@
           <h1 class="text-3xl font-bold text-gray-800">Monatsplanung <span id="grp-label" class="text-indigo-600"></span></h1>
           <p id="monatsplanung-subtitle" class="text-gray-600 mt-2">Teile deine Verfügbarkeiten über das Formular.</p>
         </header>
-
         <div id="monatsplanung-danke" class="hidden bg-white p-6 rounded-xl shadow-sm border border-gray-200 text-center">
           <div class="flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4 mx-auto"><svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></div>
           <h2 class="text-xl font-bold text-gray-800">Vielen Dank!</h2>
           <p class="text-gray-600 mt-2">Deine Verfügbarkeiten für diesen Monat wurden bereits Übermittelt.</p>
         </div>
-        
         <div id="monatsplanung-form-container" class="bg-white p-0 rounded-xl shadow-sm border border-gray-200">
           <iframe id="jotform-iframe" title="Monatsplanung"
                   allowtransparency="true"
@@ -280,7 +238,6 @@
                   src="about:blank"
                   frameborder="0"
                   style="width: 1px; min-width: 100%; min-height: 350px; border: none;" scrolling="no"></iframe>
-                
         </div>
       </div>
 
@@ -288,7 +245,7 @@
         <header class="pt-2 pb-6">
           <h1 class="text-3xl font-bold text-gray-800">Bestätigte Termine</h1>
           <p class="text-gray-600 mt-2">Deine festen Gruppensitzungen.</p>
-         </header>
+        </header>
         <div id="confirmed-appointments-container" class="space-y-4">
           <div class="placeholder-pulse h-24 w-full"></div>
         </div>
@@ -315,7 +272,6 @@
             <p class="description flex-grow">Enthält 5 Sitzungen (inkl. 1 gratis Sitzung).</p>
             <a href="https://buy.stripe.com/dRmdR96dj8MN1pcgLn3Je04" target="_blank" class="w-full text-center mt-5 bg-indigo-600 text-white font-semibold py-2.5 rounded-lg hover:bg-indigo-700 transition">Jetzt kaufen</a>
           </div>
-
           <div class="shop-card p-6 flex flex-col">
             <div class="flex justify-between items-start mb-4">
               <h3 class="text-2xl font-bold text-green-600">10er-Karte</h3>
@@ -325,8 +281,8 @@
               </div>
             </div>
             <div>
-                <span class="text-gray-500 line-through">600 €</span>
-                <span class="text-4xl font-extrabold text-gray-900 leading-none ml-2">420 €</span>
+              <span class="text-gray-500 line-through">600 €</span>
+              <span class="text-4xl font-extrabold text-gray-900 leading-none ml-2">420 €</span>
             </div>
             <p class="description flex-grow">Enthält 10 Sitzungen (inkl. 3 gratis Sitzungen).</p>
             <a href="https://buy.stripe.com/eVq3cv1X35ABfg252F3Je05" target="_blank" class="w-full text-center mt-5 bg-green-600 text-white font-semibold py-2.5 rounded-lg hover:bg-green-700 transition">Jetzt kaufen</a>
@@ -340,7 +296,6 @@
           <p class="text-gray-600 mt-2">Tausche deine Credits gegen Prämien.</p>
         </header>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          
           <div class="shop-card p-6 redeem-card">
             <div class="flex items-center justify-center w-24 h-24 mb-4 mx-auto"><img src="/assets/credit1.png" alt="Notizblock" class="w-24 h-24 object-contain" /></div>
             <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">Notizblock</h3>
@@ -348,7 +303,6 @@
             <button class="w-full mt-4 bg-indigo-600 text-white font-semibold py-2.5 rounded-lg hover:bg-indigo-700 transition" 
                     onclick="redeemCredits(30, 'Notizblock');">Einlösen</button>
           </div>
-
           <div class="shop-card p-6 redeem-card">
             <div class="flex items-center justify-center w-24 h-24 mb-4 mx-auto"><img src="/assets/credit2.png" alt="LEGO Blume" class="w-24 h-24 object-contain" /></div>
             <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">LEGO Blume</h3>
@@ -356,7 +310,6 @@
             <button class="w-full mt-4 bg-indigo-600 text-white font-semibold py-2.5 rounded-lg hover:bg-indigo-700 transition" 
                     onclick="redeemCredits(40, 'LEGO Blume');">Einlösen</button>
           </div>
-
           <div class="shop-card p-6 redeem-card">
             <div class="flex items-center justify-center w-24 h-24 mb-4 mx-auto"><img src="/assets/credit3.png" alt="Wellness Spa Tag" class="w-24 h-24 object-contain" /></div>
             <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">Wellness Spa Tag</h3>
@@ -364,7 +317,6 @@
             <button class="w-full mt-4 bg-indigo-600 text-white font-semibold py-2.5 rounded-lg hover:bg-indigo-700 transition" 
                     onclick="redeemCredits(200, 'Wellness Spa Tag');">Einlösen</button>
           </div>
-          
         </div>
         <div class="mt-12">
           <h2 class="text-2xl font-bold text-gray-800 mb-4">Deine eingelösten Prämien</h2>
@@ -401,8 +353,8 @@
             <h2 class="text-xl font-semibold text-gray-700 mb-4">Deine Credits</h2>
             <div id="guthaben-container"><div class="placeholder-pulse h-20 w-full"></div></div>
             <a href="#" onclick="showPage('shop-page'); return false;"
-              class="block mt-4 w-full text-center bg-indigo-600 text-white font-semibold py-3 px-5 rounded-lg hover:bg-indigo-700 transition-colors">
-              Neue Gruppenkarte kaufen
+               class="block mt-4 w-full text-center bg-indigo-600 text-white font-semibold py-3 px-5 rounded-lg hover:bg-indigo-700 transition-colors">
+               Neue Gruppenkarte kaufen
             </a>
           </div>
           <div>
@@ -411,65 +363,67 @@
               <div class="p-5 h-20 placeholder-pulse"></div>
             </div>
           </div>
-
           <div>
             <h2 class="text-xl font-semibold text-gray-700 mb-4">Sicherheit</h2>
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
               <a href="#" onclick="showPage('change-pin-page'); return false;" class="block w-full text-center bg-gray-100 text-gray-800 font-semibold py-3 px-5 rounded-lg hover:bg-gray-200 transition-colors">
-              PIN ändern
+               PIN ändern
               </a>
             </div>
           </div>
         </div>
       </div>
 
-<div id="change-pin-page" class="page p-6">
-      <header class="pt-2 pb-6">
-        <h1 class="text-3xl font-bold text-gray-800">PIN ändern</h1>
-        <p class="text-gray-600 mt-2">Hier kannst du eine neue, persönliche PIN festlegen.</p>
-      </header>
-      <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-        <form id="change-pin-form">
-          <div class="space-y-4">
-            <div>
-              <label for="current-pin-input" class="block text-sm font-medium text-gray-700">Aktuelle PIN</label>
-              <input type="password" id="current-pin-input" inputmode="numeric" maxlength="4" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+      <div id="change-pin-page" class="page p-6">
+        <header class="pt-2 pb-6">
+          <h1 class="text-3xl font-bold text-gray-800">PIN ändern</h1>
+          <p class="text-gray-600 mt-2">Hier kannst du eine neue, persönliche PIN festlegen.</p>
+        </header>
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+          <form id="change-pin-form">
+            <div class="space-y-4">
+              <div>
+                <label for="current-pin-input" class="block text-sm font-medium text-gray-700">Aktuelle PIN</label>
+                <input type="password" id="current-pin-input" inputmode="numeric" maxlength="4" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+              </div>
+              <div>
+                <label for="new-pin-input" class="block text-sm font-medium text-gray-700">Neue PIN (4-stellig)</label>
+                <input type="password" id="new-pin-input" inputmode="numeric" maxlength="4" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+              </div>
+              <div>
+                <label for="confirm-pin-input" class="block text-sm font-medium text-gray-700">Neue PIN bestätigen</label>
+                <input type="password" id="confirm-pin-input" inputmode="numeric" maxlength="4" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+              </div>
             </div>
-            <div>
-              <label for="new-pin-input" class="block text-sm font-medium text-gray-700">Neue PIN (4-stellig)</label>
-              <input type="password" id="new-pin-input" inputmode="numeric" maxlength="4" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+            <div class="mt-6">
+              <button type="submit" id="change-pin-submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                PIN speichern
+              </button>
             </div>
-            <div>
-              <label for="confirm-pin-input" class="block text-sm font-medium text-gray-700">Neue PIN bestätigen</label>
-              <input type="password" id="confirm-pin-input" inputmode="numeric" maxlength="4" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
-            </div>
-          </div>
-          <div class="mt-6">
-            <button type="submit" id="change-pin-submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-              PIN speichern
-            </button>
-          </div>
-          <p id="change-pin-message" class="mt-4 text-center text-sm"></p>
-        </form>
-      </div> </div> <div id="error-page" class="page p-6" style="display: none;">
-      <div class="flex flex-col items-center justify-center min-h-[60vh] text-center">
-        <div class="flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-6">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-          </svg>
+            <p id="change-pin-message" class="mt-4 text-center text-sm"></p>
+          </form>
         </div>
-        <h1 class="text-2xl font-bold text-gray-800 mb-2">Portal-Link ungültig</h1>
-        <p class="text-gray-600 max-w-md mx-auto mb-6">Für den Start des Portals wird eine gültige und persönliche Portal-ID benötigt. Diese finden Sie in Ihrer Einladungs-E-Mail.</p>
-        <div class="bg-gray-50 p-4 rounded-lg text-left w-full max-w-md border">
-          <p class="font-semibold text-gray-700">Was können Sie tun?</p>
-          <ul class="list-disc list-inside mt-2 text-gray-600 text-sm space-y-1">
-            <li>Öffnen Sie die Einladungs-E-Mail und klicken Sie auf den darin enthaltenen Link.</li>
-            <li>Stellen Sie sicher, dass der Link vollständig in die Adresszeile kopiert wurde.</li>
-          </ul>
-        </div>
-        <a href="mailto:mayaberger@recovery-gruppen.de?subject=Problem%20mit%20dem%20Portal-Link" class="mt-8 text-sm text-indigo-600 hover:underline">Link nicht gefunden? Kontaktieren Sie uns.</a>
       </div>
-    </div>
+
+      <div id="error-page" class="page p-6" style="display: none;">
+        <div class="flex flex-col items-center justify-center min-h-[60vh] text-center">
+          <div class="flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+          <h1 class="text-2xl font-bold text-gray-800 mb-2">Portal-Link ungültig</h1>
+          <p class="text-gray-600 max-w-md mx-auto mb-6">Für den Start des Portals wird eine gültige und persönliche Portal-ID benötigt. Diese finden Sie in Ihrer Einladungs-E-Mail.</p>
+          <div class="bg-gray-50 p-4 rounded-lg text-left w-full max-w-md border">
+            <p class="font-semibold text-gray-700">Was können Sie tun?</p>
+            <ul class="list-disc list-inside mt-2 text-gray-600 text-sm space-y-1">
+              <li>Öffnen Sie die Einladungs-E-Mail und klicken Sie auf den darin enthaltenen Link.</li>
+              <li>Stellen Sie sicher, dass der Link vollständig in die Adresszeile kopiert wurde.</li>
+            </ul>
+          </div>
+          <a href="mailto:mayaberger@recovery-gruppen.de?subject=Problem%20mit%20dem%20Portal-Link" class="mt-8 text-sm text-indigo-600 hover:underline">Link nicht gefunden? Kontaktieren Sie uns.</a>
+        </div>
+      </div>
       
     </main>
 
@@ -488,10 +442,10 @@
           <span class="nav-text text-xs mt-1">Mein Bereich</span>
         </button>
       </div>
+    </nav>
+  </div>
 
-      </nav>
-
-  </div> <script>
+  <script>
     let currentPageId = 'home';
     let pageHistory = ['home'];
     let CURRENT_PORTAL_ID = null;
