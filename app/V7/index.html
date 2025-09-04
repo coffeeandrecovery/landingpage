@@ -471,26 +471,26 @@
     const JF_PORTAL_FIELD = 'portalId';
     const JF_GROUP_FIELD = 'gruppe';
 
-    // --- Core App Logic (NEUE, VERBESSERTE VERSION) ---
+    // --- Core App Logic (NEUE, ROBUSTERE VERSION) ---
     document.addEventListener('DOMContentLoaded', () => {
         const loadingSpinner = document.getElementById('loading-spinner');
         
-        let portalIdFromUrl = getPortalIdFromUrl();
+        // Versuche zuerst die ID aus der URL zu bekommen, ansonsten aus dem Speicher.
+        const portalId = getPortalIdFromUrl() || localStorage.getItem('userPortalId');
 
-        if (portalIdFromUrl) {
-            CURRENT_PORTAL_ID = portalIdFromUrl;
+        if (portalId) {
+            // Wir haben eine ID gefunden, egal woher. App kann starten.
+            CURRENT_PORTAL_ID = portalId;
+            
+            // App normal starten
             setupPinAuthentication();
             setupChangePinForm();
             showAddToHomeScreenBanner();
         } else {
-            const savedPortalId = localStorage.getItem('userPortalId');
-            if (savedPortalId) {
-                window.location.search = `id=${savedPortalId}`;
-            } else {
-                document.getElementById('app-wrapper').style.display = 'none';
-                document.getElementById('error-page').style.display = 'block';
-                loadingSpinner.classList.add('hidden');
-            }
+            // Wenn weder in der URL noch im Speicher eine ID ist -> Fehler anzeigen.
+            document.getElementById('app-wrapper').style.display = 'none';
+            document.getElementById('error-page').style.display = 'block';
+            loadingSpinner.classList.add('hidden');
         }
     });
 
