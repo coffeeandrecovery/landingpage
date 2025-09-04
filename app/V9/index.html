@@ -473,8 +473,9 @@
 
     // --- Core App Logic (NEUE, ROBUSTERE VERSION) ---
     document.addEventListener('DOMContentLoaded', () => {
+      // Mit einer winzigen Verzögerung starten, um Timing-Probleme zu vermeiden
+      setTimeout(() => {
         const loadingSpinner = document.getElementById('loading-spinner');
-        
         const portalId = getPortalIdFromUrl() || localStorage.getItem('userPortalId');
 
         if (portalId) {
@@ -489,6 +490,7 @@
             document.getElementById('error-page').style.display = 'block';
             loadingSpinner.classList.add('hidden');
         }
+      }, 1);
     });
 
     function getPortalIdFromUrl() {
