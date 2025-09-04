@@ -454,8 +454,38 @@
             
             <p id="change-pin-message" class="mt-4 text-center text-sm"></p>
           </form>
+
+</div>
+      </div>
+
+      <div id="error-page" class="page p-6" style="display: none;">
+        <div class="flex flex-col items-center justify-center min-h-[60vh] text-center">
+          
+          <div class="flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+          
+          <h1 class="text-2xl font-bold text-gray-800 mb-2">Portal-Link ungültig</h1>
+          <p class="text-gray-600 max-w-md mx-auto mb-6">Für den Start des Portals wird eine gültige und persönliche Portal-ID benötigt. Diese finden Sie in Ihrer Einladungs-E-Mail.</p>
+          
+          <div class="bg-gray-50 p-4 rounded-lg text-left w-full max-w-md border">
+            <p class="font-semibold text-gray-700">Was können Sie tun?</p>
+            <ul class="list-disc list-inside mt-2 text-gray-600 text-sm space-y-1">
+              <li>Öffnen Sie die Einladungs-E-Mail und klicken Sie auf den darin enthaltenen Link.</li>
+              <li>Stellen Sie sicher, dass der Link vollständig in die Adresszeile kopiert wurde.</li>
+            </ul>
+          </div>
+
+          <a href="mailto:mayaberger@recovery-gruppen.de?subject=Problem%20mit%20dem%20Portal-Link" class="mt-8 text-sm text-indigo-600 hover:underline">Link nicht gefunden? Kontaktieren Sie uns.</a>
+
+          
         </div>
       </div>
+
+
+
       
     </main>
 
@@ -526,9 +556,10 @@
                 // Wir haben eine gespeicherte ID! Seite mit der ID neu laden.
                 window.location.search = `id=${savedPortalId}`;
             } else {
-                // Fall 3: Keine ID in URL UND keine gespeichert. Dann Fehler anzeigen.
-                document.body.innerHTML = '<p class="text-center text-red-500 mt-8 p-8">Fehler: Keine Portal-ID gefunden. Bitte verwenden Sie den persönlichen Link aus Ihrer E-Mail, um das Portal erstmalig zu starten.</p>';
-                loadingSpinner.classList.add('hidden');
+                // Fall 3: Keine ID in URL UND keine gespeichert. Dann die schöne Fehlerseite anzeigen.
+            document.getElementById('app-wrapper').style.display = 'none'; // Verstecke die Haupt-App
+            document.getElementById('error-page').style.display = 'block'; // Zeige die Fehlerseite
+            loadingSpinner.classList.add('hidden');
             }
         }
     });
