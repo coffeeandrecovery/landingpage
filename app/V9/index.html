@@ -478,25 +478,26 @@
 
     // --- Core App Logic (NEUE, ROBUSTERE VERSION) ---
     document.addEventListener('DOMContentLoaded', () => {
-      // Mit einer winzigen Verzögerung starten, um Timing-Probleme zu vermeiden
-      setTimeout(() => {
-        const loadingSpinner = document.getElementById('loading-spinner');
-        const portalId = getPortalIdFromUrl() || localStorage.getItem('userPortalId');
+  // Ein unsichtbarer, synchroner Trick, um dem Browser eine "Atempause" zu geben.
+  // Dies verhindert das "leere Seite"-Problem, ohne die Tastatur-Interaktion zu stören.
+  void document.body.offsetHeight; 
 
-        if (portalId) {
-            CURRENT_PORTAL_ID = portalId;
-            
-            // App normal starten
-            setupPinAuthentication();
-            setupChangePinForm();
-            showAddToHomeScreenBanner();
-        } else {
-            document.getElementById('app-wrapper').style.display = 'none';
-            document.getElementById('error-page').style.display = 'block';
-            loadingSpinner.classList.add('hidden');
-        }
-      }, 1);
-    });
+  const loadingSpinner = document.getElementById('loading-spinner');
+  const portalId = getPortalIdFromUrl() || localStorage.getItem('userPortalId');
+
+  if (portalId) {
+      CURRENT_PORTAL_ID = portalId;
+      
+      // App normal starten
+      setupPinAuthentication();
+      setupChangePinForm();
+      showAddToHomeScreenBanner();
+  } else {
+      document.getElementById('app-wrapper').style.display = 'none';
+      document.getElementById('error-page').style.display = 'block';
+      loadingSpinner.classList.add('hidden');
+  }
+});
 
     function getPortalIdFromUrl() {
         return new URLSearchParams(window.location.search).get('id');
