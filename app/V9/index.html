@@ -80,10 +80,6 @@
 </head>
 <body class="antialiased">
 
-  <div id="debug-log" style="position: fixed; top: 0; left: 0; width: 100%; min-height: 40px; background: #fffbe6; padding: 10px; font-family: monospace; font-size: 12px; border-bottom: 2px solid #facc15; z-index: 9999; color: #713f12;">
-    <strong>Debug Log:</strong><br>
-  </div>
-  
   <div id="a2hs-banner" style="display: none; position: fixed; bottom: 85px; left: 1rem; right: 1rem; z-index: 100; background-color: white; border-radius: 0.75rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); padding: 1rem;">
     <button id="a2hs-close-btn" style="position: absolute; top: 0.5rem; right: 0.5rem; background: none; border: none; font-size: 1.5rem; line-height: 1; cursor: pointer; color: #9ca3af;">&times;</button>
     <div style="display: flex; align-items: center; gap: 1rem;">
@@ -450,16 +446,6 @@
   </div>
 
   <script>
-    // HIER EINFÜGEN: Die Logbuch-Funktion
-    function logToScreen(message) {
-      const logContainer = document.getElementById('debug-log');
-      if (logContainer) {
-        logContainer.innerHTML += message + '<br>';
-      }
-      console.log(message); // Schreibt auch in die echte Konsole
-    }
-    // ENDE DER FUNKTION
-
     let currentPageId = 'home';
     let pageHistory = ['home'];
     let CURRENT_PORTAL_ID = null;
@@ -487,15 +473,11 @@
 
     // --- Core App Logic (NEUE, ROBUSTERE VERSION) ---
     document.addEventListener('DOMContentLoaded', () => {
-        logToScreen('1. DOMContentLoaded event fired.');
         const loadingSpinner = document.getElementById('loading-spinner');
         
-        logToScreen('2. Checking for portalId...');
         const portalId = getPortalIdFromUrl() || localStorage.getItem('userPortalId');
-        logToScreen('3. Found portalId: ' + (portalId || 'null'));
 
         if (portalId) {
-            logToScreen('4. ID found. Initializing app...');
             CURRENT_PORTAL_ID = portalId;
             
             // App normal starten
@@ -503,7 +485,6 @@
             setupChangePinForm();
             showAddToHomeScreenBanner();
         } else {
-            logToScreen('4. No ID found. Showing error page.');
             document.getElementById('app-wrapper').style.display = 'none';
             document.getElementById('error-page').style.display = 'block';
             loadingSpinner.classList.add('hidden');
@@ -650,7 +631,6 @@
     }
 
     async function fetchData(portalId) {
-        logToScreen('5. Inside fetchData(). Calling API...');
         const loadingSpinner = document.getElementById('loading-spinner');
         loadingSpinner.classList.remove('hidden');
         try {
@@ -664,10 +644,8 @@
                 throw new Error(`HTTP-Fehler! Status: ${response.status}, Details: ${errorText}`);
             }
             const data = await response.json();
-            logToScreen('6. API call successful. Calling renderData()...');
             renderData(data);
         } catch (error) {
-            logToScreen('ERROR in fetchData(): ' + error.message);
             console.error('Fehler beim Abrufen der Daten:', error);
             document.querySelector('main.main-content').innerHTML = '<p class="text-center text-red-500 mt-8 p-8">Daten konnten nicht geladen werden. Bitte versuchen Sie es später erneut.</p>';
         } finally {
@@ -689,7 +667,6 @@
         renderConfirmedAppointments(data.confirmedAppointments);
     }
     
-    // HINZUGEFÜGTE FUNKTION
     function renderMonatsplanung(data) {
         const formContainer = document.getElementById('monatsplanung-form-container');
         const dankeContainer = document.getElementById('monatsplanung-danke');
